@@ -5,6 +5,7 @@ import {
 	UserOutlined,
 	LogoutOutlined,
 	MenuOutlined,
+	BellOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import {
@@ -17,9 +18,12 @@ import {
 	Grid,
 	Button,
 	Drawer,
+	Tooltip,
+	Badge,
 } from 'antd';
 import { Outlet, useNavigate } from 'react-router';
 import { RoutePaths } from '../util';
+import { useTranslation } from 'react-i18next';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -32,6 +36,7 @@ const items: MenuProps['items'] = [
 ];
 
 const RootLayout = () => {
+	const { t } = useTranslation('standard');
 	const {
 		token: { colorBgContainer, borderRadiusLG },
 	} = theme.useToken();
@@ -50,6 +55,9 @@ const RootLayout = () => {
 				break;
 			case '2':
 				navigate(RoutePaths.FAVORITEBOOK);
+				break;
+			case '3':
+				navigate(RoutePaths.PROFILE);
 				break;
 			default:
 				break;
@@ -74,6 +82,8 @@ const RootLayout = () => {
 			inlineCollapsed={collapsed}
 		/>
 	);
+
+	const [notificationCount, setNotificationCount] = useState(3);
 
 	return (
 		<>
@@ -113,7 +123,6 @@ const RootLayout = () => {
 						Menu: {
 							itemBorderRadius: 8,
 							itemHeight: 42,
-							colorItemBg: 'transparent',
 							colorItemText: '#333',
 							colorItemTextHover: '#333',
 							colorItemTextSelected: '#333',
@@ -207,6 +216,23 @@ const RootLayout = () => {
 							</div>
 
 							<div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+								<Tooltip title={t('notifications')}>
+									<Badge
+										count={notificationCount}
+										size="small"
+										offset={[-2, 2]}
+									>
+										<BellOutlined
+											style={{
+												fontSize: 24,
+												color: '#474541ff',
+												cursor: 'pointer',
+											}}
+											onClick={() => setNotificationCount(0)}
+										/>
+									</Badge>
+								</Tooltip>
+
 								<Avatar style={{ backgroundColor: '#ff9800' }} size="large">
 									U
 								</Avatar>

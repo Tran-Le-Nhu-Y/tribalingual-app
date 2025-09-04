@@ -1,3 +1,9 @@
 {
-	"homePage": "Trang chủ"
+	"homePage": "Trang chủ",
+	"notifications": "Thông báo",
+
+	"reading": "Sách đang đọc",
+	"read": "Sách đã đọc",
+	"favorite": "Sách yêu thích",
+	"achievements": "Thành tích"
 }

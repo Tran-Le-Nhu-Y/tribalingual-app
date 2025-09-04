@@ -10,10 +10,13 @@ import dayjs, { Dayjs } from 'dayjs';
 
 const HOME = '/home';
 const FAVORITEBOOK = '/favorite-books';
+const PROFILE = '/profile';
 export const RoutePaths = {
 	HOME,
 
 	FAVORITEBOOK,
+
+	PROFILE,
 };
 
 export const HideDuration = {

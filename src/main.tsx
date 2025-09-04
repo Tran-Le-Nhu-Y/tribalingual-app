@@ -8,16 +8,16 @@ import {
 	Route,
 	RouterProvider,
 } from 'react-router';
-import HomePage from './pages/HomePage.tsx';
 import RootLayout from './layout/RootLayout.tsx';
 import { RoutePaths } from './util/index.ts';
-import FavoriteBooksPage from './pages/FavoriteBooksPage.tsx';
+import { FavoriteBooksPage, HomePage, ProfilePage } from './pages/index.ts';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<RootLayout />}>
 			<Route index path={RoutePaths.HOME} element={<HomePage />} />
 			<Route path={RoutePaths.FAVORITEBOOK} element={<FavoriteBooksPage />} />
+			<Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
 		</Route>,
 	),
 );
