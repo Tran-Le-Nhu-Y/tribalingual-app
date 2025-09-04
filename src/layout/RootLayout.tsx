@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
 	HomeOutlined,
 	BookOutlined,
@@ -18,6 +18,8 @@ import {
 	Button,
 	Drawer,
 } from 'antd';
+import { Outlet, useNavigate } from 'react-router';
+import { RoutePaths } from '../util';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -36,14 +38,32 @@ const RootLayout = () => {
 
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
+	const navigate = useNavigate();
 
 	const isMobile = screens.xs;
 	const isTablet = screens.sm && !screens.md;
+
+	const onMenuClick: MenuProps['onClick'] = (e) => {
+		switch (e.key) {
+			case '1':
+				navigate(RoutePaths.HOME);
+				break;
+			case '2':
+				navigate(RoutePaths.FAVORITEBOOK);
+				break;
+			default:
+				break;
+		}
+		if (isMobile || isTablet) {
+			setDrawerVisible(false); // đóng Drawer khi chọn menu
+		}
+	};
 
 	const renderSiderMenu = (collapsed: boolean) => (
 		<Menu
 			mode="inline"
 			defaultSelectedKeys={['1']}
+			onClick={onMenuClick}
 			items={items}
 			style={{
 				width: '100%',
@@ -153,12 +173,11 @@ const RootLayout = () => {
 						placement="left"
 						onClose={() => setDrawerVisible(false)}
 						open={drawerVisible}
-						bodyStyle={{ padding: 0 }}
+						bodyStyle={{ padding: 5 }}
 					>
 						{renderSiderMenu(false)}
 					</Drawer>
 
-					{/* --- Layout chính --- */}
 					<Layout>
 						<Header
 							style={{
@@ -181,16 +200,13 @@ const RootLayout = () => {
 										onClick={() => setDrawerVisible(true)}
 									/>
 								)}
-								{!isMobile && !isTablet && (
-									<Input.Search
-										placeholder="Tìm kiếm..."
-										style={{ width: 300 }}
-									/>
-								)}
+								<Input.Search
+									placeholder="Tìm kiếm..."
+									style={{ width: 300 }}
+								/>
 							</div>
 
 							<div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-								{isMobile && <Button type="text">🔍</Button>}
 								<Avatar style={{ backgroundColor: '#ff9800' }} size="large">
 									U
 								</Avatar>
@@ -213,13 +229,7 @@ const RootLayout = () => {
 									minHeight: 'calc(100vh - 160px)',
 								}}
 							>
-								Nội dung chính ở đây 🚀
-								{Array.from({ length: 50 }, (_, index) => (
-									<React.Fragment key={index}>
-										{index % 10 === 0 && index ? 'more content' : '...'}
-										<br />
-									</React.Fragment>
-								))}
+								<Outlet />
 							</div>
 						</Content>
 
