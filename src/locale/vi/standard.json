@@ -1,9 +1,14 @@
 {
 	"homePage": "Trang chủ",
+	"account": "Tài khoản",
+	"logout": "Đăng xuất",
 	"notifications": "Thông báo",
 
 	"reading": "Sách đang đọc",
 	"read": "Sách đã đọc",
 	"favorite": "Sách yêu thích",
-	"achievements": "Thành tích"
+	"achievements": "Thành tích",
+	"mostRead": "Xem nhiều nhất",
+	"mostFavorited": "Yêu thích nhiều nhất",
+	"newBooks": "Sách mới"
 }

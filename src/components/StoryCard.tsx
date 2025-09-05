@@ -67,7 +67,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
 			</Title>
 			<Paragraph
 				ellipsis={{ rows: 2 }}
-				style={{ textAlign: 'justify', color: '#555' }}
+				style={{ textAlign: 'center', color: '#555' }}
 			>
 				{description}
 			</Paragraph>

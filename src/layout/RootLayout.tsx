@@ -17,7 +17,6 @@ import {
 	Menu,
 	Avatar,
 	Input,
-	theme,
 	Grid,
 	Button,
 	Drawer,
@@ -31,19 +30,15 @@ import { useTranslation } from 'react-i18next';
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
-const items: MenuProps['items'] = [
-	{ key: '1', icon: <HomeOutlined />, label: 'Trang chủ' },
-	{ key: '2', icon: <BookOutlined />, label: 'Sách yêu thích' },
-	{ key: '3', icon: <UserOutlined />, label: 'Tài khoản' },
-	{ key: '4', icon: <LogoutOutlined />, label: 'Đăng xuất' },
-];
-
 const RootLayout = () => {
 	const { t } = useTranslation('standard');
-	const {
-		token: { colorBgContainer, borderRadiusLG },
-	} = theme.useToken();
 
+	const items: MenuProps['items'] = [
+		{ key: '1', icon: <HomeOutlined />, label: t('homePage') },
+		{ key: '2', icon: <BookOutlined />, label: t('favorite') },
+		{ key: '3', icon: <UserOutlined />, label: t('account') },
+		{ key: '4', icon: <LogoutOutlined />, label: t('logout') },
+	];
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
 	const navigate = useNavigate();
@@ -92,26 +87,26 @@ const RootLayout = () => {
 		<>
 			<style>
 				{`
-          html, body, #root {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-          }
+				html, body, #root {
+					margin: 0;
+					padding: 0;
+					height: 100%;
+				}
 
-          .ant-menu-item {
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-          }
+				.ant-menu-item {
+					transition: transform 0.25s ease, box-shadow 0.25s ease;
+				}
 
-          .ant-menu-item:hover {
-            transform: scale(1.05); 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-            border-radius: 8px; 
-            z-index: 1; 
-          }
+				.ant-menu-item:hover {
+					transform: scale(1.05); 
+					box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+					border-radius: 8px; 
+					z-index: 1; 
+				}
 
-          .ant-menu-item:active {
-            transform: scale(0.97);
-          }
+				.ant-menu-item:active {
+					transform: scale(0.97);
+				}
         `}
 			</style>
 
@@ -126,21 +121,25 @@ const RootLayout = () => {
 						Menu: {
 							itemBorderRadius: 8,
 							itemHeight: 42,
-							colorItemText: '#333',
+							colorItemText: '#F6F1F1',
 							colorItemTextHover: '#333',
 							colorItemTextSelected: '#333',
-							colorItemBgHover: '#e6f7ff',
-							colorItemBgSelected: '#fff6e0',
+							colorItemBgHover: '#b5d9f8ff',
+							colorItemBgSelected: '#F6F1F1',
 						},
 						Layout: {
-							headerBg: '#ffffff',
-							siderBg: '#cfe9ff',
-							footerBg: '#fafafa',
+							headerBg: '#AFD3E2',
+							siderBg: '#146C94',
+							footerBg: '#03506F',
 						},
 					},
 				}}
 			>
-				<Layout style={{ minHeight: '100vh' }}>
+				<Layout
+					style={{
+						minHeight: '100vh',
+					}}
+				>
 					{/* --- Sider (Tablet + Desktop) --- */}
 					{!isMobile && (
 						<Sider
@@ -181,11 +180,21 @@ const RootLayout = () => {
 
 					{/* --- Drawer cho Mobile & Tablet full menu --- */}
 					<Drawer
-						title="TribalLingual"
+						title={
+							<div
+								style={{ color: '#ff9800', fontWeight: 'bold', fontSize: 20 }}
+							>
+								TribalLingual
+							</div>
+						}
 						placement="left"
 						onClose={() => setDrawerVisible(false)}
 						open={drawerVisible}
-						bodyStyle={{ padding: 5 }}
+						style={{
+							backgroundColor: '#146C94',
+							color: '#F6F1F1',
+							padding: 5,
+						}}
 					>
 						{renderSiderMenu(false)}
 					</Drawer>
@@ -200,8 +209,8 @@ const RootLayout = () => {
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'space-between',
-								background: colorBgContainer,
-								boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+								backdropFilter: 'blur(20px)',
+								boxShadow: '0 5px 8px rgba(2, 2, 2, 0.1)',
 							}}
 						>
 							<div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -245,7 +254,6 @@ const RootLayout = () => {
 
 						<Content
 							style={{
-								margin: '8px',
 								overflow: 'auto',
 							}}
 						>
@@ -253,8 +261,7 @@ const RootLayout = () => {
 								style={{
 									padding: 24,
 									textAlign: 'center',
-									background: colorBgContainer,
-									borderRadius: borderRadiusLG,
+									background: '#AFD3E2',
 									minHeight: 'calc(100vh - 180px)',
 								}}
 							>
@@ -265,7 +272,6 @@ const RootLayout = () => {
 						<Footer
 							style={{
 								textAlign: 'center',
-								background: '#fafafa',
 								padding: '20px',
 							}}
 						>

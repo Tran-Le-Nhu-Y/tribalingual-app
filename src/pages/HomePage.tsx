@@ -6,8 +6,7 @@ import {
 	HeartOutlined,
 	TrophyOutlined,
 } from '@ant-design/icons';
-import { RankingList, StoryCard } from '../components';
-import Title from 'antd/es/typography/Title';
+import { RankingList } from '../components';
 
 const HomePage = () => {
 	const { t } = useTranslation();
@@ -23,8 +22,8 @@ const HomePage = () => {
 		},
 		{
 			id: 2,
-			title: 'Siêu cấp cưng chiều',
-			description: 'Câu chuyện tình cảm ngọt ngào...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 98,
 			views: 250,
@@ -32,64 +31,72 @@ const HomePage = () => {
 		},
 		{
 			id: 3,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
 		},
 		{
 			id: 4,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
 		},
 		{
 			id: 5,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
 		},
 		{
 			id: 6,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
 		},
 		{
 			id: 7,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
 		},
 		{
 			id: 8,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
 		},
 		{
 			id: 9,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
 		},
 		{
 			id: 10,
-			title: 'Cô vợ nhỏ của ngài Phó',
-			description: 'Một hành trình đầy thử thách...',
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 11,
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -176,10 +183,23 @@ const HomePage = () => {
 				))}
 			</Row>
 			<div>
-				{/* Bảng xếp hạng */}
-				<RankingList items={mockRanking} />
+				<RankingList title={t('mostRead')} items={mockRanking} maxItems={8} />
 			</div>
-			<Row>
+			<div>
+				<RankingList
+					title={t('mostFavorited')}
+					items={mockRanking}
+					maxItems={8}
+				/>
+			</div>
+			<div>
+				<RankingList
+					title={t('newBooks')}
+					items={mockRanking}
+					showRankingNumber={false}
+				/>
+			</div>
+			{/* <Row>
 				<Title level={3}>Sách mới</Title>
 			</Row>
 
@@ -214,7 +234,7 @@ const HomePage = () => {
 						</Col>
 					);
 				})}
-			</Row>
+			</Row> */}
 		</>
 	);
 };
