@@ -4,8 +4,11 @@ import {
 	BookOutlined,
 	UserOutlined,
 	LogoutOutlined,
-	MenuOutlined,
 	BellOutlined,
+	FacebookOutlined,
+	InstagramOutlined,
+	MailOutlined,
+	UnorderedListOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import {
@@ -115,7 +118,7 @@ const RootLayout = () => {
 			<ConfigProvider
 				theme={{
 					token: {
-						colorPrimary: '#ff9800',
+						colorPrimary: '#3396D3',
 						colorBgContainer: '#f9fbff',
 						borderRadiusLG: 12,
 					},
@@ -205,7 +208,7 @@ const RootLayout = () => {
 								{(isMobile || isTablet) && (
 									<Button
 										type="text"
-										icon={<MenuOutlined />}
+										icon={<UnorderedListOutlined />}
 										onClick={() => setDrawerVisible(true)}
 									/>
 								)}
@@ -233,17 +236,17 @@ const RootLayout = () => {
 									</Badge>
 								</Tooltip>
 
-								<Avatar style={{ backgroundColor: '#ff9800' }} size="large">
-									U
-								</Avatar>
+								<Avatar
+									style={{ backgroundColor: '#ff9800' }}
+									icon={<UserOutlined />}
+								/>
 							</div>
 						</Header>
 
 						<Content
 							style={{
-								margin: '24px 16px 0',
+								margin: '8px',
 								overflow: 'auto',
-								background: 'linear-gradient(180deg, #ffffff, #f1f9ff)',
 							}}
 						>
 							<div
@@ -252,15 +255,59 @@ const RootLayout = () => {
 									textAlign: 'center',
 									background: colorBgContainer,
 									borderRadius: borderRadiusLG,
-									minHeight: 'calc(100vh - 160px)',
+									minHeight: 'calc(100vh - 180px)',
 								}}
 							>
 								<Outlet />
 							</div>
 						</Content>
 
-						<Footer style={{ textAlign: 'center' }}>
-							TribalLingual ©{new Date().getFullYear()} – Powered by Ant Design
+						<Footer
+							style={{
+								textAlign: 'center',
+								background: '#fafafa',
+								padding: '20px',
+							}}
+						>
+							<div
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									alignItems: 'center',
+									gap: 8,
+								}}
+							>
+								{/* Social icons */}
+								<div style={{ display: 'flex', gap: 24, fontSize: 22 }}>
+									<a
+										href="https://www.instagram.com/"
+										target="_blank"
+										rel="noopener noreferrer"
+										style={{ color: '#E1306C' }}
+									>
+										<InstagramOutlined />
+									</a>
+									<a
+										href="https://www.facebook.com/"
+										target="_blank"
+										rel="noopener noreferrer"
+										style={{ color: '#1877F2' }}
+									>
+										<FacebookOutlined />
+									</a>
+									<a
+										href="mailto:team@triballingual.com"
+										style={{ color: '#EA4335' }}
+									>
+										<MailOutlined />
+									</a>
+								</div>
+
+								{/* Copyright */}
+								<div style={{ fontSize: 13, color: '#999' }}>
+									TribalLingual ©{new Date().getFullYear()}
+								</div>
+							</div>
 						</Footer>
 					</Layout>
 				</Layout>

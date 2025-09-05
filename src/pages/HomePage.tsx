@@ -6,9 +6,96 @@ import {
 	HeartOutlined,
 	TrophyOutlined,
 } from '@ant-design/icons';
+import { RankingList, StoryCard } from '../components';
+import Title from 'antd/es/typography/Title';
 
 const HomePage = () => {
 	const { t } = useTranslation();
+	const mockRanking = [
+		{
+			id: 1,
+			title: 'Mưa đỏ',
+			description: 'Một tác phẩm đầy cảm xúc...',
+			image: './public/mimi.jpg',
+			likes: 120,
+			views: 300,
+			isVip: true,
+		},
+		{
+			id: 2,
+			title: 'Siêu cấp cưng chiều',
+			description: 'Câu chuyện tình cảm ngọt ngào...',
+			image: './public/mimi.jpg',
+			likes: 98,
+			views: 250,
+			isVip: true,
+		},
+		{
+			id: 3,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 4,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 5,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 6,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 7,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 8,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 9,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+		{
+			id: 10,
+			title: 'Cô vợ nhỏ của ngài Phó',
+			description: 'Một hành trình đầy thử thách...',
+			image: './public/mimi.jpg',
+			likes: 75,
+			views: 210,
+		},
+	];
+
 	const stats = [
 		{
 			value: 1,
@@ -37,9 +124,15 @@ const HomePage = () => {
 	];
 	return (
 		<>
-			<Row gutter={16} style={{ marginTop: '10px' }}>
+			<Row gutter={[16, 16]}>
 				{stats.map((item, idx) => (
-					<Col span={6} key={idx}>
+					<Col
+						key={idx}
+						xs={12} // mobile: 2 columns
+						sm={12} // small tablet: 2 columns
+						md={12} // large tablet: 2 columns
+						lg={6} // desktop: 4 columns (24/6=4)
+					>
 						<div
 							style={{
 								background: '#fff',
@@ -54,7 +147,6 @@ const HomePage = () => {
 									display: 'flex',
 									alignItems: 'center',
 									justifyContent: 'center',
-									marginBottom: 8,
 									gap: 8,
 								}}
 							>
@@ -82,6 +174,46 @@ const HomePage = () => {
 						</div>
 					</Col>
 				))}
+			</Row>
+			<div>
+				{/* Bảng xếp hạng */}
+				<RankingList items={mockRanking} />
+			</div>
+			<Row>
+				<Title level={3}>Sách mới</Title>
+			</Row>
+
+			<Row gutter={[16, 24]}>
+				{Array.from({ length: 12 }).map((_, index) => {
+					const key = `col-${index}`;
+					return (
+						<Col
+							key={key}
+							xs={{ flex: '100%' }}
+							sm={{ flex: '50%' }}
+							md={{ flex: '40%' }}
+							lg={{ flex: '20%' }}
+							xl={{ flex: '10%' }}
+						>
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+								}}
+							>
+								<StoryCard
+									title="Cổ tích người H’mông"
+									description="Trên ngọn núi cao nọ, có một cái hang lớn. Trong hang có một con quỷ dữ. Ngày nọ, có một chàng trai tên là A Lý, người H’mông, rất dũng cảm và thông minh. A Lý quyết định sẽ vào hang để đánh bại con quỷ và cứu dân làng."
+									image="./public/mimi.jpg"
+									likes={10}
+									views={300}
+									onDetailClick={() => console.log('Xem chi tiết truyện')}
+								/>
+							</div>
+						</Col>
+					);
+				})}
 			</Row>
 		</>
 	);
