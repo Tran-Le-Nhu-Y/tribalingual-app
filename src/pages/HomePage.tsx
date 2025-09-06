@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { RankingList } from '../components';
 
 const HomePage = () => {
-	const { t } = useTranslation();
+	const { t } = useTranslation('standard');
 	const mockRanking = [
 		{
 			id: 1,
-			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			title: 'Mưa đỏ  Mưa đỏ Mưa đỏ',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 120,
 			views: 300,
@@ -17,7 +17,7 @@ const HomePage = () => {
 		{
 			id: 2,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 98,
 			views: 250,
@@ -26,7 +26,7 @@ const HomePage = () => {
 		{
 			id: 3,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -34,7 +34,7 @@ const HomePage = () => {
 		{
 			id: 4,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -42,7 +42,7 @@ const HomePage = () => {
 		{
 			id: 5,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -50,7 +50,7 @@ const HomePage = () => {
 		{
 			id: 6,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -58,7 +58,7 @@ const HomePage = () => {
 		{
 			id: 7,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -66,7 +66,7 @@ const HomePage = () => {
 		{
 			id: 8,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -74,7 +74,7 @@ const HomePage = () => {
 		{
 			id: 9,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -82,7 +82,7 @@ const HomePage = () => {
 		{
 			id: 10,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,
@@ -90,7 +90,7 @@ const HomePage = () => {
 		{
 			id: 11,
 			title: 'Mưa đỏ',
-			description: 'Một tác phẩm đầy cảm xúc...',
+			//description: 'Một tác phẩm đầy cảm xúc...',
 			image: './public/mimi.jpg',
 			likes: 75,
 			views: 210,

@@ -10,6 +10,7 @@ import {
 	MailOutlined,
 	UnorderedListOutlined,
 	HeartOutlined,
+	FormOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import {
@@ -23,6 +24,7 @@ import {
 	Drawer,
 	Tooltip,
 	Badge,
+	Dropdown,
 } from 'antd';
 import { Outlet, useNavigate } from 'react-router';
 import { RoutePaths } from '../util';
@@ -36,10 +38,11 @@ const RootLayout = () => {
 
 	const items: MenuProps['items'] = [
 		{ key: '1', icon: <HomeOutlined />, label: t('homePage') },
-		{ key: '2', icon: <BookOutlined />, label: t('bookStorage') },
-		{ key: '3', icon: <HeartOutlined />, label: t('favorite') },
-		{ key: '4', icon: <UserOutlined />, label: t('account') },
-		{ key: '5', icon: <LogoutOutlined />, label: t('logout') },
+		{ key: '2', icon: <FormOutlined />, label: t('uploadStory') },
+		{ key: '3', icon: <BookOutlined />, label: t('bookStorage') },
+		{ key: '4', icon: <HeartOutlined />, label: t('favorite') },
+		{ key: '5', icon: <UserOutlined />, label: t('account') },
+		{ key: '6', icon: <LogoutOutlined />, label: t('logout') },
 	];
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
@@ -54,12 +57,15 @@ const RootLayout = () => {
 				navigate(RoutePaths.HOME);
 				break;
 			case '2':
-				navigate(RoutePaths.BOOKSTORAGE);
+				navigate(RoutePaths.UPLOADSTORY);
 				break;
 			case '3':
-				navigate(RoutePaths.FAVORITEBOOK);
+				navigate(RoutePaths.BOOKSTORAGE);
 				break;
 			case '4':
+				navigate(RoutePaths.FAVORITEBOOK);
+				break;
+			case '5':
 				navigate(RoutePaths.PROFILE);
 				break;
 			default:
@@ -252,10 +258,45 @@ const RootLayout = () => {
 									</Badge>
 								</Tooltip>
 
-								<Avatar
-									style={{ backgroundColor: '#ff9800' }}
-									icon={<UserOutlined />}
-								/>
+								<Dropdown
+									menu={{
+										items: [
+											{
+												key: '1',
+												label: t('account'),
+												icon: <UserOutlined />,
+												onClick: () => navigate(RoutePaths.PROFILE),
+											},
+											{
+												key: '2',
+												label: t('editInformation'),
+												icon: <FormOutlined />,
+												onClick: () => {
+													console.log('Chỉnh sửa thông tin');
+												},
+											},
+											{
+												type: 'divider',
+											},
+											{
+												key: '3',
+												label: t('logout'),
+												icon: <LogoutOutlined />,
+												danger: true,
+												onClick: () => {
+													console.log('Đăng xuất');
+												},
+											},
+										],
+									}}
+									trigger={['click']}
+									placement="bottomRight"
+								>
+									<Avatar
+										style={{ backgroundColor: '#ff9800', cursor: 'pointer' }}
+										icon={<UserOutlined />}
+									/>
+								</Dropdown>
 							</div>
 						</Header>
 

@@ -4,6 +4,8 @@
 	"logout": "Đăng xuất",
 	"notifications": "Thông báo",
 	"seeDetails": "Xem chi tiết",
+	"submit": "Xác nhận",
+	"cancel": "Hủy",
 
 	"reading": "Sách đang đọc",
 	"read": "Sách đã đọc",
@@ -12,5 +14,14 @@
 	"mostRead": "Xem nhiều nhất",
 	"mostFavorited": "Yêu thích nhiều nhất",
 	"newBooks": "Sách mới",
-	"bookStorage": "Kho sách"
+	"bookStorage": "Kho sách",
+	"uploadStory": "Đăng câu chuyện",
+	"editInformation": "Chỉnh sửa thông tin",
+
+	"uploadYourStory": "Đăng câu chuyện của bạn",
+	"storyContent": "Nội dung câu chuyện",
+	"storyTitle": "Tiêu đề câu chuyện",
+	"uploadFile": "Tải lên tập tin câu chuyện",
+	"uploadImage": "Tải lên hình ảnh bìa",
+	"selectImage": "Chọn hình ảnh"
 }

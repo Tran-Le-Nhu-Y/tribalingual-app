@@ -2,7 +2,7 @@ import { Card, Typography, Button, Row, Col, ConfigProvider } from 'antd';
 import { HeartOutlined, EyeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 interface StoryCardProps {
 	title: string;
@@ -15,7 +15,6 @@ interface StoryCardProps {
 
 const StoryCard: React.FC<StoryCardProps> = ({
 	title,
-	description,
 	image,
 	likes,
 	views,
@@ -41,7 +40,12 @@ const StoryCard: React.FC<StoryCardProps> = ({
 		>
 			<Card
 				hoverable
-				style={{ width: 292, borderRadius: 12, border: '1px solid #d6e4ff' }}
+				style={{
+					height: 300,
+					width: 220,
+					borderRadius: 12,
+					border: '1px solid #03506F',
+				}}
 			>
 				<div
 					style={{
@@ -56,7 +60,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
 						src={image}
 						style={{
 							width: 160,
-							height: 220,
+							height: 200,
 							objectFit: 'cover',
 							borderRadius: 8,
 						}}
@@ -80,22 +84,32 @@ const StoryCard: React.FC<StoryCardProps> = ({
 						</span>
 					</div>
 				</div>
-				<Title level={5} style={{ textAlign: 'center' }}>
+				<Title
+					level={5}
+					style={{
+						textAlign: 'center',
+						marginTop: 4,
+						marginBottom: 2,
+						width: '100%',
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+						whiteSpace: 'nowrap',
+					}}
+				>
 					{title}
 				</Title>
-				<Paragraph
+				{/* <Paragraph
 					ellipsis={{ rows: 2 }}
 					style={{ textAlign: 'center', color: '#555' }}
 				>
 					{description}
-				</Paragraph>
+				</Paragraph> */}
 				<Row justify="center">
 					<Col>
 						<Button
 							type="primary"
 							shape="round"
 							size="middle"
-							style={{ marginTop: 8 }}
 							onClick={onDetailClick}
 						>
 							{t('seeDetails')}

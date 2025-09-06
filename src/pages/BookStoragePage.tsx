@@ -4,8 +4,8 @@ import { StoryCard } from '../components';
 const BookStoragePage = () => {
 	return (
 		<>
-			<Row gutter={[16, 24]}>
-				{Array.from({ length: 12 }).map((_, index) => {
+			<Row gutter={[16, 24]} style={{ justifyContent: 'center' }}>
+				{Array.from({ length: 19 }).map((_, index) => {
 					const key = `col-${index}`;
 					return (
 						<Col

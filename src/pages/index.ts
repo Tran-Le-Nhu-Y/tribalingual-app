@@ -3,6 +3,7 @@ import BookStoragePage from './BookStoragePage';
 import FavoriteBooksPage from './FavoriteBooksPage';
 import HomePage from './HomePage';
 import ProfilePage from './Profile';
+import UploadStoryPage from './UploadStoryPage';
 
 export {
 	FavoriteBooksPage,
@@ -10,4 +11,5 @@ export {
 	ProfilePage,
 	BookDetailPage,
 	BookStoragePage,
+	UploadStoryPage,
 };

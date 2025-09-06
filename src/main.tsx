@@ -15,12 +15,17 @@ import {
 	FavoriteBooksPage,
 	HomePage,
 	ProfilePage,
+	UploadStoryPage,
 } from './pages/index.ts';
+import { MantineProvider } from '@mantine/core';
+import '@mantine/core/styles.css';
+import '@mantine/tiptap/styles.css';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<RootLayout />}>
 			<Route index element={<HomePage />} />
+			<Route path={RoutePaths.UPLOADSTORY} element={<UploadStoryPage />} />
 			<Route path={RoutePaths.HOME} element={<HomePage />} />
 			<Route path={RoutePaths.BOOKSTORAGE} element={<BookStoragePage />} />
 			<Route path={RoutePaths.FAVORITEBOOK} element={<FavoriteBooksPage />} />
@@ -31,6 +36,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById('root')!).render(
 	<Provider store={store}>
-		<RouterProvider router={router} />
+		<MantineProvider>
+			<RouterProvider router={router} />
+		</MantineProvider>
 	</Provider>,
 );
