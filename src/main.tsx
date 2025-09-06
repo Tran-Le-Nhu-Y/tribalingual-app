@@ -10,13 +10,19 @@ import {
 } from 'react-router';
 import RootLayout from './layout/RootLayout.tsx';
 import { RoutePaths } from './util/index.ts';
-import { FavoriteBooksPage, HomePage, ProfilePage } from './pages/index.ts';
+import {
+	BookStoragePage,
+	FavoriteBooksPage,
+	HomePage,
+	ProfilePage,
+} from './pages/index.ts';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<RootLayout />}>
 			<Route index element={<HomePage />} />
 			<Route path={RoutePaths.HOME} element={<HomePage />} />
+			<Route path={RoutePaths.BOOKSTORAGE} element={<BookStoragePage />} />
 			<Route path={RoutePaths.FAVORITEBOOK} element={<FavoriteBooksPage />} />
 			<Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
 		</Route>,

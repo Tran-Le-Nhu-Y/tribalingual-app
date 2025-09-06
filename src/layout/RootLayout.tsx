@@ -9,6 +9,7 @@ import {
 	InstagramOutlined,
 	MailOutlined,
 	UnorderedListOutlined,
+	HeartOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import {
@@ -35,9 +36,10 @@ const RootLayout = () => {
 
 	const items: MenuProps['items'] = [
 		{ key: '1', icon: <HomeOutlined />, label: t('homePage') },
-		{ key: '2', icon: <BookOutlined />, label: t('favorite') },
-		{ key: '3', icon: <UserOutlined />, label: t('account') },
-		{ key: '4', icon: <LogoutOutlined />, label: t('logout') },
+		{ key: '2', icon: <BookOutlined />, label: t('bookStorage') },
+		{ key: '3', icon: <HeartOutlined />, label: t('favorite') },
+		{ key: '4', icon: <UserOutlined />, label: t('account') },
+		{ key: '5', icon: <LogoutOutlined />, label: t('logout') },
 	];
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
@@ -52,9 +54,12 @@ const RootLayout = () => {
 				navigate(RoutePaths.HOME);
 				break;
 			case '2':
-				navigate(RoutePaths.FAVORITEBOOK);
+				navigate(RoutePaths.BOOKSTORAGE);
 				break;
 			case '3':
+				navigate(RoutePaths.FAVORITEBOOK);
+				break;
+			case '4':
 				navigate(RoutePaths.PROFILE);
 				break;
 			default:
@@ -116,6 +121,8 @@ const RootLayout = () => {
 						colorPrimary: '#3396D3',
 						colorBgContainer: '#f9fbff',
 						borderRadiusLG: 12,
+						fontFamily: 'Arial, sans-serif',
+						fontSize: 14,
 					},
 					components: {
 						Menu: {
@@ -129,8 +136,8 @@ const RootLayout = () => {
 						},
 						Layout: {
 							headerBg: '#AFD3E2',
-							siderBg: '#146C94',
-							footerBg: '#03506F',
+							siderBg: 'linear-gradient(180deg, #146C94,#03506F )',
+							footerBg: 'linear-gradient(180deg, #AFD3E2,#03506F )',
 						},
 					},
 				}}
@@ -259,10 +266,11 @@ const RootLayout = () => {
 						>
 							<div
 								style={{
-									padding: 24,
+									padding: 18,
 									textAlign: 'center',
 									background: '#AFD3E2',
-									minHeight: 'calc(100vh - 180px)',
+									minHeight: 'calc(100vh - 163px)',
+									height: '100%',
 								}}
 							>
 								<Outlet />
@@ -272,7 +280,7 @@ const RootLayout = () => {
 						<Footer
 							style={{
 								textAlign: 'center',
-								padding: '20px',
+								padding: '15px ',
 							}}
 						>
 							<div
@@ -284,12 +292,12 @@ const RootLayout = () => {
 								}}
 							>
 								{/* Social icons */}
-								<div style={{ display: 'flex', gap: 24, fontSize: 22 }}>
+								<div style={{ display: 'flex', gap: 24, fontSize: 24 }}>
 									<a
 										href="https://www.instagram.com/"
 										target="_blank"
 										rel="noopener noreferrer"
-										style={{ color: '#E1306C' }}
+										style={{ color: '#ff0357ff' }}
 									>
 										<InstagramOutlined />
 									</a>
@@ -297,20 +305,20 @@ const RootLayout = () => {
 										href="https://www.facebook.com/"
 										target="_blank"
 										rel="noopener noreferrer"
-										style={{ color: '#1877F2' }}
+										style={{ color: '#0026ffff' }}
 									>
 										<FacebookOutlined />
 									</a>
 									<a
 										href="mailto:team@triballingual.com"
-										style={{ color: '#EA4335' }}
+										style={{ color: '#ff1500ff' }}
 									>
 										<MailOutlined />
 									</a>
 								</div>
 
 								{/* Copyright */}
-								<div style={{ fontSize: 13, color: '#999' }}>
+								<div style={{ fontSize: 13, color: '#ebe6e6ff' }}>
 									TribalLingual ©{new Date().getFullYear()}
 								</div>
 							</div>

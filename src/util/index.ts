@@ -9,10 +9,13 @@ import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
 
 const HOME = '/home';
+const BOOKSTORAGE = '/book-storage';
 const FAVORITEBOOK = '/favorite-books';
 const PROFILE = '/profile';
 export const RoutePaths = {
 	HOME,
+
+	BOOKSTORAGE,
 
 	FAVORITEBOOK,
 
