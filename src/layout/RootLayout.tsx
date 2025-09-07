@@ -68,6 +68,9 @@ const RootLayout = () => {
 			case '5':
 				navigate(RoutePaths.PROFILE);
 				break;
+			case '6':
+				navigate(RoutePaths.BOOKDETAIL);
+				break;
 			default:
 				break;
 		}

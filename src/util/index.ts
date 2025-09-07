@@ -13,11 +13,12 @@ const BOOKSTORAGE = '/book-storage';
 const FAVORITEBOOK = '/favorite-books';
 const PROFILE = '/profile';
 const UPLOADSTORY = '/upload-story';
+const BOOKDETAIL = '/book-detail';
 export const RoutePaths = {
 	HOME,
 
 	BOOKSTORAGE,
-
+	BOOKDETAIL,
 	FAVORITEBOOK,
 
 	UPLOADSTORY,

@@ -11,6 +11,7 @@ import {
 import RootLayout from './layout/RootLayout.tsx';
 import { RoutePaths } from './util/index.ts';
 import {
+	BookDetailPage,
 	BookStoragePage,
 	FavoriteBooksPage,
 	HomePage,
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
 			<Route path={RoutePaths.BOOKSTORAGE} element={<BookStoragePage />} />
 			<Route path={RoutePaths.FAVORITEBOOK} element={<FavoriteBooksPage />} />
 			<Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
+			<Route path={RoutePaths.BOOKDETAIL} element={<BookDetailPage />} />
 		</Route>,
 	),
 );
