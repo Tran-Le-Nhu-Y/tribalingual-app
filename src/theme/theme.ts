@@ -11,15 +11,6 @@ export const appTheme = {
 
 // Nếu cần custom riêng cho component (Menu, Layout...) thì thêm ở đây:
 export const appComponents = {
-	// Menu: {
-	// 	itemBorderRadius: 8,
-	// 	itemHeight: 42,
-	// },
-	// Layout: {
-	// 	headerBg: '#AFD3E2',
-	// 	siderBg: 'linear-gradient(180deg, #146C94,#03506F )',
-	// 	footerBg: 'linear-gradient(180deg, #AFD3E2,#03506F )',
-	// },
 	Menu: {
 		itemBorderRadius: 8,
 		itemHeight: 42,

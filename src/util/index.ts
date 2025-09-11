@@ -8,6 +8,10 @@ import type {
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
 
+export const PathHolders = {
+	STORY_ID: 'storyId',
+};
+
 const HOME = '/home';
 const BOOKSTORAGE = '/book-storage';
 const FAVORITEBOOK = '/favorite-books';
@@ -17,6 +21,8 @@ const BOOKDETAIL = '/book-detail';
 const ADMIN = '/admin';
 export const RoutePaths = {
 	ADMIN,
+	APPROVE_STORY: `${ADMIN}/story/:${PathHolders.STORY_ID}/approve`,
+
 	HOME,
 	BOOKSTORAGE,
 	BOOKDETAIL,

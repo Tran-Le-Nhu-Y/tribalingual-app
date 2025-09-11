@@ -14,10 +14,14 @@ import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
 import Highlighter from 'react-highlight-words';
 import Title from 'antd/es/typography/Title';
+import { appTheme } from '../../theme/theme';
+import { useNavigate } from 'react-router';
+import { PathHolders, RoutePaths } from '../../util';
 
 interface Story {
 	id: number;
 	title: string;
+	language: string;
 	author: string;
 	status: 'pending' | 'approved' | 'rejected';
 	createdAt: string;
@@ -30,23 +34,16 @@ const StoryManagementPage: React.FC = () => {
 		Array.from({ length: 55 }).map((_, i) => ({
 			id: i + 1,
 			title: `Truyện số ${i + 1}`,
+			language: i % 2 === 0 ? 'Tiếng Việt' : 'English',
 			author: `User ${i + 1}`,
 			status: i % 3 === 0 ? 'approved' : 'pending',
 			createdAt: new Date().toLocaleDateString(),
 		})),
 	);
-
+	const navigate = useNavigate();
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState<keyof Story | ''>('');
 	const searchInput = useRef<InputRef>(null);
-
-	const handleApprove = (id: number) => {
-		setStories((prev) =>
-			prev.map((story) =>
-				story.id === id ? { ...story, status: 'approved' } : story,
-			),
-		);
-	};
 
 	const handleReject = (id: number) => {
 		setStories((prev) =>
@@ -177,6 +174,13 @@ const StoryManagementPage: React.FC = () => {
 			...getColumnSearchProps('title'),
 		},
 		{
+			title: 'Ngôn ngữ',
+			dataIndex: 'language',
+			key: 'language',
+			width: 150,
+			...getColumnSearchProps('language'),
+		},
+		{
 			title: 'Người đăng',
 			dataIndex: 'author',
 			key: 'author',
@@ -222,7 +226,14 @@ const StoryManagementPage: React.FC = () => {
 							<Button
 								type="primary"
 								size="small"
-								onClick={() => handleApprove(record.id)}
+								onClick={() =>
+									navigate(
+										RoutePaths.APPROVE_STORY.replace(
+											`:${PathHolders.STORY_ID}`,
+											String(record.id),
+										),
+									)
+								}
 							>
 								Xem duyệt
 							</Button>
@@ -247,25 +258,12 @@ const StoryManagementPage: React.FC = () => {
 			),
 		},
 	];
-	const customTheme = {
-		colorPrimary: '#3396D3',
-		colorBgContainer: '#f9fbff',
-		borderRadiusLG: 12,
-		fontFamily: 'Arial, sans-serif',
-		fontSize: 14,
-	};
 
 	return (
 		<div style={{ padding: 10 }}>
 			<ConfigProvider
 				theme={{
-					token: {
-						colorPrimary: customTheme.colorPrimary,
-						colorBgContainer: customTheme.colorBgContainer,
-						borderRadiusLG: customTheme.borderRadiusLG,
-						fontFamily: customTheme.fontFamily,
-						fontSize: customTheme.fontSize,
-					},
+					token: appTheme.token,
 				}}
 			>
 				<Title
@@ -273,20 +271,22 @@ const StoryManagementPage: React.FC = () => {
 						margin: 0,
 						paddingTop: 4,
 						marginBottom: 16,
-						color: customTheme.colorPrimary, // dùng theme tự tạo
 						fontSize: 28,
 						fontWeight: 700,
 						letterSpacing: 1,
+						color: appTheme.token.colorPrimary,
 					}}
 					level={3}
 				>
-					Quản lý truyện người dùng
+					Quản lý câu chuyện người dùng
 				</Title>
 
 				<Table<Story>
 					rowKey="id"
 					columns={columns}
 					dataSource={stories}
+					scroll={{ x: 'max-content' }}
+					pagination={{ responsive: true }}
 					bordered
 				/>
 			</ConfigProvider>

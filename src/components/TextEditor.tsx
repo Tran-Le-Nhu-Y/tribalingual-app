@@ -11,9 +11,14 @@ import SubScript from '@tiptap/extension-subscript';
 interface TextEditorProps {
 	value?: string;
 	onChange?: (html: string) => void;
+	readOnly?: boolean;
 }
 
-const TextEditor: React.FC<TextEditorProps> = ({ value = '', onChange }) => {
+const TextEditor: React.FC<TextEditorProps> = ({
+	value = '',
+	onChange,
+	readOnly = false,
+}) => {
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
@@ -25,6 +30,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ value = '', onChange }) => {
 			TextAlign.configure({ types: ['heading', 'paragraph'] }),
 		],
 		content: value,
+		editable: !readOnly,
 		editorProps: {
 			attributes: {
 				style: 'text-align: left; min-height: 450px; ',

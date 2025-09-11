@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage, TextEditor } from '../../components'; // import UploadFile
 import Title from 'antd/es/typography/Title';
-import { Form, Input, Button, message, Space } from 'antd';
+import { Form, Input, Button, message, Space, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
 const UploadStoryPage: React.FC = () => {
 	const { t } = useTranslation('standard');
 	const [content, setContent] = useState('');
-
+	const [language, setLanguage] = useState<string>('vi');
 	const onFinish = (values: Record<string, unknown>) => {
 		console.log('Form values:', { ...values, content });
 		message.success('Câu chuyện đã được gửi!');
@@ -56,6 +56,20 @@ const UploadStoryPage: React.FC = () => {
 				<Form.Item label={t('uploadImage')}>
 					<UploadImage maxCount={1} />
 				</Form.Item>
+				<Form layout="inline" style={{ marginBottom: 20 }}>
+					<Form.Item label="Ngôn ngữ của câu chuyện">
+						<Select
+							value={language}
+							onChange={setLanguage}
+							options={[
+								{ label: 'Tiếng Việt', value: 'vi' },
+								{ label: 'English', value: 'en' },
+								{ label: 'Hmong', value: 'hm' },
+							]}
+							style={{ width: 200 }}
+						/>
+					</Form.Item>
+				</Form>
 
 				<Form.Item
 					label={t('storyContent')}

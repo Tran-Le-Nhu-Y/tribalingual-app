@@ -38,6 +38,7 @@ const RootLayout = () => {
 	const { t } = useTranslation('standard');
 	const navigate = useNavigate();
 	const location = useLocation();
+	const { pathname } = location;
 
 	const items: MenuProps['items'] = [
 		{ key: RoutePaths.HOME, icon: <HomeOutlined />, label: t('homePage') },
@@ -68,6 +69,11 @@ const RootLayout = () => {
 			label: 'Admin',
 		},
 	];
+
+	const selectedKey = pathname.startsWith(RoutePaths.ADMIN)
+		? RoutePaths.ADMIN
+		: pathname;
+
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -88,7 +94,7 @@ const RootLayout = () => {
 	const renderSiderMenu = (collapsed: boolean) => (
 		<Menu
 			mode="inline"
-			selectedKeys={[location.pathname]}
+			selectedKeys={[selectedKey]}
 			onClick={onMenuClick}
 			items={items}
 			style={{
@@ -160,7 +166,7 @@ const RootLayout = () => {
 						>
 							<div
 								style={{
-									marginBottom: 30,
+									marginBottom: 10,
 									fontSize: 20,
 									fontWeight: 'bold',
 									color: '#ff9800',
@@ -168,11 +174,14 @@ const RootLayout = () => {
 								}}
 							>
 								<img
-									src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+									src="./tribalingual_logo_removebg.png"
 									alt="Logo"
-									style={{ width: 50, marginBottom: 10 }}
+									style={{
+										width: 100,
+										backgroundColor: '#fff', // nền trắng
+										borderRadius: '50%', // bo tròn thành hình tròn
+									}}
 								/>
-								{!isTablet && <div>TribalLingual</div>}
 							</div>
 
 							{renderSiderMenu(isTablet!)}

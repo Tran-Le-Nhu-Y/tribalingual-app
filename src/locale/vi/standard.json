@@ -24,5 +24,7 @@
 	"storyTitle": "Tiêu đề câu chuyện",
 	"storyDescription": "Mô tả câu chuyện",
 	"uploadImage": "Tải lên hình ảnh bìa",
-	"selectImage": "Chọn hình ảnh"
+	"selectImage": "Chọn hình ảnh",
+
+	"approveStory": "Duyệt câu chuyện"
 }
