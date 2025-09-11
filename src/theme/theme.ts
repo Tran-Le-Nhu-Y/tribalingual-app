@@ -1,0 +1,37 @@
+// theme.ts
+export const appTheme = {
+	token: {
+		colorPrimary: '#3396D3',
+		colorBgContainer: '#f9fbff',
+		borderRadiusLG: 12,
+		fontFamily: 'Arial, sans-serif',
+		fontSize: 14,
+	},
+};
+
+// Nếu cần custom riêng cho component (Menu, Layout...) thì thêm ở đây:
+export const appComponents = {
+	// Menu: {
+	// 	itemBorderRadius: 8,
+	// 	itemHeight: 42,
+	// },
+	// Layout: {
+	// 	headerBg: '#AFD3E2',
+	// 	siderBg: 'linear-gradient(180deg, #146C94,#03506F )',
+	// 	footerBg: 'linear-gradient(180deg, #AFD3E2,#03506F )',
+	// },
+	Menu: {
+		itemBorderRadius: 8,
+		itemHeight: 42,
+		colorItemText: '#F6F1F1',
+		colorItemTextHover: '#333',
+		colorItemTextSelected: '#333',
+		colorItemBgHover: '#b5d9f8ff',
+		colorItemBgSelected: '#F6F1F1',
+	},
+	Layout: {
+		headerBg: '#AFD3E2',
+		siderBg: 'linear-gradient(180deg, #146C94,#03506F )',
+		footerBg: 'linear-gradient(180deg, #AFD3E2,#03506F )',
+	},
+};

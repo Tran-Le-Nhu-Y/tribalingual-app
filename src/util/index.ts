@@ -14,9 +14,10 @@ const FAVORITEBOOK = '/favorite-books';
 const PROFILE = '/profile';
 const UPLOADSTORY = '/upload-story';
 const BOOKDETAIL = '/book-detail';
+const ADMIN = '/admin';
 export const RoutePaths = {
+	ADMIN,
 	HOME,
-
 	BOOKSTORAGE,
 	BOOKDETAIL,
 	FAVORITEBOOK,

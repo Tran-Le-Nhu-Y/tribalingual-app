@@ -26,54 +26,60 @@ import {
 	Badge,
 	Dropdown,
 } from 'antd';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import { RoutePaths } from '../util';
 import { useTranslation } from 'react-i18next';
+import { appComponents, appTheme } from '../theme/theme';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 const RootLayout = () => {
 	const { t } = useTranslation('standard');
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const items: MenuProps['items'] = [
-		{ key: '1', icon: <HomeOutlined />, label: t('homePage') },
-		{ key: '2', icon: <FormOutlined />, label: t('uploadStory') },
-		{ key: '3', icon: <BookOutlined />, label: t('bookStorage') },
-		{ key: '4', icon: <HeartOutlined />, label: t('favorite') },
-		{ key: '5', icon: <UserOutlined />, label: t('account') },
-		{ key: '6', icon: <LogoutOutlined />, label: t('logout') },
+		{ key: RoutePaths.HOME, icon: <HomeOutlined />, label: t('homePage') },
+		{
+			key: RoutePaths.UPLOADSTORY,
+			icon: <FormOutlined />,
+			label: t('uploadStory'),
+		},
+		{
+			key: RoutePaths.BOOKSTORAGE,
+			icon: <BookOutlined />,
+			label: t('bookStorage'),
+		},
+		{
+			key: RoutePaths.FAVORITEBOOK,
+			icon: <HeartOutlined />,
+			label: t('favorite'),
+		},
+		{ key: RoutePaths.PROFILE, icon: <UserOutlined />, label: t('account') },
+		{
+			key: RoutePaths.BOOKDETAIL,
+			icon: <LogoutOutlined />,
+			label: t('logout'),
+		},
+		{
+			key: RoutePaths.ADMIN,
+			icon: <LogoutOutlined />,
+			label: 'Admin',
+		},
 	];
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
-	const navigate = useNavigate();
 
 	const isMobile = screens.xs;
 	const isTablet = screens.sm && !screens.md;
 
 	const onMenuClick: MenuProps['onClick'] = (e) => {
-		switch (e.key) {
-			case '1':
-				navigate(RoutePaths.HOME);
-				break;
-			case '2':
-				navigate(RoutePaths.UPLOADSTORY);
-				break;
-			case '3':
-				navigate(RoutePaths.BOOKSTORAGE);
-				break;
-			case '4':
-				navigate(RoutePaths.FAVORITEBOOK);
-				break;
-			case '5':
-				navigate(RoutePaths.PROFILE);
-				break;
-			case '6':
-				navigate(RoutePaths.BOOKDETAIL);
-				break;
-			default:
-				break;
+		if (e.key === 'logout') {
+			console.log('Đăng xuất');
+			return;
 		}
+		navigate(e.key);
 		if (isMobile || isTablet) {
 			setDrawerVisible(false); // đóng Drawer khi chọn menu
 		}
@@ -82,7 +88,7 @@ const RootLayout = () => {
 	const renderSiderMenu = (collapsed: boolean) => (
 		<Menu
 			mode="inline"
-			defaultSelectedKeys={['1']}
+			selectedKeys={[location.pathname]}
 			onClick={onMenuClick}
 			items={items}
 			style={{
@@ -126,29 +132,8 @@ const RootLayout = () => {
 
 			<ConfigProvider
 				theme={{
-					token: {
-						colorPrimary: '#3396D3',
-						colorBgContainer: '#f9fbff',
-						borderRadiusLG: 12,
-						fontFamily: 'Arial, sans-serif',
-						fontSize: 14,
-					},
-					components: {
-						Menu: {
-							itemBorderRadius: 8,
-							itemHeight: 42,
-							colorItemText: '#F6F1F1',
-							colorItemTextHover: '#333',
-							colorItemTextSelected: '#333',
-							colorItemBgHover: '#b5d9f8ff',
-							colorItemBgSelected: '#F6F1F1',
-						},
-						Layout: {
-							headerBg: '#AFD3E2',
-							siderBg: 'linear-gradient(180deg, #146C94,#03506F )',
-							footerBg: 'linear-gradient(180deg, #AFD3E2,#03506F )',
-						},
-					},
+					token: appTheme.token,
+					components: appComponents,
 				}}
 			>
 				<Layout

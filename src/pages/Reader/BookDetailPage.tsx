@@ -1,10 +1,19 @@
-import { Card, Button, Row, Col, Typography, Space, Descriptions } from 'antd';
+import {
+	Card,
+	Button,
+	Row,
+	Col,
+	Typography,
+	Space,
+	Descriptions,
+	Image,
+} from 'antd';
 import {
 	EyeOutlined,
 	DownloadOutlined,
 	HeartOutlined,
 } from '@ant-design/icons';
-import { RankingList } from '../components';
+import { RankingList } from '../../components';
 import { useTranslation } from 'react-i18next';
 
 const { Title, Paragraph } = Typography;
@@ -83,9 +92,8 @@ const BookDetailPage = () => {
 				{/* Bìa sách + Thông tin */}
 				<Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={6}>
 					<div style={{ textAlign: 'center' }}>
-						<img
+						<Image
 							src="./mimi.jpg"
-							alt="Book Cover"
 							style={{
 								width: '100%',
 								maxWidth: 260,

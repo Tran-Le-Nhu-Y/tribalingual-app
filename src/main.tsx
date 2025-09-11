@@ -16,6 +16,7 @@ import {
 	FavoriteBooksPage,
 	HomePage,
 	ProfilePage,
+	StoryManagementPage,
 	UploadStoryPage,
 } from './pages/index.ts';
 import { MantineProvider } from '@mantine/core';
@@ -32,6 +33,8 @@ const router = createBrowserRouter(
 			<Route path={RoutePaths.FAVORITEBOOK} element={<FavoriteBooksPage />} />
 			<Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
 			<Route path={RoutePaths.BOOKDETAIL} element={<BookDetailPage />} />
+
+			<Route path={RoutePaths.ADMIN} element={<StoryManagementPage />} />
 		</Route>,
 	),
 );

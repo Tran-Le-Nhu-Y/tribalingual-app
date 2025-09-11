@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage, UploadFile, TextEditor } from '../components'; // import UploadFile
+import { UploadImage, TextEditor } from '../../components'; // import UploadFile
 import Title from 'antd/es/typography/Title';
 import { Form, Input, Button, message, Space } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 
 const UploadStoryPage: React.FC = () => {
 	const { t } = useTranslation('standard');
@@ -16,7 +17,7 @@ const UploadStoryPage: React.FC = () => {
 	return (
 		<div
 			style={{
-				maxWidth: 900,
+				maxWidth: 920,
 				margin: '0 auto',
 				padding: '20px',
 				background: '#fff',
@@ -48,17 +49,12 @@ const UploadStoryPage: React.FC = () => {
 					<Input placeholder="Nhập tiêu đề..." />
 				</Form.Item>
 
-				<Form.Item label={t('uploadImage')}>
-					<UploadImage maxCount={8} />
+				<Form.Item label={t('storyDescription')} name="description">
+					<TextArea rows={4} placeholder="Nhập mô tả..." />
 				</Form.Item>
 
-				<Form.Item label={t('uploadFile')}>
-					<UploadFile
-						action="/api/upload" // endpoint upload
-						accept=".txt,.doc,.docx,.pdf"
-						maxCount={1}
-						buttonText="Chọn file"
-					/>
+				<Form.Item label={t('uploadImage')}>
+					<UploadImage maxCount={1} />
 				</Form.Item>
 
 				<Form.Item

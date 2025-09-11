@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { RankingList } from '../components';
+import { RankingList } from '../../components';
 
 const HomePage = () => {
 	const { t } = useTranslation('standard');
