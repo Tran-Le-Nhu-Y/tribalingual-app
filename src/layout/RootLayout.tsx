@@ -72,7 +72,9 @@ const RootLayout = () => {
 
 	const selectedKey = pathname.startsWith(RoutePaths.ADMIN)
 		? RoutePaths.ADMIN
-		: pathname;
+		: items?.some((item) => item?.key === pathname)
+		? pathname
+		: RoutePaths.HOME;
 
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
@@ -332,7 +334,7 @@ const RootLayout = () => {
 								{/* Social icons */}
 								<div style={{ display: 'flex', gap: 24, fontSize: 24 }}>
 									<a
-										href="https://www.instagram.com/"
+										href="https://www.instagram.com/tribalingual_/?igsh=MXRzaWphODE3MGlleQ%3D%3D&utm_source=qr"
 										target="_blank"
 										rel="noopener noreferrer"
 										style={{ color: '#ff0357ff' }}
@@ -340,7 +342,7 @@ const RootLayout = () => {
 										<InstagramOutlined />
 									</a>
 									<a
-										href="https://www.facebook.com/"
+										href="https://www.facebook.com/profile.php?id=61580547721780"
 										target="_blank"
 										rel="noopener noreferrer"
 										style={{ color: '#0026ffff' }}
@@ -348,7 +350,8 @@ const RootLayout = () => {
 										<FacebookOutlined />
 									</a>
 									<a
-										href="mailto:team@triballingual.com"
+										href="mailto:tribalingual33@gmail.com
+"
 										style={{ color: '#ff1500ff' }}
 									>
 										<MailOutlined />

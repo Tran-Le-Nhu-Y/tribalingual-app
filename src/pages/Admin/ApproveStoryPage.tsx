@@ -4,9 +4,11 @@ import { UploadImage, TextEditor } from '../../components';
 import Title from 'antd/es/typography/Title';
 import { Form, Input, Button, message, Space, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { useNavigate } from 'react-router';
 
 const ApproveStoryPage: React.FC = () => {
 	const { t } = useTranslation('standard');
+	const navigate = useNavigate();
 	const [language, setLanguage] = useState<string>('');
 	const [translatedContent, setTranslatedContent] = useState<string>('');
 	const originalStory = {
@@ -121,7 +123,7 @@ const ApproveStoryPage: React.FC = () => {
 				{/* Hiển thị nội dung sau khi dịch */}
 				{translatedContent && (
 					<Form.Item label="Bản dịch">
-						<TextArea rows={6} value={translatedContent} readOnly />
+						<TextArea rows={10} value={translatedContent} />
 					</Form.Item>
 				)}
 
@@ -130,7 +132,9 @@ const ApproveStoryPage: React.FC = () => {
 						<Button type="primary" htmlType="submit">
 							Duyệt
 						</Button>
-						<Button htmlType="reset">{t('cancel')}</Button>
+						<Button htmlType="reset" onClick={() => navigate(-1)}>
+							{t('cancel')}
+						</Button>
 					</Space>
 				</Form.Item>
 			</Form>

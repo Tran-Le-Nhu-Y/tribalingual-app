@@ -56,7 +56,21 @@ const UploadStoryPage: React.FC = () => {
 				<Form.Item label={t('uploadImage')}>
 					<UploadImage maxCount={1} />
 				</Form.Item>
-				<Form layout="inline" style={{ marginBottom: 20 }}>
+				<Form layout="inline" style={{ marginBottom: 30 }}>
+					<Form.Item label="Thể loại của câu chuyện">
+						<Select
+							value={language}
+							onChange={setLanguage}
+							options={[
+								{ label: 'Truyện cổ tích', value: 'vi' },
+								{ label: 'Truyện ngắn', value: 'en' },
+								{ label: 'Truyện dài', value: 'hm' },
+							]}
+							style={{ width: 200 }}
+						/>
+					</Form.Item>
+				</Form>
+				<Form layout="inline" style={{ marginBottom: 30 }}>
 					<Form.Item label="Ngôn ngữ của câu chuyện">
 						<Select
 							value={language}
