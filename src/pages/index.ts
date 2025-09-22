@@ -6,6 +6,8 @@ import FavoriteBooksPage from './Reader/FavoriteBooksPage';
 import HomePage from './Reader/HomePage';
 import ProfilePage from './Reader/Profile';
 import UploadStoryPage from './Reader/UploadStoryPage';
+import GenreManagementPage from './Admin/GenreManagementPage';
+
 export {
 	FavoriteBooksPage,
 	HomePage,
@@ -15,4 +17,5 @@ export {
 	UploadStoryPage,
 	StoryManagementPage,
 	ApproveStoryPage,
+	GenreManagementPage,
 };

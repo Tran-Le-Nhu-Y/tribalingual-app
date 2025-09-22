@@ -68,6 +68,11 @@ const RootLayout = () => {
 			icon: <LogoutOutlined />,
 			label: 'Admin',
 		},
+		{
+			key: RoutePaths.GENRE,
+			icon: <LogoutOutlined />,
+			label: 'Genre',
+		},
 	];
 
 	const selectedKey = pathname.startsWith(RoutePaths.ADMIN)

@@ -14,11 +14,11 @@ export const appComponents = {
 	Menu: {
 		itemBorderRadius: 8,
 		itemHeight: 42,
-		colorItemText: '#F6F1F1',
-		colorItemTextHover: '#333',
-		colorItemTextSelected: '#333',
-		colorItemBgHover: '#b5d9f8ff',
-		colorItemBgSelected: '#F6F1F1',
+		itemColor: '#F6F1F1',
+		itemHoverColor: '#333',
+		itemSelectedColor: '#333',
+		itemHoverBg: '#b5d9f8ff',
+		itemSelectedBg: '#F6F1F1',
 	},
 	Layout: {
 		headerBg: '#AFD3E2',

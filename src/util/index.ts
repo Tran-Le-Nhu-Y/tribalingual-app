@@ -21,6 +21,7 @@ const BOOKDETAIL = '/book-detail';
 const ADMIN = '/admin';
 export const RoutePaths = {
 	ADMIN,
+	GENRE: `${ADMIN}/genre`,
 	APPROVE_STORY: `${ADMIN}/story/:${PathHolders.STORY_ID}/approve`,
 
 	HOME,

@@ -15,6 +15,7 @@ import {
 	BookDetailPage,
 	BookStoragePage,
 	FavoriteBooksPage,
+	GenreManagementPage,
 	HomePage,
 	ProfilePage,
 	StoryManagementPage,
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
 
 			<Route path={RoutePaths.ADMIN} element={<StoryManagementPage />} />
 			<Route path={RoutePaths.APPROVE_STORY} element={<ApproveStoryPage />} />
+			<Route path={RoutePaths.GENRE} element={<GenreManagementPage />} />
 		</Route>,
 	),
 );
