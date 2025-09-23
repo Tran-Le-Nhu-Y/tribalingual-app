@@ -11,3 +11,13 @@ declare interface GenreResponse {
 	name: string;
 	description?: string | null;
 }
+
+declare interface FileResponse {
+	id: string;
+	storyId: string;
+	name: string;
+	mime_type: string;
+	size: number;
+	url: string;
+	save_path: string;
+}

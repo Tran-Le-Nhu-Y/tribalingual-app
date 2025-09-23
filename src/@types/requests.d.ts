@@ -8,3 +8,7 @@ declare interface UpdateGenreRequest {
 	name: string;
 	description?: string | null;
 }
+
+declare interface UploadFileRequest {
+	file: File;
+}

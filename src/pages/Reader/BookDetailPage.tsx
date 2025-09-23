@@ -1,13 +1,4 @@
-import {
-	Card,
-	Button,
-	Row,
-	Col,
-	Typography,
-	Space,
-	Descriptions,
-	Image,
-} from 'antd';
+import { Button, Row, Col, Typography, Space, Descriptions, Image } from 'antd';
 import {
 	EyeOutlined,
 	DownloadOutlined,
@@ -105,30 +96,18 @@ const BookDetailPage = () => {
 							}}
 						/>
 					</div>
-					<Card
-						style={{
-							borderRadius: 12,
-							boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-						}}
-					>
-						<Descriptions
-							column={1}
-							colon={false}
-							size="middle"
-							labelStyle={{ fontWeight: 600, width: '120px' }}
-							contentStyle={{ color: '#444' }}
-						>
-							<Descriptions.Item label="Tác giả">Sưu tầm</Descriptions.Item>
-							<Descriptions.Item label="Nhà xuất bản">
-								NXB Việt Nam
-							</Descriptions.Item>
-							<Descriptions.Item label="Thể loại">
-								Truyện cổ tích
-							</Descriptions.Item>
-							<Descriptions.Item label="Lượt xem">3</Descriptions.Item>
-							<Descriptions.Item label="Lượt yêu thích">1</Descriptions.Item>
-						</Descriptions>
-					</Card>
+
+					<Descriptions column={1} colon={false} size="middle" bordered>
+						<Descriptions.Item label="Tác giả">Sưu tầm</Descriptions.Item>
+						<Descriptions.Item label="Nhà xuất bản">
+							NXB Việt Nam
+						</Descriptions.Item>
+						<Descriptions.Item label="Thể loại">
+							Truyện cổ tích
+						</Descriptions.Item>
+						<Descriptions.Item label="Lượt xem">3</Descriptions.Item>
+						<Descriptions.Item label="Lượt yêu thích">1</Descriptions.Item>
+					</Descriptions>
 				</Col>
 
 				{/* Nội dung sách */}

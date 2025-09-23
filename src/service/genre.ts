@@ -72,7 +72,7 @@ export const genreApi = createApi({
 						content: [],
 					};
 				}
-				// Map each PromptResponse to Prompt entity
+				// Map each GenreResponse to Genre entity
 				const mappedContent: Genre[] = content.map(toEntity);
 
 				return {
