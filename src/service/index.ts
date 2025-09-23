@@ -1,4 +1,11 @@
 import {
+	useGetFileByIdQuery as useGetFileById,
+	useDeleteFileMutation as useDeleteFile,
+	useUploadFileMutation as useUploadFile,
+	useGetFilesQuery as useGetFiles,
+} from './file';
+export { useGetFileById, useDeleteFile, useUploadFile, useGetFiles };
+import {
 	useGetGenresQuery as useGetGenres,
 	useGetGenreByIdQuery as useGetGenreById,
 	useCreateGenreMutation as useCreateGenre,
