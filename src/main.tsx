@@ -24,6 +24,7 @@ import {
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
+import { App as AntdApp } from 'antd';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -46,7 +47,9 @@ const router = createBrowserRouter(
 createRoot(document.getElementById('root')!).render(
 	<Provider store={store}>
 		<MantineProvider>
-			<RouterProvider router={router} />
+			<AntdApp>
+				<RouterProvider router={router} />
+			</AntdApp>
 		</MantineProvider>
 	</Provider>,
 );

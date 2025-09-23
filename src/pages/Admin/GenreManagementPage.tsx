@@ -10,92 +10,64 @@ import {
 	ConfigProvider,
 	Card,
 	Typography,
-	notification,
+	App,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { appTheme } from '../../theme/theme';
-import { useGetGenres } from '../../service';
+import {
+	useCreateGenre,
+	useDeleteGenre,
+	useGetGenres,
+	useUpdateGenre,
+} from '../../service';
+import { useTranslation } from 'react-i18next';
+import { DeleteError } from '../../util/errors';
 
 const { Title } = Typography;
 
 const GenreManagementPage: React.FC = () => {
-	const [loading] = useState(false);
+	const { t } = useTranslation('standard');
+	const { notification } = App.useApp();
 	const [openModal, setOpenModal] = useState(false);
-	// const [editingGenre, setEditingGenre] = useState<Genre | null>(null);
-
+	const [editingGenre, setEditingGenre] = useState<Genre | null>(null);
 	const [form] = Form.useForm();
-
-	// const handleAdd = () => {
-	// 	setEditingGenre(null);
-	// 	form.resetFields();
-	// 	setOpenModal(true);
-	// };
-
-	// const handleEdit = (record: Genre) => {
-	// 	setEditingGenre(record);
-	// 	form.setFieldsValue(record);
-	// 	setOpenModal(true);
-	// };
-
-	// const handleDelete = (id: string) => {
-	// 	setGenres((prev) => prev.filter((g) => g.id !== id));
-	// };
-
-	// const handleSave = () => {
-	// 	form
-	// 		.validateFields()
-	// 		.then((values) => {
-	// 			if (editingGenre) {
-	// 				// update
-	// 				setGenres((prev) =>
-	// 					prev.map((g) =>
-	// 						g.id === editingGenre.id ? { ...editingGenre, ...values } : g,
-	// 					),
-	// 				);
-	// 			} else {
-	// 				// create
-	// 				const newGenre: Genre = {
-	// 					id: Date.now().toString(),
-	// 					...values,
-	// 				};
-	// 				setGenres((prev) => [...prev, newGenre]);
-	// 			}
-	// 			setOpenModal(false);
-	// 		})
-	// 		.catch((info) => {
-	// 			console.log('Validate Failed:', info);
-	// 		});
-	// };
 
 	const columns = [
 		{
-			title: 'Tên thể loại',
+			title: t('genreName'),
 			dataIndex: 'name',
 			key: 'name',
 			width: '20%',
 			render: (text: string) => <strong>{text}</strong>,
 		},
 		{
-			title: 'Mô tả',
+			title: t('description'),
 			dataIndex: 'description',
 			key: 'description',
 			ellipsis: true,
 		},
 		{
-			title: 'Hành động',
+			title: t('action'),
 			key: 'action',
 			width: '20%',
-			render: () => (
+			render: (genre: Genre) => (
 				<Space>
-					<Button type="primary" size="small" onClick={() => {}}>
-						Cập nhật
+					<Button
+						type="primary"
+						size="small"
+						onClick={() => handleUpdate(genre)}
+					>
+						{t('update')}
 					</Button>
 					<Popconfirm
-						title="Bạn có chắc chắn muốn xóa thể loại này?"
-						onConfirm={() => {}}
+						title={t('genreDeleteConfirm')}
+						cancelText={t('cancel')}
+						okText={t('submit')}
+						okType="danger"
+						onConfirm={() => handleDelete(genre.id)}
 					>
 						<Button danger size="small">
-							Xóa
+							{t('delete')}
 						</Button>
 					</Popconfirm>
 				</Space>
@@ -114,12 +86,12 @@ const GenreManagementPage: React.FC = () => {
 	useEffect(() => {
 		if (genres.isError) {
 			notification.error({
-				message: 'Lỗi tải dữ liệu',
-				description: 'Không thể tải danh sách thể loại. Vui lòng thử lại.',
+				message: t('dataLoadingError'),
+				description: t('genreLoadingErrorDescription'),
 				placement: 'topRight',
 			});
 		}
-	}, [genres.data, genres.isError]);
+	}, [genres.data, genres.isError, notification, t]);
 
 	const content = useMemo(() => {
 		if (genres.isError) return [];
@@ -133,6 +105,77 @@ const GenreManagementPage: React.FC = () => {
 			);
 		else return [];
 	}, [genres.data?.content, genres.isError]);
+
+	// delete genre
+	const [deleteGenreTrigger, { isLoading: isDeleting }] = useDeleteGenre();
+	const handleDelete = async (id: string) => {
+		try {
+			await deleteGenreTrigger(id).unwrap();
+			notification.success({
+				message: t('deleteGenreSuccess'),
+				placement: 'topRight',
+			});
+			setGenresQuery((prev) => ({ ...prev }));
+		} catch (error) {
+			switch (error) {
+				case DeleteError.NOT_FOUND: {
+					notification.error({
+						message: t('genreDeleteError'),
+						description: t('genreNotFound'),
+						placement: 'topRight',
+					});
+					break;
+				}
+				case DeleteError.UNKNOWN_ERROR: {
+					notification.error({
+						message: t('genreDeleteError'),
+						placement: 'topRight',
+					});
+					break;
+				}
+			}
+		}
+	};
+
+	const handleAdd = () => {
+		setEditingGenre(null);
+		form.resetFields();
+		setOpenModal(true);
+	};
+
+	const handleUpdate = (genre: Genre) => {
+		setEditingGenre(genre);
+		form.setFieldsValue(genre);
+		setOpenModal(true);
+	};
+
+	const [createGenreTrigger, { isLoading: isCreating }] = useCreateGenre();
+	const [updateGenreTrigger, { isLoading: isUpdating }] = useUpdateGenre();
+	const handleSave = async () => {
+		try {
+			const values = (await form.validateFields()) as CreateGenreRequest;
+			if (editingGenre) {
+				// update
+				const payload: UpdateGenreRequest = {
+					id: editingGenre.id,
+					...values,
+				};
+				await updateGenreTrigger(payload).unwrap();
+				notification.success({ message: t('updateGenreSuccess') });
+			} else {
+				// create
+				const payload: CreateGenreRequest = values;
+				await createGenreTrigger(payload).unwrap();
+				notification.success({ message: t('addGenreSuccess') });
+			}
+			setOpenModal(false);
+		} catch (error) {
+			notification.error({
+				message: editingGenre ? t('updateGenreFailed') : t('addGenreFailed'),
+			});
+			console.log('Error: ', error);
+		}
+	};
 
 	return (
 		<div style={{ padding: 10 }}>
@@ -165,21 +208,21 @@ const GenreManagementPage: React.FC = () => {
 								color: appTheme.token.colorPrimary,
 							}}
 						>
-							Quản lý thể loại truyện
+							{t('genreManagement')}
 						</Title>
 						<Button
 							type="primary"
 							icon={<PlusOutlined />}
-							onClick={() => {}}
+							onClick={() => handleAdd()}
 							style={{ borderRadius: 8 }}
 						>
-							Thêm thể loại
+							{t('addGenre')}
 						</Button>
 					</div>
 
 					<Table
 						rowKey="id"
-						loading={loading}
+						loading={genres.isLoading || isDeleting || isCreating || isUpdating}
 						columns={columns}
 						dataSource={content}
 						pagination={{
@@ -198,26 +241,24 @@ const GenreManagementPage: React.FC = () => {
 				</Card>
 
 				<Modal
-					// title={editingGenre ? 'Cập nhật thể loại' : 'Thêm thể loại'}
+					title={editingGenre ? t('updateGenre') : t('addGenre')}
 					open={openModal}
-					onOk={() => {}}
+					onOk={() => handleSave()}
 					onCancel={() => setOpenModal(false)}
-					okText="Lưu"
-					cancelText="Hủy"
+					okText={t('save')}
+					cancelText={t('cancel')}
 					centered
 				>
 					<Form form={form} layout="vertical">
 						<Form.Item
-							label="Tên thể loại"
+							label={t('genreName')}
 							name="name"
-							rules={[
-								{ required: true, message: 'Vui lòng nhập tên thể loại' },
-							]}
+							rules={[{ required: true, message: t('genreNameRequired') }]}
 						>
-							<Input placeholder="Nhập tên thể loại" />
+							<Input placeholder={t('enterGenreName')} />
 						</Form.Item>
-						<Form.Item label="Mô tả" name="description">
-							<Input.TextArea rows={3} placeholder="Nhập mô tả" />
+						<Form.Item label={t('description')} name="description">
+							<Input.TextArea rows={3} placeholder={t('enterDescription')} />
 						</Form.Item>
 					</Form>
 				</Modal>

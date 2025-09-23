@@ -117,7 +117,7 @@ export const genreApi = createApi({
 			},
 		}),
 
-		deleteGenre: builder.mutation<void, string>({
+		deleteGenre: builder.mutation<{ message: string }, string>({
 			query: (genreId: string) => ({
 				url: `/${EXTENSION_URL}/${genreId}/delete`,
 				method: 'DELETE',

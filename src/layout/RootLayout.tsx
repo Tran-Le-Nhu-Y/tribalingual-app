@@ -11,6 +11,7 @@ import {
 	UnorderedListOutlined,
 	HeartOutlined,
 	FormOutlined,
+	SnippetsOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import {
@@ -70,7 +71,7 @@ const RootLayout = () => {
 		},
 		{
 			key: RoutePaths.GENRE,
-			icon: <LogoutOutlined />,
+			icon: <SnippetsOutlined />,
 			label: 'Genre',
 		},
 	];
@@ -94,7 +95,7 @@ const RootLayout = () => {
 		}
 		navigate(e.key);
 		if (isMobile || isTablet) {
-			setDrawerVisible(false); // đóng Drawer khi chọn menu
+			setDrawerVisible(false);
 		}
 	};
 

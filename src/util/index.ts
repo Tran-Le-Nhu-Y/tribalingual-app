@@ -19,10 +19,12 @@ const PROFILE = '/profile';
 const UPLOADSTORY = '/upload-story';
 const BOOKDETAIL = '/book-detail';
 const ADMIN = '/admin';
+const GENRE = '/genre';
 export const RoutePaths = {
 	ADMIN,
-	GENRE: `${ADMIN}/genre`,
 	APPROVE_STORY: `${ADMIN}/story/:${PathHolders.STORY_ID}/approve`,
+
+	GENRE,
 
 	HOME,
 	BOOKSTORAGE,

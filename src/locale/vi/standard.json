@@ -6,6 +6,13 @@
 	"seeDetails": "Xem chi tiết",
 	"submit": "Xác nhận",
 	"cancel": "Hủy",
+	"update": "Cập nhật",
+	"delete": "Xóa",
+	"save": "Lưu",
+	"description": "Mô tả",
+	"enterDescription": "Nhập mô tả",
+	"action": "Hành động",
+	"dataLoadingError": "Lỗi tải dữ liệu",
 
 	"reading": "Sách đang đọc",
 	"read": "Sách đã đọc",
@@ -26,5 +33,22 @@
 	"uploadImage": "Tải lên hình ảnh bìa",
 	"selectImage": "Chọn hình ảnh",
 
-	"approveStory": "Duyệt câu chuyện"
+	"approveStory": "Duyệt câu chuyện",
+
+	"genreManagement": "Quản lý thể loại truyện",
+	"genreName": "Tên thể loại",
+	"addGenre": "Thêm thể loại",
+	"updateGenre": "Cập nhật thể loại",
+	"genreDeleteConfirm": "Bạn có chắc chắn muốn xóa thể loại này?",
+	"genreNameRequired": "Vui lòng nhập tên thể loại",
+	"enterGenreName": "Nhập tên thể loại",
+	"genreLoadingErrorDescription": "Không thể tải danh sách thể loại. Vui lòng thử lại.",
+	"genreDeleteError": "Lỗi xóa thể loại truyện",
+	"genreNotFound": "Không tìm thấy thể loại truyện cần xóa",
+	"deleteGenreFailed": "Xóa thể loại truyện thất bại",
+	"deleteGenreSuccess": "Xóa thể loại truyện thành công",
+	"updateGenreSuccess": "Cập nhật thể loại truyện thành công",
+	"addGenreSuccess": "Thêm thể loại truyện thành công",
+	"updateGenreFailed": "Cập nhật thể loại truyện thất bại",
+	"addGenreFailed": "Thêm thể loại truyện thất bại"
 }
