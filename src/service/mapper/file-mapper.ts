@@ -1,4 +1,5 @@
 import type { File } from '../../@types/entities';
+import type { FileResponse } from '../../@types/response';
 
 function toEntity(response: FileResponse): File {
 	const file: File = {

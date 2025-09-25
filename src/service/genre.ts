@@ -3,6 +3,12 @@ import { axiosBaseQuery } from '../util';
 import { tribalingualInstance } from './instance';
 import { toEntity } from './mapper/genre-mapper';
 import { DeleteError } from '../util/errors';
+import type { GenreResponse, PagingWrapper } from '../@types/response';
+import type { Genre } from '../@types/entities';
+import type {
+	CreateGenreRequest,
+	UpdateGenreRequest,
+} from '../@types/requests';
 
 const EXTENSION_URL = 'api/v1/genre';
 export const genreApi = createApi({

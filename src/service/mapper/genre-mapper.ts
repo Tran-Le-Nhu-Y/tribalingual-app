@@ -1,3 +1,6 @@
+import type { Genre } from '../../@types/entities';
+import type { GenreResponse } from '../../@types/response';
+
 function toEntity(response: GenreResponse): Genre {
 	const genre: Genre = {
 		id: response.id,

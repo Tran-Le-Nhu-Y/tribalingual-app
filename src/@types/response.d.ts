@@ -1,3 +1,5 @@
+import { Language, StoryStatus } from './../util/index';
+import type { Story, User } from './entities';
 declare interface PagingWrapper<T> {
 	content: T[];
 	page_number: number;
@@ -20,4 +22,33 @@ declare interface FileResponse {
 	size: number;
 	url: string;
 	save_path: string;
+}
+
+declare interface StoryResponse {
+	id: string;
+	authorId: string;
+	adminId?: string;
+	genreId: string;
+	fileId?: string;
+	title: string;
+	description?: string;
+	language: Language;
+	hmongContent?: string | null;
+	englishContent?: string | null;
+	vietnameseContent?: string | null;
+	status: StoryStatus;
+	uploadedDate?: Date | null;
+	publishedDate?: Date | null;
+	lastUpdatedDate?: Date | null;
+	viewCount: number;
+	commentCount: number;
+	favoriteCount: number;
+}
+
+declare interface CommentResponse {
+	id: string;
+	content: string;
+	createdAt: Date;
+	story: Story;
+	user: User;
 }

@@ -112,7 +112,7 @@ const HomePage = () => {
 			<div>
 				<RankingList
 					title={t('newBooks')}
-					items={mockRanking}
+					items={[]}
 					showRankingNumber={false}
 				/>
 			</div>

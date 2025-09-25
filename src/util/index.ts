@@ -42,6 +42,20 @@ export const HideDuration = {
 	SLOW: 7000,
 };
 
+export const StoryStatus = {
+	PENDING: 'PENDING',
+	PUBLISHED: 'PUBLISHED',
+	REJECTED: 'REJECTED',
+	HIDDEN: 'HIDDEN',
+	UPDATED: 'UPDATED',
+};
+
+export const Language = {
+	HMONG: 'HMONG',
+	ENGLISH: 'ENGLISH',
+	VIETNAMESE: 'VIETNAMESE',
+};
+
 export const axiosQueryHandler = async <T>(func: () => Promise<T>) => {
 	try {
 		const result = await func();

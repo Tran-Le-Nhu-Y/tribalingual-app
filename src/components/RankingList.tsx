@@ -16,7 +16,7 @@ interface RankingItem {
 
 interface RankingListProps {
 	title?: string;
-	items: RankingItem[];
+	items?: RankingItem[];
 	showRankingNumber?: boolean; // mặc định true
 	maxItems?: number; // cho phép giới hạn số hiển thị
 }
@@ -121,7 +121,7 @@ const RankingList: React.FC<RankingListProps> = ({
 					msOverflowStyle: 'none',
 				}}
 			>
-				{items.slice(0, maxItems).map((item, index) => (
+				{items?.slice(0, maxItems).map((item, index) => (
 					<div
 						key={item.id}
 						style={{

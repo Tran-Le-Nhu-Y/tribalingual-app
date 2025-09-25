@@ -3,6 +3,9 @@ import { axiosBaseQuery } from '../util';
 import { tribalingualInstance } from './instance';
 import { DeleteError } from '../util/errors';
 import { toEntity } from './mapper/file-mapper';
+import type { FileResponse, PagingWrapper } from '../@types/response';
+import type { File } from '../@types/entities';
+import type { UploadFileRequest } from '../@types/requests';
 
 const EXTENSION_URL = 'api/v1/file';
 export const fileApi = createApi({
