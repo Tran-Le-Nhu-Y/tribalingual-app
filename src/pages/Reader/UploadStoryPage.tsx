@@ -1,18 +1,79 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage, TextEditor } from '../../components'; // import UploadFile
 import Title from 'antd/es/typography/Title';
-import { Form, Input, Button, message, Space, Select } from 'antd';
+import { Form, Input, Button, Space, Select, App, Spin } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { useDeleteFile, useGetGenres, useUploadFile } from '../../service';
+import type { Story } from '../../@types/entities';
+import { Language } from '../../util';
 
 const UploadStoryPage: React.FC = () => {
 	const { t } = useTranslation('standard');
-	const [content, setContent] = useState('');
-	const [language, setLanguage] = useState<string>('vi');
-	const onFinish = (values: Record<string, unknown>) => {
-		console.log('Form values:', { ...values, content });
-		message.success('Câu chuyện đã được gửi!');
+	const { notification, modal } = App.useApp();
+	const initialStory = {
+		id: '',
+		authorId: '',
+		genreId: '',
+		adminId: '',
+		fileId: '',
+		title: '',
+		description: '',
+		language: '',
+		hmongContent: '',
+		englishContent: '',
+		vietnameseContent: '',
+		status: '',
+		viewCount: 0,
+		commentCount: 0,
+		favoriteCount: 0,
 	};
+	const [story, setStory] = useState<Story>(initialStory);
+	const [form] = Form.useForm();
+	const handleCancel = () => {
+		modal.confirm({
+			title: t('confirmCancelTitle'),
+			content: t('confirmCancelMessage'),
+			okText: t('submit'),
+			cancelText: t('cancel'),
+			onOk: () => {
+				form.resetFields(); // reset fields of form
+				setStory(initialStory); // reset state story
+			},
+		});
+	};
+
+	//Get all genre
+	const [genresQuery] = useState<GetQuery>({
+		offset: 0,
+		limit: 20,
+	});
+	const genres = useGetGenres(genresQuery!, {
+		skip: !genresQuery,
+	});
+	useEffect(() => {
+		if (genres.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('genreLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [genres.data, genres.isError, notification, t]);
+
+	// // upload story
+	// const hanldeSubmit = async () => {
+	// 	try {
+	// 		const file = fileList[0];
+	// 		if (fileList.length > 0) {
+	// 			const uploadedFileId = await uploadFile({ file }).unwrap(); // get fileId from server
+	// 		}
+	// 	} catch (error) {}
+	// };
+
+	const [fileloading, setFileloading] = useState(false);
+	const [uploadFile] = useUploadFile();
+	const [deleteFileTrigger] = useDeleteFile();
 
 	return (
 		<div
@@ -40,64 +101,198 @@ const UploadStoryPage: React.FC = () => {
 				{t('uploadYourStory')}
 			</Title>
 
-			<Form layout="vertical" onFinish={onFinish}>
+			<Form form={form} layout="vertical" onFinish={() => {}}>
 				<Form.Item
 					label={t('storyTitle')}
 					name="title"
-					rules={[{ required: true, message: 'Vui lòng nhập tiêu đề!' }]}
+					rules={[{ required: true, message: t('storyTitleRequired') }]}
 				>
-					<Input placeholder="Nhập tiêu đề..." />
+					<Input
+						placeholder={t('storyTitlePlaceholder')}
+						onChange={(e) => {
+							setStory((prev) => ({
+								...prev,
+								title: e.target.value,
+							}));
+						}}
+					/>
 				</Form.Item>
 
 				<Form.Item label={t('storyDescription')} name="description">
-					<TextArea rows={4} placeholder="Nhập mô tả..." />
+					<TextArea
+						rows={4}
+						placeholder={t('storyDescriptionPlaceholder')}
+						onChange={(e) => {
+							setStory((prev) => ({
+								...prev,
+								description: e.target.value,
+							}));
+						}}
+					/>
 				</Form.Item>
 
 				<Form.Item label={t('uploadImage')}>
-					<UploadImage maxCount={1} />
+					<div
+						style={{
+							position: 'relative',
+							display: 'block',
+							width: 'fit-content',
+						}}
+					>
+						<UploadImage
+							maxCount={1}
+							onChange={async (files) => {
+								if (!files || files.length === 0) return;
+								const file = files[0].originFileObj;
+								if (!file) return;
+								setFileloading(true);
+								try {
+									const uploadedFile = await uploadFile({ file }).unwrap();
+									setStory((prev) => ({ ...prev, fileId: uploadedFile.id }));
+								} catch (error) {
+									console.error('Upload file failed:', error);
+									notification.error({
+										message: t('uploadFileFailed'),
+										placement: 'topRight',
+									});
+								} finally {
+									setFileloading(false);
+								}
+							}}
+							onRemove={async () => {
+								if (!story.fileId) return;
+								setFileloading(true);
+								try {
+									await deleteFileTrigger(story.fileId).unwrap();
+									setStory((prev) => ({ ...prev, fileId: '' }));
+								} catch (error) {
+									console.error('Delete file failed:', error);
+									notification.error({
+										message: t('deleteFileFailed'),
+										placement: 'topRight',
+									});
+								} finally {
+									setFileloading(false);
+								}
+							}}
+						/>
+						{fileloading && (
+							<div
+								style={{
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									width: '100%',
+									height: '100%',
+									background: 'rgba(255, 255, 255, 0.6)',
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									zIndex: 10,
+								}}
+							>
+								<Spin />
+							</div>
+						)}
+					</div>
 				</Form.Item>
-				<Form layout="inline" style={{ marginBottom: 30 }}>
-					<Form.Item label="Thể loại của câu chuyện">
+				<Space
+					style={{
+						display: 'flex',
+						marginBottom: 30,
+						alignItems: 'center',
+					}}
+				>
+					<Form.Item
+						label={t('genre')}
+						name="genreId"
+						rules={[{ required: true }]}
+					>
 						<Select
-							value={language}
-							onChange={setLanguage}
+							placeholder={t('chooseGenre')}
+							onChange={(value) => {
+								setStory((prev) => ({
+									...prev,
+									genreId: value,
+								}));
+							}}
+							options={genres.data?.content.map((g) => ({
+								label: g.name,
+								value: g.id,
+							}))}
+							value={story.genreId}
+							style={{ width: 200 }}
+						/>
+					</Form.Item>
+					<Form.Item
+						label={t('language')}
+						name="language"
+						rules={[{ required: true }]}
+					>
+						<Select
+							placeholder={t('chooseLanguage')}
+							value={story.language}
+							onChange={(value) => {
+								setStory((prev) => ({
+									...prev,
+									language: value,
+								}));
+							}}
 							options={[
-								{ label: 'Truyện cổ tích', value: 'vi' },
-								{ label: 'Truyện ngắn', value: 'en' },
-								{ label: 'Truyện dài', value: 'hm' },
+								{ label: t('vietnamese'), value: Language.VIETNAMESE },
+								{ label: t('english'), value: Language.ENGLISH },
+								{ label: t('hmong'), value: Language.HMONG },
 							]}
 							style={{ width: 200 }}
 						/>
 					</Form.Item>
-				</Form>
-				<Form layout="inline" style={{ marginBottom: 30 }}>
-					<Form.Item label="Ngôn ngữ của câu chuyện">
-						<Select
-							value={language}
-							onChange={setLanguage}
-							options={[
-								{ label: 'Tiếng Việt', value: 'vi' },
-								{ label: 'English', value: 'en' },
-								{ label: 'Hmong', value: 'hm' },
-							]}
-							style={{ width: 200 }}
-						/>
-					</Form.Item>
-				</Form>
+				</Space>
 
 				<Form.Item
 					label={t('storyContent')}
+					name="content"
 					required
 					rules={[
 						{
-							validator: () =>
-								content && content !== '<p></p>'
+							validator: () => {
+								const currentContent =
+									story.language === Language.VIETNAMESE
+										? story.vietnameseContent
+										: story.language === Language.ENGLISH
+										? story.englishContent
+										: story.hmongContent;
+
+								return currentContent && currentContent !== '<p></p>'
 									? Promise.resolve()
-									: Promise.reject(new Error('Vui lòng nhập nội dung!')),
+									: Promise.reject(new Error(t('storyContentRequired')));
+							},
 						},
 					]}
 				>
-					<TextEditor value={content} onChange={setContent} />
+					<TextEditor
+						value={
+							story.language === Language.VIETNAMESE
+								? story.vietnameseContent ?? ''
+								: story.language === Language.ENGLISH
+								? story.englishContent ?? ''
+								: story.hmongContent ?? ''
+						}
+						onChange={(value) => {
+							setStory((prev) => ({
+								...prev,
+								vietnameseContent:
+									prev.language === Language.VIETNAMESE
+										? value
+										: prev.vietnameseContent,
+								englishContent:
+									prev.language === Language.ENGLISH
+										? value
+										: prev.englishContent,
+								hmongContent:
+									prev.language === Language.HMONG ? value : prev.hmongContent,
+							}));
+						}}
+					/>
 				</Form.Item>
 
 				<Form.Item>
@@ -105,7 +300,7 @@ const UploadStoryPage: React.FC = () => {
 						<Button type="primary" htmlType="submit">
 							{t('submit')}
 						</Button>
-						<Button htmlType="reset">{t('cancel')}</Button>
+						<Button onClick={handleCancel}>{t('cancel')}</Button>
 					</Space>
 				</Form.Item>
 			</Form>

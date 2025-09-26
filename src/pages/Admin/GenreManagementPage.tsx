@@ -22,6 +22,11 @@ import {
 } from '../../service';
 import { useTranslation } from 'react-i18next';
 import { DeleteError } from '../../util/errors';
+import type { Genre } from '../../@types/entities';
+import type {
+	CreateGenreRequest,
+	UpdateGenreRequest,
+} from '../../@types/requests';
 
 const { Title } = Typography;
 
