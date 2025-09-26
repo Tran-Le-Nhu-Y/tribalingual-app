@@ -183,7 +183,7 @@ const GenreManagementPage: React.FC = () => {
 	};
 
 	return (
-		<div style={{ padding: 10 }}>
+		<>
 			<ConfigProvider
 				theme={{
 					token: appTheme.token,
@@ -196,7 +196,7 @@ const GenreManagementPage: React.FC = () => {
 						height: '70vh',
 					}}
 				>
-					<div
+					<Space
 						style={{
 							display: 'flex',
 							justifyContent: 'space-between',
@@ -223,7 +223,7 @@ const GenreManagementPage: React.FC = () => {
 						>
 							{t('addGenre')}
 						</Button>
-					</div>
+					</Space>
 
 					<Table
 						rowKey="id"
@@ -268,7 +268,7 @@ const GenreManagementPage: React.FC = () => {
 					</Form>
 				</Modal>
 			</ConfigProvider>
-		</div>
+		</>
 	);
 };
 

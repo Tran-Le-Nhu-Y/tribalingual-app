@@ -1,4 +1,13 @@
-import { Button, Row, Col, Typography, Space, Descriptions, Image } from 'antd';
+import {
+	Button,
+	Row,
+	Col,
+	Typography,
+	Space,
+	Descriptions,
+	Image,
+	Card,
+} from 'antd';
 import {
 	EyeOutlined,
 	DownloadOutlined,
@@ -78,11 +87,11 @@ const BookDetailPage = () => {
 	};
 
 	return (
-		<div style={{ padding: 16, background: '#f5f7fb', borderRadius: 8 }}>
+		<Card style={{ padding: 16, borderRadius: 8 }}>
 			<Row gutter={[24, 24]} align="top">
 				{/* Bìa sách + Thông tin */}
 				<Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={6}>
-					<div style={{ textAlign: 'center' }}>
+					<Space style={{ textAlign: 'center' }}>
 						<Image
 							src="./mimi.jpg"
 							style={{
@@ -95,7 +104,7 @@ const BookDetailPage = () => {
 								boxShadow: '0 6px 14px rgba(0,0,0,0.15)',
 							}}
 						/>
-					</div>
+					</Space>
 
 					<Descriptions column={1} colon={false} size="middle" bordered>
 						<Descriptions.Item label="Tác giả">Sưu tầm</Descriptions.Item>
@@ -185,7 +194,7 @@ const BookDetailPage = () => {
 					showRankingNumber={false}
 				/>
 			</div>
-		</div>
+		</Card>
 	);
 };
 

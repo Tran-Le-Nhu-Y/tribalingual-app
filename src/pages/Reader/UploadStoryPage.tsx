@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage, TextEditor } from '../../components'; // import UploadFile
 import Title from 'antd/es/typography/Title';
-import { Form, Input, Button, Space, Select, App, Spin } from 'antd';
+import { Form, Input, Button, Space, Select, App, Spin, Card } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useDeleteFile, useGetGenres, useUploadFile } from '../../service';
 import type { Story } from '../../@types/entities';
@@ -76,11 +76,11 @@ const UploadStoryPage: React.FC = () => {
 	const [deleteFileTrigger] = useDeleteFile();
 
 	return (
-		<div
+		<Card
 			style={{
 				maxWidth: 920,
 				margin: '0 auto',
-				padding: '20px',
+				padding: '10px',
 				background: '#fff',
 				borderRadius: 8,
 				boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -132,7 +132,7 @@ const UploadStoryPage: React.FC = () => {
 				</Form.Item>
 
 				<Form.Item label={t('uploadImage')}>
-					<div
+					<Space
 						style={{
 							position: 'relative',
 							display: 'block',
@@ -177,7 +177,7 @@ const UploadStoryPage: React.FC = () => {
 							}}
 						/>
 						{fileloading && (
-							<div
+							<Space
 								style={{
 									position: 'absolute',
 									top: 0,
@@ -192,9 +192,9 @@ const UploadStoryPage: React.FC = () => {
 								}}
 							>
 								<Spin />
-							</div>
+							</Space>
 						)}
-					</div>
+					</Space>
 				</Form.Item>
 				<Space
 					style={{
@@ -304,7 +304,7 @@ const UploadStoryPage: React.FC = () => {
 					</Space>
 				</Form.Item>
 			</Form>
-		</div>
+		</Card>
 	);
 };
 

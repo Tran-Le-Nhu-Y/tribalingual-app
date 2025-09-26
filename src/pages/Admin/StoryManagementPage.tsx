@@ -7,6 +7,7 @@ import {
 	Popconfirm,
 	Input,
 	ConfigProvider,
+	Card,
 } from 'antd';
 import type { TableColumnsType, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
@@ -82,7 +83,7 @@ const StoryManagementPage: React.FC = () => {
 			clearFilters,
 			close,
 		}) => (
-			<div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+			<Card onKeyDown={(e) => e.stopPropagation()}>
 				<Input
 					ref={searchInput}
 					placeholder={`Search ${String(dataIndex)}`}
@@ -129,7 +130,7 @@ const StoryManagementPage: React.FC = () => {
 						Close
 					</Button>
 				</Space>
-			</div>
+			</Card>
 		),
 		filterIcon: (filtered: boolean) => (
 			<SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
@@ -260,7 +261,7 @@ const StoryManagementPage: React.FC = () => {
 	];
 
 	return (
-		<div style={{ padding: 10 }}>
+		<Card style={{ padding: 5 }}>
 			<ConfigProvider
 				theme={{
 					token: appTheme.token,
@@ -290,7 +291,7 @@ const StoryManagementPage: React.FC = () => {
 					bordered
 				/>
 			</ConfigProvider>
-		</div>
+		</Card>
 	);
 };
 

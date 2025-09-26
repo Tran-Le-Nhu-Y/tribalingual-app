@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage, TextEditor } from '../../components';
 import Title from 'antd/es/typography/Title';
-import { Form, Input, Button, message, Space, Select } from 'antd';
+import { Form, Input, Button, message, Space, Select, Card } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useNavigate } from 'react-router';
 
@@ -36,11 +36,11 @@ const ApproveStoryPage: React.FC = () => {
 	};
 
 	return (
-		<div
+		<Card
 			style={{
 				maxWidth: 920,
 				margin: '0 auto',
-				padding: '20px',
+				padding: '10px',
 				background: '#fff',
 				borderRadius: 8,
 				boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -138,7 +138,7 @@ const ApproveStoryPage: React.FC = () => {
 					</Space>
 				</Form.Item>
 			</Form>
-		</div>
+		</Card>
 	);
 };
 
