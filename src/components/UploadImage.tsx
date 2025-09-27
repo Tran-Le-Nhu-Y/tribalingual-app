@@ -16,18 +16,22 @@ const getBase64 = (file: FileType): Promise<string> =>
 	});
 interface UploadImageProps {
 	maxCount?: number;
+	fileList?: UploadFile[];
 	onChange?: (fileList: UploadFile[]) => void;
 	onRemove?: (file: UploadFile) => void;
 }
 
 const UploadImage: React.FC<UploadImageProps> = ({
 	maxCount = 8,
+	fileList: propFileList,
 	onChange,
 	onRemove,
 }) => {
 	const [previewOpen, setPreviewOpen] = useState(false);
 	const [previewImage, setPreviewImage] = useState('');
-	const [fileList, setFileList] = useState<UploadFile[]>([]);
+	const [internalFileList, setInternalFileList] = useState<UploadFile[]>([]);
+
+	const fileList = propFileList ?? internalFileList;
 
 	const handlePreview = async (file: UploadFile) => {
 		if (!file.url && !file.preview) {
@@ -38,20 +42,14 @@ const UploadImage: React.FC<UploadImageProps> = ({
 		setPreviewOpen(true);
 	};
 
-	const handleChange: UploadProps['onChange'] = ({
-		file,
-		fileList: newFileList,
-	}) => {
-		if (file && file.status === 'uploading') {
-			setFileList(newFileList);
-			return;
-		}
-		setFileList(newFileList);
+	const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+		if (!propFileList) setInternalFileList(newFileList);
 		onChange?.(newFileList);
 	};
 
 	const handleRemove: UploadProps['onRemove'] = (file) => {
-		setFileList((prev) => prev.filter((f) => f.uid !== file.uid));
+		if (!propFileList)
+			setInternalFileList((prev) => prev.filter((f) => f.uid !== file.uid));
 		onRemove?.(file);
 		return true;
 	};

@@ -40,13 +40,17 @@
 	"storyTitleRequired": "Vui lòng nhập tiêu đề!",
 	"genre": "Thể loại",
 	"chooseGenre": "Chọn thể loại",
+	"storyGenreRequired": "Vui lòng chọn thể loại!",
 	"language": "Ngôn ngữ",
 	"chooseLanguage": "Chọn ngôn ngữ",
+	"storyLanguageRequired": "Vui lòng chọn ngôn ngữ!",
 	"storyContentRequired": "Vui lòng nhập nội dung câu chuyện!",
 	"confirmCancelTitle": "Xác nhận hủy đăng tải câu chuyện",
 	"confirmCancelMessage": "Việc xác nhận sẽ xóa tất cả dữ liệu của bạn trong form đăng tải. Bạn có chắc chắn hủy đăng tải câu chuyện? ",
 	"uploadFileFailed": "Tải lên hình ảnh thất bại",
 	"deleteFileFailed": "Xóa hình ảnh thất bại",
+	"createStorySuccess": "Đăng tải câu chuyện thành công.",
+	"createStoryFailed": "Đăng tải câu chuyện thất bại!",
 
 	"approveStory": "Duyệt câu chuyện",
 

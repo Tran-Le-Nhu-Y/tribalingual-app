@@ -17,7 +17,7 @@ declare interface UploadFileRequest {
 declare interface CreateStoryRequest {
 	authorId: string;
 	genreId: string;
-	fileId?: string;
+	fileId?: string | null;
 	title: string;
 	description?: string;
 	language: Language;
