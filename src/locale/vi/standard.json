@@ -16,11 +16,11 @@
 	"vietnamese": "Tiếng Việt",
 	"english": "Tiếng Anh",
 	"hmong": "Tiếng H'Mông",
+	"view": "Lượt xem",
+	"comment": "Bình luận",
 
-	"reading": "Sách đang đọc",
-	"read": "Sách đã đọc",
-	"favorite": "Sách yêu thích",
-	"achievements": "Thành tích",
+	"read": "Đã đọc",
+	"favorite": "Yêu thích",
 	"mostRead": "Xem nhiều nhất",
 	"mostFavorited": "Yêu thích nhiều nhất",
 	"newBooks": "Sách mới",
@@ -28,6 +28,7 @@
 	"uploadStory": "Đăng câu chuyện",
 	"editInformation": "Chỉnh sửa thông tin",
 	"mayInterstedIn": "Có thể bạn quan tâm",
+	"myStories": "Câu chuyện của tôi",
 
 	"uploadYourStory": "Đăng câu chuyện của bạn",
 	"storyContent": "Nội dung câu chuyện",
