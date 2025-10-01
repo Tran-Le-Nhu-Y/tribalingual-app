@@ -7,14 +7,14 @@ import {
 	Descriptions,
 	Image,
 	Card,
+	Form,
+	Divider,
 } from 'antd';
-import {
-	EyeOutlined,
-	DownloadOutlined,
-	HeartOutlined,
-} from '@ant-design/icons';
-import { RankingList } from '../../components';
+import { EyeOutlined, HeartOutlined } from '@ant-design/icons';
+import { CommentList, RankingList } from '../../components';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import TextArea from 'antd/es/input/TextArea';
 
 const { Title, Paragraph } = Typography;
 
@@ -85,7 +85,110 @@ const BookDetailPage = () => {
 		maxHeight: '7.2em', // 3 lines * line-height (1.8em)
 		overflow: 'hidden',
 	};
-
+	const [comments, setComments] = useState([
+		{
+			id: 1,
+			author: 'Như Ý',
+			avatar: 'https://i.pravatar.cc/150?img=1',
+			content: 'Bài viết này hay quá 👍',
+			datetime: '2025-10-01 10:30',
+		},
+		{
+			id: 2,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 3,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 4,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 5,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 6,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 7,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 8,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 9,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 10,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 11,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 12,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+		{
+			id: 13,
+			author: 'Minh',
+			avatar: 'https://i.pravatar.cc/150?img=2',
+			content: 'Mình cũng thấy vậy 😍',
+			datetime: '2025-10-01 11:00',
+		},
+	]);
+	// Xử lý submit comment
+	const handleAddComment = (values: { content: string }) => {
+		const newComment = {
+			id: comments.length + 1,
+			author: 'Bạn đọc', // có thể lấy từ user login
+			avatar: 'https://i.pravatar.cc/150?img=5',
+			content: values.content,
+			datetime: new Date().toLocaleString(),
+		};
+		setComments([newComment, ...comments]);
+	};
 	return (
 		<Card style={{ padding: 16, borderRadius: 8 }}>
 			<Row gutter={[24, 24]} align="top">
@@ -163,29 +266,51 @@ const BookDetailPage = () => {
 							hang lớn. Trong hang có một con quỷ dữ...
 						</Paragraph>
 
-						{/* Nút */}
 						<Space size="middle" style={{ marginTop: 32, flexWrap: 'wrap' }}>
-							<Button icon={<HeartOutlined />}>Yêu thích</Button>
+							<Button style={{ color: 'red' }} icon={<HeartOutlined />}>
+								{t('favorite')}
+							</Button>
 							<Button
 								type="primary"
 								icon={<EyeOutlined />}
 								style={{ borderRadius: 6 }}
 							>
-								Xem
-							</Button>
-							<Button
-								type="primary"
-								ghost
-								icon={<DownloadOutlined />}
-								style={{ borderRadius: 6 }}
-							>
-								Tải xuống
+								{t('see')}
 							</Button>
 						</Space>
 					</div>
 				</Col>
 			</Row>
-			{/* Sách liên quan */}
+			{/* Comment list */}
+			<Space direction="vertical" style={{ width: '100%', marginTop: 32 }}>
+				<Form
+					onFinish={handleAddComment}
+					layout="vertical"
+					style={{ marginTop: 16 }}
+				>
+					<Form.Item
+						name="content"
+						rules={[{ required: false, message: 'Vui lòng nhập bình luận!' }]}
+					>
+						<TextArea
+							rows={3}
+							placeholder={t('enterComment')}
+							maxLength={500}
+						/>
+					</Form.Item>
+					<Form.Item>
+						<Button type="primary" htmlType="submit">
+							{t('sendComment')}
+						</Button>
+					</Form.Item>
+				</Form>
+				<Divider orientation="left" style={{ borderColor: '#d9d9d9' }}>
+					<Title level={5} style={{ margin: 0, color: 'grey' }}>
+						13 {t('comment')}
+					</Title>
+				</Divider>
+				<CommentList comments={comments} />
+			</Space>
 			<div style={{ marginTop: 48 }}>
 				<RankingList
 					title={t('mayInterstedIn')}
