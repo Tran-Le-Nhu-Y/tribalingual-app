@@ -1,157 +1,75 @@
 import { useTranslation } from 'react-i18next';
 
 import { RankingList } from '../../components';
+import { useEffect, useMemo, useState } from 'react';
+import { SortStoryOption, StoryStatus } from '../../util';
+import type { Story } from '../../@types/entities';
+import { App } from 'antd';
+import { useGetStories } from '../../service';
 
 const HomePage = () => {
 	const { t } = useTranslation('standard');
-	const mockRanking = [
-		{
-			id: 1,
-			title: 'Mưa đỏ  Mưa đỏ Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 120,
-			views: 300,
-			isVip: true,
-		},
-		{
-			id: 2,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 98,
-			views: 250,
-			isVip: true,
-		},
-		{
-			id: 3,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 4,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 5,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 6,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 7,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 8,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 9,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 10,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-		{
-			id: 11,
-			title: 'Mưa đỏ',
-			//description: 'Một tác phẩm đầy cảm xúc...',
-			image: '/mimi.jpg',
-			likes: 75,
-			views: 210,
-		},
-	];
+	const { notification } = App.useApp();
 
+	//Get all stories
+	const [storiesQuery] = useState<GetQuery>({
+		offset: 0,
+		limit: 10, //  10 item
+	});
+	const stories = useGetStories(storiesQuery!, {
+		skip: !storiesQuery,
+	});
+	useEffect(() => {
+		if (stories.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('genreLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [notification, stories.isError, t]);
+
+	const content = useMemo(() => {
+		if (stories.isError) return [];
+		if (stories.data?.content) {
+			return stories.data.content
+				.filter((story) => story.status !== StoryStatus.PENDING) // not get story pending
+				.map(
+					(story) =>
+						({
+							...story,
+							id: story.id,
+						} as Story),
+				);
+		}
+		return [];
+	}, [stories.data?.content, stories.isError]);
 	return (
 		<>
 			<div>
-				<RankingList title={t('mostRead')} items={mockRanking} maxItems={8} />
+				<RankingList
+					title={t('mostRead')}
+					items={content}
+					maxItems={10}
+					sortOption={SortStoryOption.VIEWCOUNT}
+				/>
 			</div>
 			<div>
 				<RankingList
 					title={t('mostFavorited')}
-					items={mockRanking}
-					maxItems={8}
+					items={content}
+					maxItems={10}
+					sortOption={SortStoryOption.FAVORITECOUNT}
 				/>
 			</div>
 			<div>
 				<RankingList
 					title={t('newBooks')}
-					items={[]}
+					items={content}
 					showRankingNumber={false}
+					maxItems={10}
 				/>
 			</div>
-			{/* <Row>
-				<Title level={3}>Sách mới</Title>
-			</Row>
-
-			<Row gutter={[16, 24]}>
-				{Array.from({ length: 12 }).map((_, index) => {
-					const key = `col-${index}`;
-					return (
-						<Col
-							key={key}
-							xs={{ flex: '100%' }}
-							sm={{ flex: '50%' }}
-							md={{ flex: '40%' }}
-							lg={{ flex: '20%' }}
-							xl={{ flex: '10%' }}
-						>
-							<div
-								style={{
-									display: 'flex',
-									justifyContent: 'center',
-									alignItems: 'center',
-								}}
-							>
-								<StoryCard
-									title="Cổ tích người H’mông"
-									description="Trên ngọn núi cao nọ, có một cái hang lớn. Trong hang có một con quỷ dữ. Ngày nọ, có một chàng trai tên là A Lý, người H’mông, rất dũng cảm và thông minh. A Lý quyết định sẽ vào hang để đánh bại con quỷ và cứu dân làng."
-									image="./public/mimi.jpg"
-									likes={10}
-									views={300}
-									onDetailClick={() => console.log('Xem chi tiết truyện')}
-								/>
-							</div>
-						</Col>
-					);
-				})}
-			</Row> */}
 		</>
 	);
 };

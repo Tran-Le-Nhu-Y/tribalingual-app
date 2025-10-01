@@ -1,24 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import StoryCard from './StoryCard';
 import Title from 'antd/es/typography/Title';
 import { useTranslation } from 'react-i18next';
-
-interface RankingItem {
-	id: number;
-	title: string;
-	description?: string;
-	image: string;
-	likes: number;
-	views: number;
-}
+import type { Story } from '../@types/entities';
+import RankingListItem from './RankingListItem';
+import { type SortStoryOptionType } from '../util';
 
 interface RankingListProps {
 	title?: string;
-	items?: RankingItem[];
-	showRankingNumber?: boolean; // mặc định true
-	maxItems?: number; // cho phép giới hạn số hiển thị
+	items?: Story[];
+	showRankingNumber?: boolean;
+	maxItems?: number;
+	sortOption?: SortStoryOptionType;
 }
 
 const RankingList: React.FC<RankingListProps> = ({
@@ -26,6 +20,7 @@ const RankingList: React.FC<RankingListProps> = ({
 	title,
 	showRankingNumber = true,
 	maxItems = 10,
+	sortOption, // default
 }) => {
 	const { t } = useTranslation('standard');
 	const listRef = useRef<HTMLDivElement>(null);
@@ -60,6 +55,12 @@ const RankingList: React.FC<RankingListProps> = ({
 			window.removeEventListener('resize', handleScroll);
 		};
 	}, []);
+	const sortedItems = sortOption
+		? items
+				?.slice()
+				.sort((a, b) => (b[sortOption] || 0) - (a[sortOption] || 0))
+				.slice(0, maxItems)
+		: items?.slice(0, maxItems);
 
 	return (
 		<div
@@ -121,61 +122,13 @@ const RankingList: React.FC<RankingListProps> = ({
 					msOverflowStyle: 'none',
 				}}
 			>
-				{items?.slice(0, maxItems).map((item, index) => (
-					<div
+				{sortedItems?.map((item, index) => (
+					<RankingListItem
 						key={item.id}
-						style={{
-							position: 'relative',
-							flex: '0 0 auto',
-							width: 240,
-							transition: 'transform 0.3s',
-							marginBottom: 5,
-						}}
-						onMouseEnter={(e) =>
-							(e.currentTarget.style.transform = 'scale(1.03)')
-						}
-						onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-					>
-						{showRankingNumber && (
-							<div
-								style={{
-									position: 'absolute',
-									top: 5,
-									left: 5,
-									width: 40,
-									height: 40,
-									borderRadius: '50%',
-									background:
-										index === 0
-											? 'linear-gradient(135deg, #FFD700, #FFA500)'
-											: index === 1
-											? 'linear-gradient(135deg, #C0C0C0, #A9A9A9)'
-											: index === 2
-											? 'linear-gradient(135deg, #CD7F32, #8B4513)'
-											: 'linear-gradient(135deg , #e072a4ff, #ff512f)',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									fontSize: 18,
-									fontWeight: 'bold',
-									color: '#fff',
-									boxShadow: '0 4px 10px rgba(0,0,0,0.4)',
-									zIndex: 2,
-								}}
-							>
-								{index + 1}
-							</div>
-						)}
-
-						<StoryCard
-							title={item.title}
-							description={item.description}
-							image={item.image}
-							likes={item.likes}
-							views={item.views}
-							onDetailClick={() => console.log('Xem chi tiết', item.title)}
-						/>
-					</div>
+						story={item}
+						index={index}
+						showRankingNumber={showRankingNumber}
+					/>
 				))}
 			</div>
 

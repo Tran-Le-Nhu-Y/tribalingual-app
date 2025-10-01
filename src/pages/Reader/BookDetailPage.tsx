@@ -11,7 +11,7 @@ import {
 	Divider,
 } from 'antd';
 import { EyeOutlined, HeartOutlined } from '@ant-design/icons';
-import { CommentList, RankingList } from '../../components';
+import { CommentList } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
@@ -20,65 +20,7 @@ const { Title, Paragraph } = Typography;
 
 const BookDetailPage = () => {
 	const { t } = useTranslation('standard');
-	const relatedBooks = [
-		{
-			id: 1,
-			title: 'Chuyện bên bếp lửa',
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
 
-		{
-			id: 2,
-			title: "Truyện cổ H'mông",
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
-		{
-			id: 3,
-			title: 'Chuyện bên bếp lửa',
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
-		{
-			id: 4,
-			title: 'Chuyện bên bếp lửa',
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
-		{
-			id: 5,
-			title: 'Chuyện bên bếp lửa',
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
-		{
-			id: 6,
-			title: 'Chuyện bên bếp lửa',
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
-		{
-			id: 7,
-			title: 'Chuyện bên bếp lửa',
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
-		{
-			id: 8,
-			title: 'Chuyện bên bếp lửa',
-			image: './mimi.jpg',
-			likes: 120,
-			views: 300,
-		},
-	];
 	const paragraphStyle = {
 		lineHeight: 1.8,
 		textAlign: 'justify' as const,
@@ -311,14 +253,6 @@ const BookDetailPage = () => {
 				</Divider>
 				<CommentList comments={comments} />
 			</Space>
-			<div style={{ marginTop: 48 }}>
-				<RankingList
-					title={t('mayInterstedIn')}
-					items={relatedBooks}
-					maxItems={10}
-					showRankingNumber={false}
-				/>
-			</div>
 		</Card>
 	);
 };

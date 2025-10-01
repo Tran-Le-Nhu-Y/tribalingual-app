@@ -1,6 +1,7 @@
 import CommentList from './CommentList';
 import NewBooksList from './NewBookList';
 import RankingList from './RankingList';
+import RankingListItem from './RankingListItem';
 import StoryCard from './StoryCard';
 import TextEditor from './TextEditor';
 import UploadFile from './UploadFile';
@@ -14,4 +15,5 @@ export {
 	UploadFile,
 	TextEditor,
 	CommentList,
+	RankingListItem,
 };

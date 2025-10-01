@@ -13,11 +13,9 @@ export const PathHolders = {
 };
 
 const HOME = '/home';
-const BOOKSTORAGE = '/book-storage';
+const STORY = '/story';
 const FAVORITEBOOK = '/favorite-books';
 const PROFILE = '/profile';
-const UPLOADSTORY = '/upload-story';
-const BOOKDETAIL = '/book-detail';
 const ADMIN = '/admin';
 const GENRE = '/genre';
 export const RoutePaths = {
@@ -27,11 +25,12 @@ export const RoutePaths = {
 	GENRE,
 
 	HOME,
-	BOOKSTORAGE,
-	BOOKDETAIL,
-	FAVORITEBOOK,
 
-	UPLOADSTORY,
+	STORY,
+	STORY_DETAIL: `${STORY}/:${PathHolders.STORY_ID}/detail`,
+	UPLOAD_STORY: `${STORY}/upload`,
+
+	FAVORITEBOOK,
 
 	PROFILE,
 };
@@ -41,6 +40,14 @@ export const HideDuration = {
 	NORMAL: 5000,
 	SLOW: 7000,
 };
+
+export const SortStoryOption = {
+	VIEWCOUNT: 'viewCount',
+	FAVORITECOUNT: 'favoriteCount',
+} as const;
+
+export type SortStoryOptionType =
+	(typeof SortStoryOption)[keyof typeof SortStoryOption];
 
 export const StoryStatus = {
 	PENDING: 'PENDING',

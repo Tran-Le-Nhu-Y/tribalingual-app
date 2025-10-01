@@ -26,7 +26,7 @@ const FavoriteBooksPage = () => {
 								<StoryCard
 									title="Cổ tích người H’mông"
 									description="Trên ngọn núi cao nọ, có một cái hang lớn. Trong hang có một con quỷ dữ. Ngày nọ, có một chàng trai tên là A Lý, người H’mông, rất dũng cảm và thông minh. A Lý quyết định sẽ vào hang để đánh bại con quỷ và cứu dân làng."
-									image="./mimi.jpg"
+									imageUrl="./mimi.jpg"
 									likes={10}
 									views={300}
 									onDetailClick={() => console.log('Xem chi tiết truyện')}

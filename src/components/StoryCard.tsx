@@ -7,7 +7,7 @@ const { Title } = Typography;
 interface StoryCardProps {
 	title: string;
 	description?: string;
-	image: string;
+	imageUrl: string;
 	likes: number;
 	views: number;
 	onDetailClick?: () => void;
@@ -15,7 +15,7 @@ interface StoryCardProps {
 
 const StoryCard: React.FC<StoryCardProps> = ({
 	title,
-	image,
+	imageUrl,
 	likes,
 	views,
 	onDetailClick,
@@ -57,7 +57,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
 				>
 					<img
 						alt={title}
-						src={image}
+						src={imageUrl}
 						style={{
 							width: 160,
 							height: 200,

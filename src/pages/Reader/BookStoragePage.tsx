@@ -1,79 +1,104 @@
-// import { Col, Row } from 'antd';
-// import { StoryCard } from '../../components';
-
-// const BookStoragePage = () => {
-// 	return (
-// 		<>
-// 			<Row gutter={[16, 24]} style={{ justifyContent: 'center' }}>
-// 				{Array.from({ length: 19 }).map((_, index) => {
-// 					const key = `col-${index}`;
-// 					return (
-// 						<Col
-// 							key={key}
-// 							xs={{ flex: '100%' }}
-// 							sm={{ flex: '50%' }}
-// 							md={{ flex: '40%' }}
-// 							lg={{ flex: '20%' }}
-// 							xl={{ flex: '10%' }}
-// 						>
-// 							<div
-// 								style={{
-// 									display: 'flex',
-// 									justifyContent: 'center',
-// 									alignItems: 'center',
-// 								}}
-// 							>
-// 								<StoryCard
-// 									title="Cổ tích người H’mông"
-// 									description="Trên ngọn núi cao nọ, có một cái hang lớn. Trong hang có một con quỷ dữ. Ngày nọ, có một chàng trai tên là A Lý, người H’mông, rất dũng cảm và thông minh. A Lý quyết định sẽ vào hang để đánh bại con quỷ và cứu dân làng."
-// 									image="./mimi.jpg"
-// 									likes={10}
-// 									views={300}
-// 									onDetailClick={() => console.log('Xem chi tiết truyện')}
-// 								/>
-// 							</div>
-// 						</Col>
-// 					);
-// 				})}
-// 			</Row>
-// 		</>
-// 	);
-// };
-
-// export default BookStoragePage;
-
-import { useState } from 'react';
-import { Col, Row, Pagination } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import { Col, Row, Pagination, App } from 'antd';
 import type { PaginationProps } from 'antd';
 import { StoryCard } from '../../components';
+import { useTranslation } from 'react-i18next';
+import { useGetFileById, useGetStories } from '../../service';
+import type { Story } from '../../@types/entities';
+import { StoryStatus } from '../../util';
 
 const BookStoragePage = () => {
 	const [currentPage, setCurrentPage] = useState(1);
-	const [pageSize, setPageSize] = useState(15); // mặc định 8 item/trang
+	const [pageSize, setPageSize] = useState(10);
+	const { t } = useTranslation('standard');
+	const { notification } = App.useApp();
 
-	// Dữ liệu giả
-	const stories = Array.from({ length: 210 }).map((_, index) => ({
-		id: index,
-		title: 'Cổ tích người H’mông',
-		description:
-			'Trên ngọn núi cao nọ, có một cái hang lớn. Trong hang có một con quỷ dữ. Ngày nọ, có một chàng trai tên là A Lý, người H’mông, rất dũng cảm và thông minh. A Lý quyết định sẽ vào hang để đánh bại con quỷ và cứu dân làng.',
-		image: './mimi.jpg',
-		likes: 10,
-		views: 300,
-	}));
+	//Get all stories
+	const [storiesQuery, setStoriesQuery] = useState<GetQuery>({
+		offset: 0,
+		limit: 10, //  10 item
+	});
+	const stories = useGetStories(storiesQuery!, {
+		skip: !storiesQuery,
+	});
+	useEffect(() => {
+		if (stories.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('genreLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [notification, stories.isError, t]);
+
+	const content = useMemo(() => {
+		if (stories.isError) return [];
+		if (stories.data?.content) {
+			return stories.data.content
+				.filter((story) => story.status !== StoryStatus.PENDING) // not get story pending
+				.map(
+					(story) =>
+						({
+							...story,
+							id: story.id,
+						} as Story),
+				);
+		}
+		return [];
+	}, [stories.data?.content, stories.isError]);
 
 	// Xử lý phân trang
 	const startIndex = (currentPage - 1) * pageSize;
 	const endIndex = startIndex + pageSize;
-	const paginatedStories = stories.slice(startIndex, endIndex);
+	const paginatedStories = content.slice(startIndex, endIndex);
 
-	// Hàm xử lý thay đổi page hoặc pageSize
+	const handlePageChange: PaginationProps['onChange'] = (page, newPageSize) => {
+		setCurrentPage(page);
+		setPageSize(newPageSize || pageSize);
+
+		setStoriesQuery({
+			offset: (page - 1) * (newPageSize || pageSize),
+			limit: newPageSize || pageSize,
+		});
+	};
+
 	const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
 		page,
 		newPageSize,
 	) => {
 		setCurrentPage(page);
 		setPageSize(newPageSize);
+
+		setStoriesQuery({
+			offset: (page - 1) * newPageSize,
+			limit: newPageSize,
+		});
+	};
+
+	const StoryItem = ({ story }: { story: Story }) => {
+		const file = useGetFileById(story.fileId!, {
+			skip: !story.fileId,
+		});
+		const imageUrl = file.data?.url || './placeholder.jpg';
+
+		return (
+			<Col
+				key={story.id}
+				xs={{ flex: '100%' }}
+				sm={{ flex: '50%' }}
+				md={{ flex: '40%' }}
+				lg={{ flex: '20%' }}
+			>
+				<StoryCard
+					title={story.title}
+					description={story.description}
+					imageUrl={imageUrl}
+					likes={story.favoriteCount}
+					views={story.viewCount}
+					onDetailClick={() => console.log('Xem chi tiết truyện', story.id)}
+				/>
+			</Col>
+		);
 	};
 
 	return (
@@ -86,22 +111,7 @@ const BookStoragePage = () => {
 		>
 			<Row gutter={[16, 24]} style={{ justifyContent: 'flex-start' }}>
 				{paginatedStories.map((story) => (
-					<Col
-						key={story.id}
-						xs={{ flex: '100%' }}
-						sm={{ flex: '50%' }}
-						md={{ flex: '40%' }}
-						lg={{ flex: '20%' }}
-					>
-						<StoryCard
-							title={story.title}
-							description={story.description}
-							image={story.image}
-							likes={story.likes}
-							views={story.views}
-							onDetailClick={() => console.log('Xem chi tiết truyện', story.id)}
-						/>
-					</Col>
+					<StoryItem key={story.id} story={story} />
 				))}
 			</Row>
 			{/* Pagination */}
@@ -110,11 +120,8 @@ const BookStoragePage = () => {
 					showSizeChanger
 					current={currentPage}
 					pageSize={pageSize}
-					total={stories.length}
-					onChange={(page, newPageSize) => {
-						setCurrentPage(page);
-						setPageSize(newPageSize || pageSize);
-					}}
+					total={stories.data?.total_elements || 0}
+					onChange={handlePageChange}
 					onShowSizeChange={onShowSizeChange}
 				/>
 			</div>

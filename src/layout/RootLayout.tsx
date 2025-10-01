@@ -44,12 +44,12 @@ const RootLayout = () => {
 	const items: MenuProps['items'] = [
 		{ key: RoutePaths.HOME, icon: <HomeOutlined />, label: t('homePage') },
 		{
-			key: RoutePaths.UPLOADSTORY,
+			key: RoutePaths.UPLOAD_STORY,
 			icon: <FormOutlined />,
 			label: t('uploadStory'),
 		},
 		{
-			key: RoutePaths.BOOKSTORAGE,
+			key: RoutePaths.STORY,
 			icon: <BookOutlined />,
 			label: t('bookStorage'),
 		},
@@ -60,7 +60,7 @@ const RootLayout = () => {
 		},
 		{ key: RoutePaths.PROFILE, icon: <UserOutlined />, label: t('account') },
 		{
-			key: RoutePaths.BOOKDETAIL,
+			key: RoutePaths.STORY_DETAIL,
 			icon: <LogoutOutlined />,
 			label: t('logout'),
 		},

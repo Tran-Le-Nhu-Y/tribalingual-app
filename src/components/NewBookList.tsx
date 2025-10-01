@@ -101,7 +101,7 @@ const NewBooksList: React.FC<NewBooksListProps> = ({ items, title }) => {
 								<StoryCard
 									title={item.title}
 									description={item.description}
-									image={item.image}
+									imageUrl={item.image}
 									likes={item.likes}
 									views={item.views}
 									onDetailClick={() => console.log('Xem chi tiết', item.title)}

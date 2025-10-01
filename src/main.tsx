@@ -30,12 +30,12 @@ const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<RootLayout />}>
 			<Route index element={<HomePage />} />
-			<Route path={RoutePaths.UPLOADSTORY} element={<UploadStoryPage />} />
+			<Route path={RoutePaths.UPLOAD_STORY} element={<UploadStoryPage />} />
 			<Route path={RoutePaths.HOME} element={<HomePage />} />
-			<Route path={RoutePaths.BOOKSTORAGE} element={<BookStoragePage />} />
+			<Route path={RoutePaths.STORY} element={<BookStoragePage />} />
 			<Route path={RoutePaths.FAVORITEBOOK} element={<FavoriteBooksPage />} />
 			<Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
-			<Route path={RoutePaths.BOOKDETAIL} element={<BookDetailPage />} />
+			<Route path={RoutePaths.STORY_DETAIL} element={<BookDetailPage />} />
 
 			<Route path={RoutePaths.ADMIN} element={<StoryManagementPage />} />
 			<Route path={RoutePaths.APPROVE_STORY} element={<ApproveStoryPage />} />

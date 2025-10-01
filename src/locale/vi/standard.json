@@ -33,6 +33,8 @@
 	"mayInterstedIn": "Có thể bạn quan tâm",
 	"myStories": "Câu chuyện của tôi",
 
+	"topViewStoriesLoadingErrorDescription": "Không thể tải danh sách các sách có lượt xem nhiều nhất. Vui lòng thử lại.",
+
 	"uploadYourStory": "Đăng câu chuyện của bạn",
 	"storyContent": "Nội dung câu chuyện",
 	"storyTitle": "Tiêu đề câu chuyện",
