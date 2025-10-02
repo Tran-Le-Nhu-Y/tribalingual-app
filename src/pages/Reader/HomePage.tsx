@@ -23,7 +23,7 @@ const HomePage = () => {
 		if (stories.isError) {
 			notification.error({
 				message: t('dataLoadingError'),
-				description: t('genreLoadingErrorDescription'),
+				description: t('storiesLoadingErrorDescription'),
 				placement: 'topRight',
 			});
 		}

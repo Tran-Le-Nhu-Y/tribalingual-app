@@ -7,6 +7,7 @@ import { toEntity } from './mapper/story-mapper';
 import type { PagingWrapper, StoryResponse } from '../@types/response';
 import type {
 	CreateStoryRequest,
+	PublishStoryRequest,
 	UpdateStoryRequest,
 } from '../@types/requests';
 
@@ -117,6 +118,20 @@ export const storyApi = createApi({
 			},
 		}),
 
+		publishStory: builder.mutation<void, PublishStoryRequest>({
+			query: (data: PublishStoryRequest) => ({
+				url: `/${EXTENSION_URL}/${data.storyId}/pulish`,
+				method: 'PUT',
+				params: { adminId: data.adminId },
+			}),
+			invalidatesTags(_result, _error, arg) {
+				return [{ type: 'Story', id: arg.storyId }];
+			},
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+		}),
+
 		deleteStory: builder.mutation<{ message: string }, string>({
 			query: (storyId: string) => ({
 				url: `/${EXTENSION_URL}/${storyId}/delete`,
@@ -152,4 +167,5 @@ export const {
 	useCreateStoryMutation,
 	useUpdateStoryMutation,
 	useDeleteStoryMutation,
+	usePublishStoryMutation,
 } = storyApi;

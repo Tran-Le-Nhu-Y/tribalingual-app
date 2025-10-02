@@ -26,11 +26,14 @@ import {
 	useCreateStoryMutation as useCreateStory,
 	useUpdateStoryMutation as useUpdateStory,
 	useDeleteStoryMutation as useDeleteStory,
+	usePublishStoryMutation as usePublishStory,
 } from './story';
+
 export {
 	useGetStories,
 	useGetStoryById,
 	useCreateStory,
 	useUpdateStory,
 	useDeleteStory,
+	usePublishStory,
 };

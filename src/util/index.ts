@@ -55,7 +55,9 @@ export const StoryStatus = {
 	REJECTED: 'REJECTED',
 	HIDDEN: 'HIDDEN',
 	UPDATED: 'UPDATED',
-};
+} as const;
+
+export type StoryStatus = (typeof StoryStatus)[keyof typeof StoryStatus];
 
 export const Language = {
 	HMONG: 'HMONG',

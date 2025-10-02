@@ -39,7 +39,7 @@ const UploadStoryPage: React.FC = () => {
 		hmongContent: '',
 		englishContent: '',
 		vietnameseContent: '',
-		status: '',
+		status: StoryStatus.PENDING,
 		viewCount: 0,
 		commentCount: 0,
 		favoriteCount: 0,

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Table,
 	Button,
@@ -8,54 +8,46 @@ import {
 	Input,
 	ConfigProvider,
 	Card,
+	App,
+	Tooltip,
 } from 'antd';
 import type { TableColumnsType, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
+import {
+	CheckOutlined,
+	CloseOutlined,
+	DeleteOutlined,
+	EditOutlined,
+	EyeOutlined,
+	SearchOutlined,
+} from '@ant-design/icons';
 import type { InputRef } from 'antd';
 import Highlighter from 'react-highlight-words';
 import Title from 'antd/es/typography/Title';
 import { appTheme } from '../../theme/theme';
 import { useNavigate } from 'react-router';
-import { PathHolders, RoutePaths } from '../../util';
-
-interface Story {
-	id: number;
-	title: string;
-	language: string;
-	author: string;
-	status: 'pending' | 'approved' | 'rejected';
-	createdAt: string;
-}
+import { PathHolders, RoutePaths, StoryStatus } from '../../util';
+import { useTranslation } from 'react-i18next';
+import { useGetStories } from '../../service';
+import type { Story } from '../../@types/entities';
+import dayjs from 'dayjs';
 
 type DataIndex = keyof Story;
 
 const StoryManagementPage: React.FC = () => {
-	const [stories, setStories] = useState<Story[]>(
-		Array.from({ length: 55 }).map((_, i) => ({
-			id: i + 1,
-			title: `Truyện số ${i + 1}`,
-			language: i % 2 === 0 ? 'Tiếng Việt' : 'English',
-			author: `User ${i + 1}`,
-			status: i % 3 === 0 ? 'approved' : 'pending',
-			createdAt: new Date().toLocaleDateString(),
-		})),
-	);
 	const navigate = useNavigate();
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState<keyof Story | ''>('');
 	const searchInput = useRef<InputRef>(null);
+	const { t } = useTranslation('standard');
+	const { notification } = App.useApp();
 
-	const handleReject = (id: number) => {
-		setStories((prev) =>
-			prev.map((story) =>
-				story.id === id ? { ...story, status: 'rejected' } : story,
-			),
-		);
+	const handleReject = (id: string) => {
+		return id;
 	};
 
-	const handleDelete = (id: number) => {
-		setStories((prev) => prev.filter((story) => story.id !== id));
+	const handleDelete = (id: string) => {
+		return id;
 	};
 
 	const handleSearch = (
@@ -160,101 +152,176 @@ const StoryManagementPage: React.FC = () => {
 			),
 	});
 
+	//Get all stories
+	const [storiesQuery, setStoriesQuery] = useState<GetQuery>({
+		offset: 0,
+		limit: 10, //  10 item
+	});
+	const stories = useGetStories(storiesQuery!, {
+		skip: !storiesQuery,
+	});
+	useEffect(() => {
+		if (stories.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('storiesLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [notification, stories.isError, t]);
+
+	const content = useMemo(() => {
+		if (stories.isError) return [];
+		if (stories.data?.content)
+			return stories.data.content.map(
+				(story) =>
+					({
+						...story,
+						id: story.id,
+					} as Story),
+			);
+		return [];
+	}, [stories.data?.content, stories.isError]);
+
 	const columns: TableColumnsType<Story> = [
 		{
-			title: 'ID',
-			dataIndex: 'id',
-			key: 'id',
-			width: 70,
-			sorter: (a, b) => a.id - b.id,
-		},
-		{
-			title: 'Tiêu đề',
+			title: t('storyTitle'),
 			dataIndex: 'title',
 			key: 'title',
 			...getColumnSearchProps('title'),
 		},
 		{
-			title: 'Ngôn ngữ',
+			title: t('language'),
 			dataIndex: 'language',
 			key: 'language',
 			width: 150,
 			...getColumnSearchProps('language'),
 		},
 		{
-			title: 'Người đăng',
-			dataIndex: 'author',
-			key: 'author',
-			width: 150,
-			...getColumnSearchProps('author'),
-		},
-		{
-			title: 'Trạng thái',
+			title: t('status'),
 			dataIndex: 'status',
 			key: 'status',
-			width: 120,
+			width: 110,
 			filters: [
-				{ text: 'Approved', value: 'approved' },
-				{ text: 'Pending', value: 'pending' },
-				{ text: 'Rejected', value: 'rejected' },
+				{ text: 'Pending', value: StoryStatus.PENDING },
+				{ text: 'Published', value: StoryStatus.PUBLISHED },
+				{ text: 'Rejected', value: StoryStatus.REJECTED },
+				{ text: 'Hidden', value: StoryStatus.HIDDEN },
+				{ text: 'Updated', value: StoryStatus.UPDATED },
 			],
 			onFilter: (value, record) => record.status === value,
 			render: (status: Story['status']) => {
-				const statusColors: Record<Story['status'], string> = {
-					approved: 'green',
-					pending: 'orange',
-					rejected: 'red',
+				const statusColors: Record<StoryStatus, string> = {
+					PENDING: 'orange',
+					PUBLISHED: 'green',
+					REJECTED: 'red',
+					HIDDEN: 'gray',
+					UPDATED: 'blue',
 				};
-				return <Tag color={statusColors[status]}>{status.toUpperCase()}</Tag>;
+				return <Tag color={statusColors[status]}>{status}</Tag>;
 			},
 		},
 		{
-			title: 'Ngày đăng',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
-			width: 150,
-			sorter: (a, b) =>
-				new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+			title: t('uploadedDate'),
+			dataIndex: 'uploadedDate',
+			key: 'uploadedDate',
+			width: 170,
+			sorter: (a, b) => {
+				const da = a.uploadedDate ? new Date(a.uploadedDate).getTime() : 0;
+				const db = b.uploadedDate ? new Date(b.uploadedDate).getTime() : 0;
+				return da - db;
+			},
+			render: (date: Story['uploadedDate']) =>
+				date ? dayjs(date).format('DD/MM/YYYY HH:mm:ss') : '-',
 		},
 		{
-			title: 'Hành động',
+			title: t('publishedDate'),
+			dataIndex: 'publishedDate',
+			key: 'publishedDate',
+			width: 170,
+			sorter: (a, b) => {
+				const da = a.publishedDate ? new Date(a.publishedDate).getTime() : 0;
+				const db = b.publishedDate ? new Date(b.publishedDate).getTime() : 0;
+				return da - db;
+			},
+			render: (date: Story['publishedDate']) =>
+				date ? dayjs(date).format('DD/MM/YYYY HH:mm:ss') : '-',
+		},
+		{
+			title: t('action'),
 			key: 'action',
-			width: 220,
-			render: (_, record) => (
+			width: 180,
+			render: (params) => (
 				<Space>
-					{record.status === 'pending' && (
+					{params.status === StoryStatus.PENDING && (
 						<>
-							<Button
-								type="primary"
-								size="small"
-								onClick={() =>
-									navigate(
-										RoutePaths.APPROVE_STORY.replace(
-											`:${PathHolders.STORY_ID}`,
-											String(record.id),
-										),
-									)
-								}
-							>
-								Xem duyệt
-							</Button>
-							<Button
-								danger
-								size="small"
-								onClick={() => handleReject(record.id)}
-							>
-								Từ chối
-							</Button>
+							<Tooltip title={t('seeAndApprove')}>
+								<Button
+									type="primary"
+									size="small"
+									icon={<CheckOutlined />}
+									onClick={() =>
+										navigate(
+											RoutePaths.APPROVE_STORY.replace(
+												`:${PathHolders.STORY_ID}`,
+												String(params.id),
+											),
+										)
+									}
+								/>
+							</Tooltip>
+							<Tooltip title={t('reject')}>
+								<Button
+									danger
+									size="small"
+									icon={<CloseOutlined />}
+									onClick={() => handleReject(params.id)}
+								/>
+							</Tooltip>
 						</>
 					)}
-					<Popconfirm
-						title="Xoá truyện?"
-						onConfirm={() => handleDelete(record.id)}
-					>
-						<Button danger size="small">
-							Xoá
-						</Button>
-					</Popconfirm>
+					<Tooltip title={t('seeDetails')}>
+						<Button
+							type="primary"
+							size="small"
+							icon={<EyeOutlined />}
+							onClick={() =>
+								navigate(
+									RoutePaths.STORY_DETAIL.replace(
+										`:${PathHolders.STORY_ID}`,
+										String(params.id),
+									),
+								)
+							}
+						/>
+					</Tooltip>
+					<Tooltip title={t('update')}>
+						<Button
+							type="primary"
+							size="small"
+							icon={<EditOutlined />}
+							onClick={
+								() => {}
+								// navigate(
+								// 	RoutePaths.UPDATE_STORY.replace(
+								// 		`:${PathHolders.STORY_ID}`,
+								// 		String(params.id),
+								// 	),
+								// )
+							}
+						/>
+					</Tooltip>
+					<Tooltip title={t('delete')}>
+						<Popconfirm
+							title={t('deleteStoryConfirm')}
+							onConfirm={() => handleDelete(params.id)}
+							cancelText={t('cancel')}
+							okText={t('delete')}
+							okButtonProps={{ danger: true }}
+						>
+							<Button danger size="small" icon={<DeleteOutlined />} />
+						</Popconfirm>
+					</Tooltip>
 				</Space>
 			),
 		},
@@ -279,15 +346,25 @@ const StoryManagementPage: React.FC = () => {
 					}}
 					level={3}
 				>
-					Quản lý câu chuyện người dùng
+					{t('storyUploadedManagement')}
 				</Title>
 
 				<Table<Story>
 					rowKey="id"
 					columns={columns}
-					dataSource={stories}
+					dataSource={content}
 					scroll={{ x: 'max-content' }}
-					pagination={{ responsive: true }}
+					pagination={{
+						current: (stories.data?.page_number ?? 0) + 1,
+						pageSize: stories.data?.page_size ?? 5,
+						total: stories.data?.total_elements ?? 0,
+						onChange: (page, pageSize) => {
+							setStoriesQuery({
+								offset: (page - 1) * pageSize,
+								limit: pageSize,
+							});
+						},
+					}}
 					bordered
 				/>
 			</ConfigProvider>

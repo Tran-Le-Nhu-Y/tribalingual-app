@@ -1,40 +1,135 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage, TextEditor } from '../../components';
 import Title from 'antd/es/typography/Title';
-import { Form, Input, Button, message, Space, Select, Card } from 'antd';
+import {
+	Form,
+	Input,
+	Button,
+	message,
+	Space,
+	Select,
+	Card,
+	App,
+	Row,
+	Spin,
+	type UploadFile,
+} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+import { Language, PathHolders, StoryStatus } from '../../util';
+import type { Story } from '../../@types/entities';
+import {
+	useDeleteFile,
+	useGetFileById,
+	useGetGenres,
+	useGetStoryById,
+	useUploadFile,
+} from '../../service';
 
 const ApproveStoryPage: React.FC = () => {
 	const { t } = useTranslation('standard');
+	const { notification } = App.useApp();
 	const navigate = useNavigate();
-	const [language, setLanguage] = useState<string>('');
-	const [translatedContent, setTranslatedContent] = useState<string>('');
-	const originalStory = {
-		title: 'Truyện số 1',
-		description: 'Đây là mô tả truyện...',
-		content: '<p>Nội dung gốc của truyện...</p>',
-		image: '',
-		language: 'Tiếng Việt',
-	};
+	const [form] = Form.useForm();
+	const storyId = useParams()[PathHolders.STORY_ID];
+	const [story, setStory] = useState<Story>({
+		id: '',
+		authorId: '',
+		genreId: '',
+		adminId: '',
+		fileId: '',
+		title: '',
+		description: '',
+		language: '',
+		hmongContent: '',
+		englishContent: '',
+		vietnameseContent: '',
+		status: StoryStatus.PENDING,
+		viewCount: 0,
+		commentCount: 0,
+		favoriteCount: 0,
+	});
+
+	//Get story detail
+	const storyDetail = useGetStoryById(storyId!, {
+		skip: !storyId,
+	});
+	useEffect(() => {
+		if (storyDetail.data) {
+			setStory((prev) => ({
+				...prev,
+				...storyDetail.data,
+			}));
+			form.setFieldsValue(storyDetail.data);
+		}
+		if (storyDetail.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('storiesLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [form, notification, storyDetail.data, storyDetail.isError, t]);
+
+	//Get all genre
+	const [genresQuery] = useState<GetQuery>({
+		offset: 0,
+		limit: 20,
+	});
+	const genres = useGetGenres(genresQuery!, {
+		skip: !genresQuery,
+	});
+	useEffect(() => {
+		if (genres.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('genreLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [genres.data, genres.isError, notification, t]);
+
+	//file
+	const [fileList, setFileList] = useState<UploadFile[]>([]);
+	const [fileloading, setFileloading] = useState(false);
+	const [uploadFile] = useUploadFile();
+	const [deleteFileTrigger] = useDeleteFile();
+	const file = useGetFileById(story.fileId!, { skip: !story.fileId });
+	useEffect(() => {
+		if (file.data) {
+			setFileList([
+				{
+					uid: file.data.id,
+					name: file.data.name,
+					status: 'done',
+					url: file.data.url,
+				},
+			]);
+		} else if (!story.fileId) {
+			setFileList([]);
+		}
+		if (file.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				placement: 'topRight',
+			});
+		}
+	}, [file.data, file.isError, notification, story.fileId, t]);
+
+	// approve story
 
 	const onFinish = () => {
 		message.success('Câu chuyện đã được phê duyệt!');
 	};
 
-	const handleTranslate = () => {
-		// ⚡ Giả lập dịch (sau này bạn gọi API dịch)
-		const translations: Record<string, string> = {
-			vi: 'Bản dịch Tiếng Việt của câu chuyện...',
-			en: 'English translation of the story...',
-			hm: 'Hmong translation of the story...',
-		};
+	const translatedLanguages = Object.values(Language).filter(
+		(lang) => lang !== story.language,
+	);
 
-		setTranslatedContent(translations[language] || originalStory.content);
-		message.success(`Đã dịch sang ${language}`);
-	};
-
+	if (storyDetail.isLoading) {
+		return <Spin tip={t('dataLoading')} size="large" fullscreen />;
+	}
 	return (
 		<Card
 			style={{
@@ -61,7 +156,12 @@ const ApproveStoryPage: React.FC = () => {
 				{t('approveStory')}
 			</Title>
 
-			<Form layout="vertical" onFinish={onFinish}>
+			<Form form={form} layout="vertical" onFinish={onFinish}>
+				<Row style={{ marginBottom: 15 }}>
+					<Title level={5} style={{ margin: 0 }}>
+						{t('author')} : abc
+					</Title>
+				</Row>
 				<Form.Item
 					label={t('storyTitle')}
 					name="title"
@@ -75,65 +175,176 @@ const ApproveStoryPage: React.FC = () => {
 				</Form.Item>
 
 				<Form.Item label={t('uploadImage')}>
-					<UploadImage maxCount={1} />
+					<Space
+						style={{
+							position: 'relative',
+							display: 'block',
+							width: 'fit-content',
+						}}
+					>
+						<UploadImage
+							maxCount={1}
+							fileList={fileList}
+							onChange={async (files) => {
+								if (!files || files.length === 0) {
+									setFileList([]);
+									return;
+								}
+								const file = files[0].originFileObj;
+								if (!file) return;
+								setFileloading(true);
+								try {
+									const uploadedFile = await uploadFile({ file }).unwrap();
+									setStory((prev) => ({ ...prev, fileId: uploadedFile.id }));
+									setFileList(files);
+								} catch (error) {
+									console.error('Upload file failed:', error);
+									notification.error({
+										message: t('uploadFileFailed'),
+										placement: 'topRight',
+									});
+								} finally {
+									setFileloading(false);
+								}
+							}}
+							onRemove={async () => {
+								if (!story.fileId) return;
+								setFileloading(true);
+								try {
+									await deleteFileTrigger(story.fileId).unwrap();
+									setStory((prev) => ({ ...prev, fileId: '' }));
+									setFileList([]);
+								} catch (error) {
+									console.error('Delete file failed:', error);
+									notification.error({
+										message: t('deleteFileFailed'),
+										placement: 'topRight',
+									});
+								} finally {
+									setFileloading(false);
+								}
+							}}
+						/>
+						{fileloading && (
+							<Space
+								style={{
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									width: '100%',
+									height: '100%',
+									background: 'rgba(255, 255, 255, 0.6)',
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									zIndex: 10,
+								}}
+							>
+								<Spin />
+							</Space>
+						)}
+					</Space>
 				</Form.Item>
-				<Form layout="inline" style={{ marginBottom: 20 }}>
-					<Form.Item label="Ngôn ngữ của câu chuyện">
+				<Space
+					style={{
+						display: 'flex',
+						marginBottom: 30,
+						alignItems: 'center',
+					}}
+				>
+					<Form.Item
+						label={t('genre')}
+						name="genreId"
+						rules={[{ required: true, message: t('storyGenreRequired') }]}
+					>
 						<Select
-							value={originalStory.language}
+							placeholder={t('chooseGenre')}
+							onChange={(value) => {
+								setStory((prev) => ({
+									...prev,
+									genreId: value,
+								}));
+							}}
+							options={genres.data?.content.map((g) => ({
+								label: g.name,
+								value: g.id,
+							}))}
+							value={story.genreId}
 							style={{ width: 200 }}
-							disabled
 						/>
 					</Form.Item>
-				</Form>
-				<Form.Item label={t('storyContent')}>
-					<TextEditor value={originalStory.content} readOnly />
-				</Form.Item>
-
-				{/* Chọn ngôn ngữ dịch */}
-				<Form layout="inline" style={{ marginBottom: 20 }}>
-					<Form.Item label="Dịch sang ngôn ngữ">
+					<Form.Item
+						label={t('language')}
+						name="language"
+						rules={[{ required: true, message: t('storyLanguageRequired') }]}
+					>
 						<Select
-							value={language}
-							onChange={setLanguage}
+							placeholder={t('chooseLanguage')}
+							value={story.language}
+							onChange={(value) => {
+								setStory((prev) => ({
+									...prev,
+									language: value,
+								}));
+							}}
 							options={[
-								...(originalStory.language === 'Tiếng Việt'
-									? [
-											{ label: 'English', value: 'en' },
-											{ label: 'Hmong', value: 'hm' },
-									  ]
-									: originalStory.language === 'English'
-									? [
-											{ label: 'Tiếng Việt', value: 'vi' },
-											{ label: 'Hmong', value: 'hm' },
-									  ]
-									: [
-											{ label: 'Tiếng Việt', value: 'vi' },
-											{ label: 'English', value: 'en' },
-									  ]),
+								{ label: t('vietnamese'), value: Language.VIETNAMESE },
+								{ label: t('english'), value: Language.ENGLISH },
+								{ label: t('hmong'), value: Language.HMONG },
 							]}
 							style={{ width: 200 }}
 						/>
-						<Button onClick={handleTranslate} style={{ marginLeft: 8 }}>
-							Dịch
-						</Button>
 					</Form.Item>
-				</Form>
+				</Space>
+				<Form.Item
+					label={t('storyContent')}
+					name={
+						story.language === Language.VIETNAMESE
+							? 'vietnameseContent'
+							: story.language === Language.ENGLISH
+							? 'englishContent'
+							: 'hmongContent'
+					}
+				>
+					<TextEditor />
+				</Form.Item>
+				{translatedLanguages.map((lang) => (
+					<Card
+						key={lang}
+						style={{ marginTop: 20, background: '#fafafa', borderRadius: 6 }}
+						size="small"
+						title={`Bản dịch sang ${lang}`}
+					>
+						<Form.Item
+							label={`Tiêu đề (${lang})`}
+							name={['translations', lang, 'title']}
+							rules={[
+								{ required: true, message: `Vui lòng nhập tiêu đề ${lang}` },
+							]}
+						>
+							<Input placeholder={`Nhập tiêu đề bằng ${lang}...`} />
+						</Form.Item>
 
-				{/* Hiển thị nội dung sau khi dịch */}
-				{translatedContent && (
-					<Form.Item label="Bản dịch">
-						<TextArea rows={10} value={translatedContent} />
-					</Form.Item>
-				)}
+						<Form.Item
+							label={`Nội dung (${lang})`}
+							name={['translations', lang, 'content']}
+							rules={[
+								{ required: true, message: `Vui lòng nhập nội dung ${lang}` },
+							]}
+						>
+							<TextEditor />
+						</Form.Item>
+					</Card>
+				))}
 
 				<Form.Item>
 					<Space>
 						<Button type="primary" htmlType="submit">
-							Duyệt
+							{t('approve')}
 						</Button>
-						<Button htmlType="reset" onClick={() => navigate(-1)}>
-							{t('cancel')}
+						<Button danger>{t('reject')}</Button>
+						<Button type="default" onClick={() => navigate(-1)}>
+							{t('return')}
 						</Button>
 					</Space>
 				</Form.Item>
