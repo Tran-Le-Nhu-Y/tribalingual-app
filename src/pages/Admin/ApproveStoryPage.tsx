@@ -112,7 +112,7 @@ const ApproveStoryPage: React.FC = () => {
 			setFileList([]);
 			return;
 		}
-		if (file.data && fileId === file.data.id) {
+		if (file.data) {
 			setFileList([
 				{
 					uid: file.data.id,
