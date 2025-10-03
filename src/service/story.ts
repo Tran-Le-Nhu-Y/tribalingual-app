@@ -120,7 +120,7 @@ export const storyApi = createApi({
 
 		publishStory: builder.mutation<void, PublishStoryRequest>({
 			query: (data: PublishStoryRequest) => ({
-				url: `/${EXTENSION_URL}/${data.storyId}/pulish`,
+				url: `/${EXTENSION_URL}/${data.storyId}/publish`,
 				method: 'PUT',
 				params: { adminId: data.adminId },
 			}),

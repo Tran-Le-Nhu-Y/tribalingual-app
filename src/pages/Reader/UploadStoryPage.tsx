@@ -48,8 +48,8 @@ const UploadStoryPage: React.FC = () => {
 	const [form] = Form.useForm();
 	const handleCancel = () => {
 		modal.confirm({
-			title: t('confirmCancelTitle'),
-			content: t('confirmCancelMessage'),
+			title: t('confirmCancelUploadStoryTitle'),
+			content: t('confirmCancelUploadStoryMessage'),
 			okText: t('submit'),
 			cancelText: t('cancel'),
 			onOk: () => {
@@ -357,6 +357,7 @@ const UploadStoryPage: React.FC = () => {
 								{t('submit')}
 							</Button>
 							<Button
+								disabled={createStory.isLoading || fileloading}
 								onClick={async () => {
 									handleCancel();
 									if (!story.fileId) return;

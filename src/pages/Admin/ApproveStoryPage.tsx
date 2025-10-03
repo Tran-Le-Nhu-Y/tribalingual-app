@@ -6,7 +6,6 @@ import {
 	Form,
 	Input,
 	Button,
-	message,
 	Space,
 	Select,
 	Card,
@@ -24,45 +23,50 @@ import {
 	useGetFileById,
 	useGetGenres,
 	useGetStoryById,
+	usePublishStory,
+	useUpdateStory,
 	useUploadFile,
 } from '../../service';
+import type { UpdateStoryRequest } from '../../@types/requests';
+
+const originStory: Story = {
+	id: '',
+	authorId: '',
+	genreId: '',
+	adminId: '',
+	fileId: '',
+	title: '',
+	description: '',
+	language: '',
+	hmongContent: '',
+	englishContent: '',
+	vietnameseContent: '',
+	status: StoryStatus.PENDING,
+	viewCount: 0,
+	commentCount: 0,
+	favoriteCount: 0,
+};
 
 const ApproveStoryPage: React.FC = () => {
 	const { t } = useTranslation('standard');
-	const { notification } = App.useApp();
+	const { notification, modal } = App.useApp();
 	const navigate = useNavigate();
 	const [form] = Form.useForm();
 	const storyId = useParams()[PathHolders.STORY_ID];
-	const [story, setStory] = useState<Story>({
-		id: '',
-		authorId: '',
-		genreId: '',
-		adminId: '',
-		fileId: '',
-		title: '',
-		description: '',
-		language: '',
-		hmongContent: '',
-		englishContent: '',
-		vietnameseContent: '',
-		status: StoryStatus.PENDING,
-		viewCount: 0,
-		commentCount: 0,
-		favoriteCount: 0,
-	});
-
+	useEffect(() => {
+		setStory(originStory);
+		form.resetFields();
+	}, [storyId, form]);
+	const [story, setStory] = useState<Story>(originStory);
 	//Get story detail
 	const storyDetail = useGetStoryById(storyId!, {
 		skip: !storyId,
 	});
 	useEffect(() => {
-		if (storyDetail.data) {
-			setStory((prev) => ({
-				...prev,
-				...storyDetail.data,
-			}));
-			form.setFieldsValue(storyDetail.data);
-		}
+		if (storyDetail.isFetching || !storyDetail.data) return;
+		setStory(storyDetail.data);
+		setFileId(storyDetail.data.fileId ?? '');
+		form.setFieldsValue(storyDetail.data);
 		if (storyDetail.isError) {
 			notification.error({
 				message: t('dataLoadingError'),
@@ -70,8 +74,14 @@ const ApproveStoryPage: React.FC = () => {
 				placement: 'topRight',
 			});
 		}
-	}, [form, notification, storyDetail.data, storyDetail.isError, t]);
-
+	}, [
+		storyDetail.data,
+		storyDetail.isFetching,
+		storyDetail.isError,
+		notification,
+		form,
+		t,
+	]);
 	//Get all genre
 	const [genresQuery] = useState<GetQuery>({
 		offset: 0,
@@ -89,15 +99,20 @@ const ApproveStoryPage: React.FC = () => {
 			});
 		}
 	}, [genres.data, genres.isError, notification, t]);
-
 	//file
 	const [fileList, setFileList] = useState<UploadFile[]>([]);
+	const [fileId, setFileId] = useState<string>('');
 	const [fileloading, setFileloading] = useState(false);
 	const [uploadFile] = useUploadFile();
 	const [deleteFileTrigger] = useDeleteFile();
-	const file = useGetFileById(story.fileId!, { skip: !story.fileId });
+	const file = useGetFileById(fileId, { skip: !fileId });
+
 	useEffect(() => {
-		if (file.data) {
+		if (!fileId) {
+			setFileList([]);
+			return;
+		}
+		if (file.data && fileId === file.data.id) {
 			setFileList([
 				{
 					uid: file.data.id,
@@ -106,28 +121,92 @@ const ApproveStoryPage: React.FC = () => {
 					url: file.data.url,
 				},
 			]);
-		} else if (!story.fileId) {
-			setFileList([]);
 		}
+
 		if (file.isError) {
 			notification.error({
 				message: t('dataLoadingError'),
 				placement: 'topRight',
 			});
 		}
-	}, [file.data, file.isError, notification, story.fileId, t]);
+	}, [file.data, file.isError, fileId, notification, t]);
 
-	// approve story
+	const [updateStoryTrigger, updateStory] = useUpdateStory();
+	const [publishStoryTrigger, publishStory] = usePublishStory();
 
-	const onFinish = () => {
-		message.success('Câu chuyện đã được phê duyệt!');
+	const handleAction = async (status: StoryStatus) => {
+		try {
+			const values = await form.validateFields();
+			// update
+			const payload: UpdateStoryRequest = {
+				id: storyId!,
+				genreId: values.genreId,
+				fileId: fileId ?? '',
+				userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+
+				title: values.title,
+				description: values.description,
+				language: values.language,
+				vietnameseContent: values.vietnameseContent,
+				englishContent: values.englishContent,
+				hmongContent: values.hmongContent,
+				status: status,
+			};
+			await updateStoryTrigger(payload).unwrap();
+
+			//publish
+			if (status === StoryStatus.PUBLISHED) {
+				await publishStoryTrigger({
+					storyId: storyId!,
+					adminId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+				}).unwrap();
+			}
+
+			notification.success({
+				message:
+					status === StoryStatus.PUBLISHED
+						? t('approveSuccess')
+						: t('rejectSuccess'),
+				placement: 'topRight',
+			});
+			navigate(-1);
+		} catch (error) {
+			console.error('Approve error:', error);
+			notification.error({
+				message:
+					status === StoryStatus.PUBLISHED
+						? t('approveError')
+						: t('rejectError'),
+				placement: 'topRight',
+			});
+		}
+	};
+
+	const handleCancel = () => {
+		modal.confirm({
+			title: t('confirmCancelApproveStoryTitle'),
+			content: t('confirmCancelApproveStoryMessage'),
+			okText: t('submit'),
+			cancelText: t('cancel'),
+			onOk: () => {
+				if (story.fileId && story.fileId !== originStory.fileId) {
+					setStory((prev) => ({ ...prev, fileId: story.fileId }));
+				}
+				navigate(-1);
+			},
+		});
 	};
 
 	const translatedLanguages = Object.values(Language).filter(
 		(lang) => lang !== story.language,
 	);
 
-	if (storyDetail.isLoading) {
+	if (
+		storyDetail.isFetching ||
+		storyDetail.isLoading ||
+		updateStory.isLoading ||
+		publishStory.isLoading
+	) {
 		return <Spin tip={t('dataLoading')} size="large" fullscreen />;
 	}
 	return (
@@ -156,7 +235,13 @@ const ApproveStoryPage: React.FC = () => {
 				{t('approveStory')}
 			</Title>
 
-			<Form form={form} layout="vertical" onFinish={onFinish}>
+			<Form
+				form={form}
+				layout="vertical"
+				onValuesChange={(_, allValues) => {
+					setStory((prev) => ({ ...prev, ...allValues }));
+				}}
+			>
 				<Row style={{ marginBottom: 15 }}>
 					<Title level={5} style={{ margin: 0 }}>
 						{t('author')} : abc
@@ -165,13 +250,13 @@ const ApproveStoryPage: React.FC = () => {
 				<Form.Item
 					label={t('storyTitle')}
 					name="title"
-					rules={[{ required: true, message: 'Vui lòng nhập tiêu đề!' }]}
+					rules={[{ required: true, message: t('storyTitleRequired') }]}
 				>
-					<Input placeholder="Nhập tiêu đề..." />
+					<Input placeholder={t('storyTitlePlaceholder')} />
 				</Form.Item>
 
 				<Form.Item label={t('storyDescription')} name="description">
-					<TextArea rows={4} placeholder="Nhập mô tả..." />
+					<TextArea rows={4} placeholder={t('storyDescriptionPlaceholder')} />
 				</Form.Item>
 
 				<Form.Item label={t('uploadImage')}>
@@ -196,6 +281,7 @@ const ApproveStoryPage: React.FC = () => {
 								try {
 									const uploadedFile = await uploadFile({ file }).unwrap();
 									setStory((prev) => ({ ...prev, fileId: uploadedFile.id }));
+									setFileId(uploadedFile.id);
 									setFileList(files);
 								} catch (error) {
 									console.error('Upload file failed:', error);
@@ -208,12 +294,14 @@ const ApproveStoryPage: React.FC = () => {
 								}
 							}}
 							onRemove={async () => {
-								if (!story.fileId) return;
+								if (!fileId) return;
 								setFileloading(true);
+								const currentId = fileId;
+								setFileId('');
+								setFileList([]);
+								setStory((prev) => ({ ...prev, fileId: '' }));
 								try {
-									await deleteFileTrigger(story.fileId).unwrap();
-									setStory((prev) => ({ ...prev, fileId: '' }));
-									setFileList([]);
+									await deleteFileTrigger(currentId).unwrap();
 								} catch (error) {
 									console.error('Delete file failed:', error);
 									notification.error({
@@ -273,26 +361,17 @@ const ApproveStoryPage: React.FC = () => {
 							style={{ width: 200 }}
 						/>
 					</Form.Item>
-					<Form.Item
-						label={t('language')}
-						name="language"
-						rules={[{ required: true, message: t('storyLanguageRequired') }]}
-					>
+					<Form.Item label={t('language')}>
 						<Select
-							placeholder={t('chooseLanguage')}
-							value={story.language}
-							onChange={(value) => {
-								setStory((prev) => ({
-									...prev,
-									language: value,
-								}));
-							}}
-							options={[
-								{ label: t('vietnamese'), value: Language.VIETNAMESE },
-								{ label: t('english'), value: Language.ENGLISH },
-								{ label: t('hmong'), value: Language.HMONG },
-							]}
+							value={
+								story.language === Language.VIETNAMESE
+									? t('vietnamese')
+									: story.language === Language.ENGLISH
+									? t('english')
+									: t('hmong')
+							}
 							style={{ width: 200 }}
+							disabled
 						/>
 					</Form.Item>
 				</Space>
@@ -313,24 +392,30 @@ const ApproveStoryPage: React.FC = () => {
 						key={lang}
 						style={{ marginTop: 20, background: '#fafafa', borderRadius: 6 }}
 						size="small"
-						title={`Bản dịch sang ${lang}`}
+						title={`${t('translateTo')} ${lang}`}
 					>
-						<Form.Item
-							label={`Tiêu đề (${lang})`}
+						{/* <Form.Item
+							label={`${t('storyTitle')}(${lang})`}
 							name={['translations', lang, 'title']}
 							rules={[
-								{ required: true, message: `Vui lòng nhập tiêu đề ${lang}` },
+								{
+									required: true,
+									message: t('storyTitleRequired'),
+								},
 							]}
 						>
-							<Input placeholder={`Nhập tiêu đề bằng ${lang}...`} />
-						</Form.Item>
+							<Input placeholder={t('storyTitlePlaceholder')} />
+						</Form.Item> */}
 
 						<Form.Item
-							label={`Nội dung (${lang})`}
-							name={['translations', lang, 'content']}
-							rules={[
-								{ required: true, message: `Vui lòng nhập nội dung ${lang}` },
-							]}
+							label={`${t('storyContent')} (${lang})`}
+							name={
+								lang === Language.ENGLISH
+									? 'englishContent'
+									: lang === Language.HMONG
+									? 'hmongContent'
+									: 'vietnameseContent'
+							}
 						>
 							<TextEditor />
 						</Form.Item>
@@ -338,13 +423,23 @@ const ApproveStoryPage: React.FC = () => {
 				))}
 
 				<Form.Item>
-					<Space>
-						<Button type="primary" htmlType="submit">
+					<Space style={{ marginTop: 15 }}>
+						<Button
+							type="primary"
+							disabled={fileloading}
+							onClick={() => handleAction(StoryStatus.PUBLISHED)}
+						>
 							{t('approve')}
 						</Button>
-						<Button danger>{t('reject')}</Button>
-						<Button type="default" onClick={() => navigate(-1)}>
-							{t('return')}
+						<Button
+							danger
+							disabled={fileloading}
+							onClick={() => handleAction(StoryStatus.REJECTED)}
+						>
+							{t('reject')}
+						</Button>
+						<Button disabled={fileloading} onClick={handleCancel}>
+							{t('cancel')}
 						</Button>
 					</Space>
 				</Form.Item>
