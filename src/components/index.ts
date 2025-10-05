@@ -1,4 +1,5 @@
 import CommentList from './CommentList';
+import LoadingScreen from './LoadingScreen';
 import NewBooksList from './NewBookList';
 import RankingList from './RankingList';
 import RankingListItem from './RankingListItem';
@@ -16,4 +17,5 @@ export {
 	TextEditor,
 	CommentList,
 	RankingListItem,
+	LoadingScreen,
 };

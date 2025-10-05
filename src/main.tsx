@@ -25,7 +25,7 @@ import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { App as AntdApp } from 'antd';
-
+import { Auth0Provider } from '@auth0/auth0-react';
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<RootLayout />}>
@@ -44,12 +44,23 @@ const router = createBrowserRouter(
 	),
 );
 
+const domain = import.meta.env.VITE_AUTH0_DOMAIN;
+const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+
 createRoot(document.getElementById('root')!).render(
-	<Provider store={store}>
-		<MantineProvider>
-			<AntdApp>
-				<RouterProvider router={router} />
-			</AntdApp>
-		</MantineProvider>
-	</Provider>,
+	<Auth0Provider
+		domain={domain}
+		clientId={clientId}
+		authorizationParams={{
+			redirect_uri: window.location.origin,
+		}}
+	>
+		<Provider store={store}>
+			<MantineProvider>
+				<AntdApp>
+					<RouterProvider router={router} />
+				</AntdApp>
+			</MantineProvider>
+		</Provider>
+	</Auth0Provider>,
 );

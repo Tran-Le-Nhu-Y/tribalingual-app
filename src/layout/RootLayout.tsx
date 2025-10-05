@@ -31,6 +31,8 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 import { RoutePaths } from '../util';
 import { useTranslation } from 'react-i18next';
 import { appComponents, appTheme } from '../theme/theme';
+import { useAuth0 } from '@auth0/auth0-react';
+import { LoadingScreen } from '../components';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -40,6 +42,8 @@ const RootLayout = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { pathname } = location;
+	const { isAuthenticated, isLoading, loginWithRedirect, logout, user } =
+		useAuth0();
 
 	const items: MenuProps['items'] = [
 		{ key: RoutePaths.HOME, icon: <HomeOutlined />, label: t('homePage') },
@@ -117,6 +121,13 @@ const RootLayout = () => {
 
 	const [notificationCount, setNotificationCount] = useState(3);
 
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+	if (!isAuthenticated) {
+		loginWithRedirect();
+		return null;
+	}
 	return (
 		<>
 			<style>
@@ -267,13 +278,13 @@ const RootLayout = () => {
 									menu={{
 										items: [
 											{
-												key: '1',
+												key: 'account',
 												label: t('account'),
 												icon: <UserOutlined />,
 												onClick: () => navigate(RoutePaths.PROFILE),
 											},
 											{
-												key: '2',
+												key: 'edit',
 												label: t('editInformation'),
 												icon: <FormOutlined />,
 												onClick: () => {
@@ -284,13 +295,14 @@ const RootLayout = () => {
 												type: 'divider',
 											},
 											{
-												key: '3',
+												key: 'logout',
 												label: t('logout'),
 												icon: <LogoutOutlined />,
 												danger: true,
-												onClick: () => {
-													console.log('Đăng xuất');
-												},
+												onClick: () =>
+													logout({
+														logoutParams: { returnTo: window.location.origin },
+													}),
 											},
 										],
 									}}
@@ -298,8 +310,9 @@ const RootLayout = () => {
 									placement="bottomRight"
 								>
 									<Avatar
+										src={user?.picture}
 										style={{ backgroundColor: '#ff9800', cursor: 'pointer' }}
-										icon={<UserOutlined />}
+										icon={!user?.picture && <UserOutlined />}
 									/>
 								</Dropdown>
 							</div>
