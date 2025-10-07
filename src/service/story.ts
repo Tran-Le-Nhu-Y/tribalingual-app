@@ -10,6 +10,7 @@ import type {
 	PublishStoryRequest,
 	UpdateStoryRequest,
 } from '../@types/requests';
+import type { GetStoryQuery } from '../@types/queries';
 
 const EXTENSION_URL = 'api/v1/story';
 export const storyApi = createApi({
@@ -40,13 +41,14 @@ export const storyApi = createApi({
 			},
 		}),
 
-		getStories: builder.query<PagingWrapper<Story>, GetQuery>({
-			query: ({ offset = 0, limit = 100 }) => ({
+		getStories: builder.query<PagingWrapper<Story>, GetStoryQuery>({
+			query: ({ offset = 0, limit = 100, status }) => ({
 				url: `/${EXTENSION_URL}/all`,
 				method: 'GET',
 				params: {
 					offset: offset,
 					limit: limit,
+					status: status,
 				},
 				headers: { 'Cache-Control': 'no-cache' },
 			}),

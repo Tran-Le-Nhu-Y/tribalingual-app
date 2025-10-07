@@ -9,6 +9,7 @@ import type {
 	CreateGenreRequest,
 	UpdateGenreRequest,
 } from '../@types/requests';
+import type { GetQuery } from '../@types/queries';
 
 const EXTENSION_URL = 'api/v1/genre';
 export const genreApi = createApi({

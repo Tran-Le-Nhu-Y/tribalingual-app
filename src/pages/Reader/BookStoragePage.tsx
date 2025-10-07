@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetFileById, useGetStories } from '../../service';
 import type { Story } from '../../@types/entities';
 import { StoryStatus } from '../../util';
+import type { GetStoryQuery } from '../../@types/queries';
 
 const BookStoragePage = () => {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -14,9 +15,10 @@ const BookStoragePage = () => {
 	const { notification } = App.useApp();
 
 	//Get all stories
-	const [storiesQuery, setStoriesQuery] = useState<GetQuery>({
+	const [storiesQuery, setStoriesQuery] = useState<GetStoryQuery>({
 		offset: 0,
 		limit: 10, //  10 item
+		status: StoryStatus.PUBLISHED,
 	});
 	const stories = useGetStories(storiesQuery!, {
 		skip: !storiesQuery,

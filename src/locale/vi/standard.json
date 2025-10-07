@@ -40,8 +40,6 @@
 	"newBooks": "Sách mới",
 	"bookStorage": "Kho sách",
 	"uploadStory": "Đăng câu chuyện",
-	"editInformation": "Chỉnh sửa thông tin",
-	"mayInterstedIn": "Có thể bạn quan tâm",
 	"myStories": "Câu chuyện của tôi",
 
 	"topViewStoriesLoadingErrorDescription": "Không thể tải danh sách các sách có lượt xem nhiều nhất. Vui lòng thử lại.",

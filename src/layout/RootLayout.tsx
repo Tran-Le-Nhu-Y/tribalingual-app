@@ -283,17 +283,7 @@ const RootLayout = () => {
 												icon: <UserOutlined />,
 												onClick: () => navigate(RoutePaths.PROFILE),
 											},
-											{
-												key: 'edit',
-												label: t('editInformation'),
-												icon: <FormOutlined />,
-												onClick: () => {
-													console.log('Chỉnh sửa thông tin');
-												},
-											},
-											{
-												type: 'divider',
-											},
+
 											{
 												key: 'logout',
 												label: t('logout'),

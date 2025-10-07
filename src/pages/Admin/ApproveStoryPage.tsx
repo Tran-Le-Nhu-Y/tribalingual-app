@@ -28,6 +28,7 @@ import {
 	useUploadFile,
 } from '../../service';
 import type { UpdateStoryRequest } from '../../@types/requests';
+import type { GetQuery } from '../../@types/queries';
 
 const originStory: Story = {
 	id: '',
