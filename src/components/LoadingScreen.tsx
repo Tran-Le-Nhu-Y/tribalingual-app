@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Spin } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const LoadingScreen = () => {
+	const { t } = useTranslation('standard');
 	return (
 		<div
 			style={{
@@ -16,7 +17,6 @@ const LoadingScreen = () => {
 				overflow: 'hidden',
 			}}
 		>
-			{/* Logo xoay nhẹ */}
 			<motion.div
 				initial={{ rotate: 0, scale: 0.8, opacity: 0 }}
 				animate={{ rotate: 360, scale: 1, opacity: 1 }}
@@ -35,7 +35,6 @@ const LoadingScreen = () => {
 				/>
 			</motion.div>
 
-			{/* Text TribalLingual */}
 			<motion.h2
 				initial={{ opacity: 0, y: 10 }}
 				animate={{ opacity: 1, y: 0 }}
@@ -48,17 +47,20 @@ const LoadingScreen = () => {
 					marginBottom: 12,
 				}}
 			>
-				TribalLingual
+				{t('dataLoading')}
 			</motion.h2>
 
-			{/* Vòng xoay Ant Design */}
-			<motion.div
+			{/* <motion.div
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ delay: 0.6 }}
 			>
-				<Spin size="large" tip="Đang tải..." />
-			</motion.div>
+				<Spin
+					size="large"
+					tip={t('dataLoading')}
+					style={{ color: '#ffffff' }}
+				/>
+			</motion.div> */}
 		</div>
 	);
 };

@@ -46,6 +46,11 @@ declare interface PublishStoryRequest {
 	adminId: string;
 }
 
+declare interface DeleteStoryRequest {
+	storyId: string;
+	userId: string;
+}
+
 declare interface CreateCommentRequest {
 	storyId: string;
 	userId: string;

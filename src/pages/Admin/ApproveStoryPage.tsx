@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage, TextEditor } from '../../components';
+import { UploadImage, TextEditor, LoadingScreen } from '../../components';
 import Title from 'antd/es/typography/Title';
 import {
 	Form,
@@ -208,7 +208,7 @@ const ApproveStoryPage: React.FC = () => {
 		updateStory.isLoading ||
 		publishStory.isLoading
 	) {
-		return <Spin tip={t('dataLoading')} size="large" fullscreen />;
+		return <LoadingScreen />;
 	}
 	return (
 		<Card

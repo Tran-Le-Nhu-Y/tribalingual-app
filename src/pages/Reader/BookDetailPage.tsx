@@ -9,24 +9,49 @@ import {
 	Card,
 	Form,
 	Divider,
+	App,
 } from 'antd';
 import { EyeOutlined, HeartOutlined } from '@ant-design/icons';
 import { CommentList } from '../../components';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
+import { useParams } from 'react-router';
+import { useGetStoryById } from '../../service';
+import { PathHolders } from '../../util';
 
 const { Title, Paragraph } = Typography;
+const paragraphStyle = {
+	lineHeight: 1.8,
+	textAlign: 'justify' as const,
+	maxHeight: '7.2em', // 3 lines * line-height (1.8em)
+	overflow: 'hidden',
+};
 
 const BookDetailPage = () => {
 	const { t } = useTranslation('standard');
+	const { notification } = App.useApp();
+	const storyId = useParams()[PathHolders.STORY_ID];
+	const storyDetail = useGetStoryById(storyId!, {
+		skip: !storyId,
+	});
+	useEffect(() => {
+		if (storyDetail.isFetching || !storyDetail.data) return;
 
-	const paragraphStyle = {
-		lineHeight: 1.8,
-		textAlign: 'justify' as const,
-		maxHeight: '7.2em', // 3 lines * line-height (1.8em)
-		overflow: 'hidden',
-	};
+		if (storyDetail.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('storiesLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [
+		notification,
+		storyDetail.data,
+		storyDetail.isError,
+		storyDetail.isFetching,
+		t,
+	]);
 	const [comments, setComments] = useState([
 		{
 			id: 1,

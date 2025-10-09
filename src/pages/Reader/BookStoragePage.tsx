@@ -5,14 +5,16 @@ import { StoryCard } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useGetFileById, useGetStories } from '../../service';
 import type { Story } from '../../@types/entities';
-import { StoryStatus } from '../../util';
+import { PathHolders, RoutePaths, StoryStatus } from '../../util';
 import type { GetStoryQuery } from '../../@types/queries';
+import { useNavigate } from 'react-router';
 
 const BookStoragePage = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageSize, setPageSize] = useState(10);
 	const { t } = useTranslation('standard');
 	const { notification } = App.useApp();
+	const navigate = useNavigate();
 
 	//Get all stories
 	const [storiesQuery, setStoriesQuery] = useState<GetStoryQuery>({
@@ -36,15 +38,13 @@ const BookStoragePage = () => {
 	const content = useMemo(() => {
 		if (stories.isError) return [];
 		if (stories.data?.content) {
-			return stories.data.content
-				.filter((story) => story.status !== StoryStatus.PENDING) // not get story pending
-				.map(
-					(story) =>
-						({
-							...story,
-							id: story.id,
-						} as Story),
-				);
+			return stories.data.content.map(
+				(story) =>
+					({
+						...story,
+						id: story.id,
+					} as Story),
+			);
 		}
 		return [];
 	}, [stories.data?.content, stories.isError]);
@@ -97,7 +97,14 @@ const BookStoragePage = () => {
 					imageUrl={imageUrl}
 					likes={story.favoriteCount}
 					views={story.viewCount}
-					onDetailClick={() => console.log('Xem chi tiết truyện', story.id)}
+					onDetailClick={() =>
+						navigate(
+							RoutePaths.STORY.replace(
+								`:${PathHolders.STORY_ID}`,
+								String(story.id),
+							),
+						)
+					}
 				/>
 			</Col>
 		);

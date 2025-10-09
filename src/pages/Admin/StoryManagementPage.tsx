@@ -28,9 +28,13 @@ import { appTheme } from '../../theme/theme';
 import { useNavigate } from 'react-router';
 import { PathHolders, RoutePaths, StoryStatus } from '../../util';
 import { useTranslation } from 'react-i18next';
-import { useGetStories } from '../../service';
+import { useDeleteStory, useGetStories } from '../../service';
 import type { Story } from '../../@types/entities';
 import dayjs from 'dayjs';
+import type { GetQuery } from '../../@types/queries';
+import { DeleteError } from '../../util/errors';
+import { LoadingScreen } from '../../components';
+import { useAuthUserId } from '../../util/useAuthUserId';
 
 type DataIndex = keyof Story;
 
@@ -41,12 +45,76 @@ const StoryManagementPage: React.FC = () => {
 	const searchInput = useRef<InputRef>(null);
 	const { t } = useTranslation('standard');
 	const { notification } = App.useApp();
+	const { getUserId } = useAuthUserId();
 
-	const handleReject = (id: string) => {
-		return id;
+	//Get all stories
+	const [storiesQuery, setStoriesQuery] = useState<GetQuery>({
+		offset: 0,
+		limit: 10, //  10 item
+	});
+	const stories = useGetStories(storiesQuery!, {
+		skip: !storiesQuery,
+	});
+	useEffect(() => {
+		if (stories.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('storiesLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [notification, stories.isError, t]);
+
+	const content = useMemo(() => {
+		if (stories.isError) return [];
+		if (stories.data?.content)
+			return stories.data.content.map(
+				(story) =>
+					({
+						...story,
+						id: story.id,
+					} as Story),
+			);
+		return [];
+	}, [stories.data?.content, stories.isError]);
+
+	// delete story
+	const [deleteStoryTrigger, deleteStory] = useDeleteStory();
+	const handleDelete = async (storyId: string) => {
+		const userId = getUserId();
+		if (!userId) return;
+		try {
+			await deleteStoryTrigger({
+				storyId: storyId,
+				userId: userId,
+			}).unwrap();
+			notification.success({
+				message: t('deleteStorySuccess'),
+				placement: 'topRight',
+			});
+			setStoriesQuery((prev) => ({ ...prev }));
+		} catch (error) {
+			switch (error) {
+				case DeleteError.NOT_FOUND: {
+					notification.error({
+						message: t('storyDeleteError'),
+						description: t('storyNotFound'),
+						placement: 'topRight',
+					});
+					break;
+				}
+				case DeleteError.UNKNOWN_ERROR: {
+					notification.error({
+						message: t('deleteStoryFailed'),
+						placement: 'topRight',
+					});
+					break;
+				}
+			}
+		}
 	};
 
-	const handleDelete = (id: string) => {
+	const handleReject = (id: string) => {
 		return id;
 	};
 
@@ -152,37 +220,6 @@ const StoryManagementPage: React.FC = () => {
 			),
 	});
 
-	//Get all stories
-	const [storiesQuery, setStoriesQuery] = useState<GetQuery>({
-		offset: 0,
-		limit: 10, //  10 item
-	});
-	const stories = useGetStories(storiesQuery!, {
-		skip: !storiesQuery,
-	});
-	useEffect(() => {
-		if (stories.isError) {
-			notification.error({
-				message: t('dataLoadingError'),
-				description: t('storiesLoadingErrorDescription'),
-				placement: 'topRight',
-			});
-		}
-	}, [notification, stories.isError, t]);
-
-	const content = useMemo(() => {
-		if (stories.isError) return [];
-		if (stories.data?.content)
-			return stories.data.content.map(
-				(story) =>
-					({
-						...story,
-						id: story.id,
-					} as Story),
-			);
-		return [];
-	}, [stories.data?.content, stories.isError]);
-
 	const columns: TableColumnsType<Story> = [
 		{
 			title: t('storyTitle'),
@@ -201,7 +238,7 @@ const StoryManagementPage: React.FC = () => {
 			title: t('status'),
 			dataIndex: 'status',
 			key: 'status',
-			width: 110,
+			width: 120,
 			filters: [
 				{ text: 'Pending', value: StoryStatus.PENDING },
 				{ text: 'Published', value: StoryStatus.PUBLISHED },
@@ -253,6 +290,41 @@ const StoryManagementPage: React.FC = () => {
 			width: 180,
 			render: (params) => (
 				<Space>
+					{params.status === StoryStatus.PUBLISHED && (
+						<>
+							<Tooltip title={t('seeDetails')}>
+								<Button
+									type="primary"
+									size="small"
+									icon={<EyeOutlined />}
+									onClick={() =>
+										navigate(
+											RoutePaths.STORY_DETAIL.replace(
+												`:${PathHolders.STORY_ID}`,
+												String(params.id),
+											),
+										)
+									}
+								/>
+							</Tooltip>
+							<Tooltip title={t('update')}>
+								<Button
+									type="primary"
+									size="small"
+									icon={<EditOutlined />}
+									onClick={
+										() => {}
+										// navigate(
+										// 	RoutePaths.UPDATE_STORY.replace(
+										// 		`:${PathHolders.STORY_ID}`,
+										// 		String(params.id),
+										// 	),
+										// )
+									}
+								/>
+							</Tooltip>
+						</>
+					)}
 					{params.status === StoryStatus.PENDING && (
 						<>
 							<Tooltip title={t('seeAndApprove')}>
@@ -271,46 +343,19 @@ const StoryManagementPage: React.FC = () => {
 								/>
 							</Tooltip>
 							<Tooltip title={t('reject')}>
-								<Button
-									danger
-									size="small"
-									icon={<CloseOutlined />}
-									onClick={() => handleReject(params.id)}
-								/>
+								<Popconfirm
+									title={t('rejectStoryConfirm')}
+									onConfirm={() => handleReject(params.id)}
+									cancelText={t('cancel')}
+									okText={t('submit')}
+									okButtonProps={{ danger: true }}
+								>
+									<Button danger size="small" icon={<CloseOutlined />} />
+								</Popconfirm>
 							</Tooltip>
 						</>
 					)}
-					<Tooltip title={t('seeDetails')}>
-						<Button
-							type="primary"
-							size="small"
-							icon={<EyeOutlined />}
-							onClick={() =>
-								navigate(
-									RoutePaths.STORY_DETAIL.replace(
-										`:${PathHolders.STORY_ID}`,
-										String(params.id),
-									),
-								)
-							}
-						/>
-					</Tooltip>
-					<Tooltip title={t('update')}>
-						<Button
-							type="primary"
-							size="small"
-							icon={<EditOutlined />}
-							onClick={
-								() => {}
-								// navigate(
-								// 	RoutePaths.UPDATE_STORY.replace(
-								// 		`:${PathHolders.STORY_ID}`,
-								// 		String(params.id),
-								// 	),
-								// )
-							}
-						/>
-					</Tooltip>
+
 					<Tooltip title={t('delete')}>
 						<Popconfirm
 							title={t('deleteStoryConfirm')}
@@ -318,6 +363,7 @@ const StoryManagementPage: React.FC = () => {
 							cancelText={t('cancel')}
 							okText={t('delete')}
 							okButtonProps={{ danger: true }}
+							align={{ offset: [-10, -10] }}
 						>
 							<Button danger size="small" icon={<DeleteOutlined />} />
 						</Popconfirm>
@@ -326,6 +372,10 @@ const StoryManagementPage: React.FC = () => {
 			),
 		},
 	];
+
+	if (deleteStory.isLoading || stories.isLoading) {
+		return <LoadingScreen />;
+	}
 
 	return (
 		<Card style={{ padding: 5 }}>

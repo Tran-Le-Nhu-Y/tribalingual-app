@@ -7,6 +7,7 @@ import { toEntity } from './mapper/story-mapper';
 import type { PagingWrapper, StoryResponse } from '../@types/response';
 import type {
 	CreateStoryRequest,
+	DeleteStoryRequest,
 	PublishStoryRequest,
 	UpdateStoryRequest,
 } from '../@types/requests';
@@ -134,15 +135,15 @@ export const storyApi = createApi({
 			},
 		}),
 
-		deleteStory: builder.mutation<{ message: string }, string>({
-			query: (storyId: string) => ({
-				url: `/${EXTENSION_URL}/${storyId}/delete`,
+		deleteStory: builder.mutation<{ message: string }, DeleteStoryRequest>({
+			query: (data: DeleteStoryRequest) => ({
+				url: `/${EXTENSION_URL}/${data.storyId}/delete`,
 				method: 'DELETE',
+				params: { userId: data.userId },
 			}),
 			invalidatesTags(_result, _error, arg) {
-				const storyId = arg;
 				return [
-					{ type: 'Story', id: storyId } as const,
+					{ type: 'Story', id: arg.storyId } as const,
 					{ type: 'PagingStory' } as const,
 				];
 			},
@@ -151,7 +152,7 @@ export const storyApi = createApi({
 				const { message } = baseQueryReturnValue.data as { message: string };
 				if (
 					status === 404 &&
-					message.includes('Genre with id') &&
+					message.includes('Story with id') &&
 					message.includes('not found')
 				)
 					return DeleteError.NOT_FOUND;

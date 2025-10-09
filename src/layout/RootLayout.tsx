@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	HomeOutlined,
 	BookOutlined,
@@ -26,6 +26,7 @@ import {
 	Tooltip,
 	Badge,
 	Dropdown,
+	App,
 } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { RoutePaths } from '../util';
@@ -33,6 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { appComponents, appTheme } from '../theme/theme';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LoadingScreen } from '../components';
+import { syncUser } from '../service/api/auth';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -42,8 +44,26 @@ const RootLayout = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { pathname } = location;
-	const { isAuthenticated, isLoading, loginWithRedirect, logout, user } =
+	const { notification } = App.useApp();
+	const { user, isAuthenticated, isLoading, loginWithRedirect, logout } =
 		useAuth0();
+
+	useEffect(() => {
+		const sync = async () => {
+			try {
+				if (isAuthenticated && user?.sub) {
+					await syncUser(user);
+				}
+			} catch (err) {
+				console.error('Sync user failed:', err);
+				notification.error({
+					message: t('cannotSyncAccount'),
+					description: t('tryAgainLater'),
+				});
+			}
+		};
+		sync();
+	}, [isAuthenticated, notification, t, user]);
 
 	const items: MenuProps['items'] = [
 		{ key: RoutePaths.HOME, icon: <HomeOutlined />, label: t('homePage') },

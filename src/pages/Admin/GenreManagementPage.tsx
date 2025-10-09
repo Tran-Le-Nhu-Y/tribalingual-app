@@ -27,6 +27,7 @@ import type {
 	CreateGenreRequest,
 	UpdateGenreRequest,
 } from '../../@types/requests';
+import type { GetQuery } from '../../@types/queries';
 
 const { Title } = Typography;
 
