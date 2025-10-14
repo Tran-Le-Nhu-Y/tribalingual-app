@@ -240,11 +240,11 @@ const StoryManagementPage: React.FC = () => {
 			key: 'status',
 			width: 120,
 			filters: [
-				{ text: 'Pending', value: StoryStatus.PENDING },
-				{ text: 'Published', value: StoryStatus.PUBLISHED },
-				{ text: 'Rejected', value: StoryStatus.REJECTED },
-				{ text: 'Hidden', value: StoryStatus.HIDDEN },
-				{ text: 'Updated', value: StoryStatus.UPDATED },
+				{ text: t('pending'), value: StoryStatus.PENDING },
+				{ text: t('published'), value: StoryStatus.PUBLISHED },
+				{ text: t('rejected'), value: StoryStatus.REJECTED },
+				{ text: t('hidden'), value: StoryStatus.HIDDEN },
+				{ text: t('updated'), value: StoryStatus.UPDATED },
 			],
 			onFilter: (value, record) => record.status === value,
 			render: (status: Story['status']) => {

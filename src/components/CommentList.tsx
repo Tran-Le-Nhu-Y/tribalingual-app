@@ -5,8 +5,8 @@ const { Text, Paragraph } = Typography;
 
 interface CommentItem {
 	id: number;
-	author: string;
-	avatar: string;
+	authorName: string;
+	avatarUrl: string;
 	content: string;
 	datetime: string;
 }
@@ -34,7 +34,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
 						style={{ borderBottom: '1px solid #f0f0f0', padding: '12px 0' }}
 					>
 						<Space align="start" style={{ width: '100%' }}>
-							<Avatar src={item.avatar} size="large" />
+							<Avatar src={item.avatarUrl} size="large" />
 
 							<Card
 								size="small"
@@ -50,7 +50,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
 										justifyContent: 'space-between',
 									}}
 								>
-									<Text strong>{item.author}</Text>
+									<Text strong>{item.authorName}</Text>
 									<Text type="secondary" style={{ fontSize: 12 }}>
 										{item.datetime}
 									</Text>

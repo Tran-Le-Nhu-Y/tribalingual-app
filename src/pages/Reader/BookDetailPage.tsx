@@ -12,13 +12,15 @@ import {
 	App,
 } from 'antd';
 import { EyeOutlined, HeartOutlined } from '@ant-design/icons';
-import { CommentList } from '../../components';
+import { LoadingScreen } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import { useParams } from 'react-router';
 import { useGetStoryById } from '../../service';
-import { PathHolders } from '../../util';
+import { Language, PathHolders, StoryStatus } from '../../util';
+import { useAuth0 } from '@auth0/auth0-react';
+import dayjs from 'dayjs';
 
 const { Title, Paragraph } = Typography;
 const paragraphStyle = {
@@ -32,12 +34,13 @@ const BookDetailPage = () => {
 	const { t } = useTranslation('standard');
 	const { notification } = App.useApp();
 	const storyId = useParams()[PathHolders.STORY_ID];
+	const { user } = useAuth0();
+	//Get story detail
 	const storyDetail = useGetStoryById(storyId!, {
 		skip: !storyId,
 	});
 	useEffect(() => {
 		if (storyDetail.isFetching || !storyDetail.data) return;
-
 		if (storyDetail.isError) {
 			notification.error({
 				message: t('dataLoadingError'),
@@ -52,6 +55,7 @@ const BookDetailPage = () => {
 		storyDetail.isFetching,
 		t,
 	]);
+
 	const [comments, setComments] = useState([
 		{
 			id: 1,
@@ -156,14 +160,16 @@ const BookDetailPage = () => {
 		};
 		setComments([newComment, ...comments]);
 	};
+	if (storyDetail.isFetching || storyDetail.isLoading) {
+		return <LoadingScreen />;
+	}
 	return (
 		<Card style={{ padding: 16, borderRadius: 8 }}>
 			<Row gutter={[24, 24]} align="top">
-				{/* Bìa sách + Thông tin */}
 				<Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={6}>
 					<Space style={{ textAlign: 'center' }}>
 						<Image
-							src="./mimi.jpg"
+							src={storyDetail.data?.file?.url}
 							style={{
 								width: '100%',
 								maxWidth: 260,
@@ -177,25 +183,67 @@ const BookDetailPage = () => {
 					</Space>
 
 					<Descriptions column={1} colon={false} size="middle" bordered>
-						<Descriptions.Item label="Tác giả">Sưu tầm</Descriptions.Item>
-						<Descriptions.Item label="Nhà xuất bản">
-							NXB Việt Nam
+						<Descriptions.Item label={t('author')}>
+							{user?.name}
 						</Descriptions.Item>
-						<Descriptions.Item label="Thể loại">
-							Truyện cổ tích
+						<Descriptions.Item label={t('genre')}>
+							{storyDetail.data?.genre?.name || 'N/A'}
 						</Descriptions.Item>
-						<Descriptions.Item label="Lượt xem">3</Descriptions.Item>
-						<Descriptions.Item label="Lượt yêu thích">1</Descriptions.Item>
+						<Descriptions.Item label={t('language')}>
+							{storyDetail.data?.language === Language.VIETNAMESE
+								? t('vietnamese')
+								: storyDetail.data?.language === Language.HMONG
+								? t('hmong')
+								: t('english')}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('status')}>
+							{storyDetail.data?.status === StoryStatus.PENDING
+								? t('pending')
+								: storyDetail.data?.status === StoryStatus.PUBLISHED
+								? t('published')
+								: storyDetail.data?.status === StoryStatus.REJECTED
+								? t('rejected')
+								: storyDetail.data?.status === StoryStatus.HIDDEN
+								? t('hidden')
+								: t('updated')}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('uploadedDate')}>
+							{storyDetail.data?.uploadedDate
+								? dayjs(storyDetail.data?.uploadedDate).format(
+										'DD/MM/YYYY HH:mm:ss',
+								  )
+								: '-'}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('publishedDate')}>
+							{storyDetail.data?.publishedDate
+								? dayjs(storyDetail.data?.publishedDate).format(
+										'DD/MM/YYYY HH:mm:ss',
+								  )
+								: '-'}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('lastUpdatedDate')}>
+							{storyDetail.data?.lastUpdatedDate
+								? dayjs(storyDetail.data?.lastUpdatedDate).format(
+										'DD/MM/YYYY HH:mm:ss',
+								  )
+								: '-'}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('view')}>
+							{storyDetail.data?.viewCount || '0'}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('favorite')}>
+							{storyDetail.data?.favoriteCount || '0'}
+						</Descriptions.Item>
 					</Descriptions>
 				</Col>
 
 				{/* Nội dung sách */}
 				<Col xs={24} sm={24} md={24} lg={12} xl={14} xxl={18}>
 					<div style={{ paddingRight: 12 }}>
-						<Title level={2} style={{ marginBottom: 0 }}>
-							H’MONG FOLKLORE
+						<Title level={2} style={{ marginBottom: 24, color: '#146C94' }}>
+							{storyDetail.data?.title || 'N/A'}
 						</Title>
-						<Title level={4} style={{ margin: '4px 0' }}>
+						{/* <Title level={4} style={{ margin: '4px 0' }}>
 							CỔ TÍCH NGƯỜI H’MÔNG
 						</Title>
 						<Title
@@ -203,34 +251,10 @@ const BookDetailPage = () => {
 							style={{ marginTop: 0, marginBottom: 24, color: '#146C94' }}
 						>
 							ZAJ DAB NEEG HMOOB
-						</Title>
+						</Title> */}
 
 						<Paragraph style={paragraphStyle}>
-							On a high mountain, there was a big cave. In the cave, there was a
-							bad monster On a high mountain, there was a big cave. In the cave,
-							there was a bad monster On a high mountain, there was a big cave.
-							In the cave, there was a bad monster On a high mountain, there was
-							a big cave. In the cave, there was a bad monster On a high
-							mountain, there was a big cave. In the cave, there was a bad
-							monster On a high mountain, there was a big cave. In the cave,
-							there was a bad monster...
-						</Paragraph>
-						<Paragraph style={paragraphStyle}>
-							Hauv ib lub roob siab ntawd, muaj ib lub qhov tsua loj heev Hauv
-							ib lub roob siab ntawd, muaj ib lub qhov tsua loj heev Hauv ib lub
-							roob siab ntawd, muaj ib lub qhov tsua loj heev Hauv ib lub roob
-							siab ntawd, muaj ib lub qhov tsua loj heev Hauv ib lub roob siab
-							ntawd, muaj ib lub qhov tsua loj heev Hauv ib lub roob siab ntawd,
-							muaj ib lub qhov tsua loj heev ...
-						</Paragraph>
-						<Paragraph style={paragraphStyle}>
-							Trên ngọn núi cao nọ, có một cái hang lớn. Trong hang có một con
-							quỷ dữ Trên ngọn núi cao nọ, có một cái hang lớn. Trong hang có
-							một con quỷ dữ Trên ngọn núi cao nọ, có một cái hang lớn. Trong
-							hang có một con quỷ dữ Trên ngọn núi cao nọ, có một cái hang lớn.
-							Trong hang có một con quỷ dữ Trên ngọn núi cao nọ, có một cái hang
-							lớn. Trong hang có một con quỷ dữ Trên ngọn núi cao nọ, có một cái
-							hang lớn. Trong hang có một con quỷ dữ...
+							{storyDetail.data?.description || 'N/A'}
 						</Paragraph>
 
 						<Space size="middle" style={{ marginTop: 32, flexWrap: 'wrap' }}>
@@ -276,7 +300,7 @@ const BookDetailPage = () => {
 						13 {t('comment')}
 					</Title>
 				</Divider>
-				<CommentList comments={comments} />
+				{/* <CommentList comments={comments} /> */}
 			</Space>
 		</Card>
 	);

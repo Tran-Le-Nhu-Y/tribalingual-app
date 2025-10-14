@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage, TextEditor, LoadingScreen } from '../../components';
+import { TextEditor, LoadingScreen } from '../../components';
 import Title from 'antd/es/typography/Title';
 import {
 	Form,
 	Input,
 	Button,
 	Space,
-	Select,
 	Card,
 	App,
-	Spin,
-	type UploadFile,
 	Descriptions,
+	Image,
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useNavigate, useParams } from 'react-router';
-import { Language, PathHolders, RoutePaths } from '../../util';
-import { useGetFileById, useGetGenres, useGetStoryById } from '../../service';
-import type { GetQuery } from '../../@types/queries';
+import { Language, PathHolders, RoutePaths, StoryStatus } from '../../util';
+import { useGetStoryById } from '../../service';
 import { useAuth0 } from '@auth0/auth0-react';
 import dayjs from 'dayjs';
 
@@ -36,8 +33,6 @@ const StoryUploadedDetailPage: React.FC = () => {
 	});
 	useEffect(() => {
 		if (storyDetail.isFetching || !storyDetail.data) return;
-		setFileId(storyDetail.data.fileId ?? '');
-		form.setFieldsValue(storyDetail.data);
 		if (storyDetail.isError) {
 			notification.error({
 				message: t('dataLoadingError'),
@@ -46,59 +41,12 @@ const StoryUploadedDetailPage: React.FC = () => {
 			});
 		}
 	}, [
-		storyDetail.data,
-		storyDetail.isFetching,
-		storyDetail.isError,
 		notification,
-		form,
+		storyDetail.data,
+		storyDetail.isError,
+		storyDetail.isFetching,
 		t,
 	]);
-	//Get all genre
-	const [genresQuery] = useState<GetQuery>({
-		offset: 0,
-		limit: 20,
-	});
-	const genres = useGetGenres(genresQuery!, {
-		skip: !genresQuery,
-	});
-	useEffect(() => {
-		if (genres.isError) {
-			notification.error({
-				message: t('dataLoadingError'),
-				description: t('genreLoadingErrorDescription'),
-				placement: 'topRight',
-			});
-		}
-	}, [genres.data, genres.isError, notification, t]);
-	//file
-	const [fileList, setFileList] = useState<UploadFile[]>([]);
-	const [fileId, setFileId] = useState<string>('');
-	const [fileloading] = useState(false);
-
-	const file = useGetFileById(fileId, { skip: !fileId });
-	useEffect(() => {
-		if (!fileId) {
-			setFileList([]);
-			return;
-		}
-		if (file.data) {
-			setFileList([
-				{
-					uid: file.data.id,
-					name: file.data.name,
-					status: 'done',
-					url: file.data.url,
-				},
-			]);
-		}
-
-		if (file.isError) {
-			notification.error({
-				message: t('dataLoadingError'),
-				placement: 'topRight',
-			});
-		}
-	}, [file.data, file.isError, fileId, notification, t]);
 
 	const translatedLanguages = Object.values(Language).filter(
 		(lang) => lang !== storyDetail.data?.language,
@@ -130,10 +78,24 @@ const StoryUploadedDetailPage: React.FC = () => {
 				}}
 				level={3}
 			>
-				{t('approveStory')}
+				{t('storyDetail')}
 			</Title>
 
 			<Form form={form} layout="vertical" initialValues={storyDetail.data}>
+				<Form.Item>
+					<Image
+						src={storyDetail.data?.file?.url}
+						style={{
+							width: '100%',
+							maxWidth: 260,
+							aspectRatio: '3/4',
+							objectFit: 'cover',
+							borderRadius: 12,
+							marginBottom: 16,
+							boxShadow: '0 6px 14px rgba(0,0,0,0.15)',
+						}}
+					/>
+				</Form.Item>
 				<Descriptions
 					column={1}
 					colon={false}
@@ -144,8 +106,26 @@ const StoryUploadedDetailPage: React.FC = () => {
 					<Descriptions.Item label={t('author')}>
 						{user?.name}
 					</Descriptions.Item>
+					<Descriptions.Item label={t('genre')}>
+						{storyDetail.data?.genre?.name || 'N/A'}
+					</Descriptions.Item>
+					<Descriptions.Item label={t('language')}>
+						{storyDetail.data?.language === Language.VIETNAMESE
+							? t('vietnamese')
+							: storyDetail.data?.language === Language.HMONG
+							? t('hmong')
+							: t('english')}
+					</Descriptions.Item>
 					<Descriptions.Item label={t('status')}>
-						{storyDetail.data?.status}
+						{storyDetail.data?.status === StoryStatus.PENDING
+							? t('pending')
+							: storyDetail.data?.status === StoryStatus.PUBLISHED
+							? t('published')
+							: storyDetail.data?.status === StoryStatus.REJECTED
+							? t('rejected')
+							: storyDetail.data?.status === StoryStatus.HIDDEN
+							? t('hidden')
+							: t('updated')}
 					</Descriptions.Item>
 					<Descriptions.Item label={t('uploadedDate')}>
 						{storyDetail.data?.uploadedDate
@@ -174,79 +154,17 @@ const StoryUploadedDetailPage: React.FC = () => {
 					name="title"
 					rules={[{ message: t('storyTitleRequired') }]}
 				>
-					<Input placeholder={t('storyTitlePlaceholder')} />
+					<Input placeholder={t('storyTitlePlaceholder')} readOnly />
 				</Form.Item>
 
 				<Form.Item label={t('storyDescription')} name="description">
-					<TextArea rows={4} placeholder={t('storyDescriptionPlaceholder')} />
+					<TextArea
+						rows={5}
+						placeholder={t('storyDescriptionPlaceholder')}
+						readOnly
+					/>
 				</Form.Item>
 
-				<Form.Item label={t('uploadImage')}>
-					<Space
-						style={{
-							position: 'relative',
-							display: 'block',
-							width: 'fit-content',
-						}}
-					>
-						<UploadImage maxCount={1} fileList={fileList} />
-						{fileloading && (
-							<Space
-								style={{
-									position: 'absolute',
-									top: 0,
-									left: 0,
-									width: '100%',
-									height: '100%',
-									background: 'rgba(255, 255, 255, 0.6)',
-									display: 'flex',
-									justifyContent: 'center',
-									alignItems: 'center',
-									zIndex: 10,
-								}}
-							>
-								<Spin />
-							</Space>
-						)}
-					</Space>
-				</Form.Item>
-				<Space
-					style={{
-						display: 'flex',
-						marginBottom: 30,
-						alignItems: 'center',
-					}}
-				>
-					<Form.Item
-						label={t('genre')}
-						name="genreId"
-						rules={[{ message: t('storyGenreRequired') }]}
-					>
-						<Select
-							placeholder={t('chooseGenre')}
-							options={genres.data?.content.map((g) => ({
-								label: g.name,
-								value: g.id,
-							}))}
-							value={storyDetail.data?.genreId}
-							style={{ width: 200 }}
-							disabled
-						/>
-					</Form.Item>
-					<Form.Item label={t('language')}>
-						<Select
-							value={
-								storyDetail.data?.language === Language.VIETNAMESE
-									? t('vietnamese')
-									: storyDetail.data?.language === Language.ENGLISH
-									? t('english')
-									: t('hmong')
-							}
-							style={{ width: 200 }}
-							disabled
-						/>
-					</Form.Item>
-				</Space>
 				<Form.Item
 					label={t('storyContent')}
 					name={

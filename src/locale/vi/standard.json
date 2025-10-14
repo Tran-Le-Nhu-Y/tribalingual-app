@@ -37,6 +37,12 @@
 	"cannotSyncAccount": "Không thể đồng bộ tài khoản.",
 	"tryAgainLater": "Vui lòng thử lại sau.",
 	"userSyncError": "Lỗi đồng bộ người dùng",
+	"storyDetail": "Chi tiết câu chuyện",
+	"pending": "Đang chờ duyệt",
+	"published": "Đã phát hành",
+	"rejected": "Từ chối duyệt",
+	"updated": "Đã cập nhật",
+	"hidden": "Đã ẩn",
 
 	"read": "Đã đọc",
 	"favorite": "Yêu thích",

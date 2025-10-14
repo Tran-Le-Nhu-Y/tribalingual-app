@@ -21,7 +21,31 @@ function toEntity(response: StoryResponse): Story {
 		lastUpdatedDate: response.lastUpdatedDate,
 		publishedDate: response.publishedDate,
 		uploadedDate: response.uploadedDate,
+
+		file: response.file
+			? {
+					id: response.file.id,
+					storyId: response.file.storyId,
+					name: response.file.name,
+					mime_type: response.file.mime_type,
+					size: response.file.size,
+					url: response.file.url,
+					save_path: response.file.save_path,
+			  }
+			: null,
+
+		genre: response.genre
+			? {
+					id: response.genre.id,
+					name: response.genre.name,
+					description: response.genre.description,
+			  }
+			: null,
+
+		comments: response.comments ?? [],
 	};
+
 	return story;
 }
+
 export { toEntity };

@@ -43,6 +43,10 @@ declare interface StoryResponse {
 	viewCount: number;
 	commentCount: number;
 	favoriteCount: number;
+
+	file?: FileResponse | null;
+	genre?: GenreResponse | null;
+	comments?: CommentResponse[] | null;
 }
 
 declare interface CommentResponse {

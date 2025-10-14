@@ -6,15 +6,17 @@ import { SortStoryOption, StoryStatus } from '../../util';
 import type { Story } from '../../@types/entities';
 import { App } from 'antd';
 import { useGetStories } from '../../service';
+import type { GetStoryQuery } from '../../@types/queries';
 
 const HomePage = () => {
 	const { t } = useTranslation('standard');
 	const { notification } = App.useApp();
 
 	//Get all stories
-	const [storiesQuery] = useState<GetQuery>({
+	const [storiesQuery] = useState<GetStoryQuery>({
 		offset: 0,
 		limit: 10, //  10 item
+		status: StoryStatus.PUBLISHED,
 	});
 	const stories = useGetStories(storiesQuery!, {
 		skip: !storiesQuery,
@@ -32,15 +34,13 @@ const HomePage = () => {
 	const content = useMemo(() => {
 		if (stories.isError) return [];
 		if (stories.data?.content) {
-			return stories.data.content
-				.filter((story) => story.status !== StoryStatus.PENDING) // not get story pending
-				.map(
-					(story) =>
-						({
-							...story,
-							id: story.id,
-						} as Story),
-				);
+			return stories.data.content.map(
+				(story) =>
+					({
+						...story,
+						id: story.id,
+					} as Story),
+			);
 		}
 		return [];
 	}, [stories.data?.content, stories.isError]);
