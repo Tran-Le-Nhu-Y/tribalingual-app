@@ -18,6 +18,7 @@ import {
 	GenreManagementPage,
 	HomePage,
 	ProfilePage,
+	StoryUploadedDetailPage,
 	StoryManagementPage,
 	UploadStoryPage,
 } from './pages/index.ts';
@@ -38,7 +39,14 @@ const router = createBrowserRouter(
 			<Route path={RoutePaths.STORY_DETAIL} element={<BookDetailPage />} />
 
 			<Route path={RoutePaths.ADMIN} element={<StoryManagementPage />} />
-			<Route path={RoutePaths.APPROVE_STORY} element={<ApproveStoryPage />} />
+			<Route
+				path={RoutePaths.APPROVE_STORY_UPLOADED}
+				element={<ApproveStoryPage />}
+			/>
+			<Route
+				path={RoutePaths.STORY_UPLOADED_DETAIL}
+				element={<StoryUploadedDetailPage />}
+			/>
 			<Route path={RoutePaths.GENRE} element={<GenreManagementPage />} />
 		</Route>,
 	),

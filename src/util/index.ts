@@ -20,7 +20,8 @@ const ADMIN = '/admin';
 const GENRE = '/genre';
 export const RoutePaths = {
 	ADMIN,
-	APPROVE_STORY: `${ADMIN}/story/:${PathHolders.STORY_ID}/approve`,
+	APPROVE_STORY_UPLOADED: `${ADMIN}/story-uploaded/:${PathHolders.STORY_ID}/approve`,
+	STORY_UPLOADED_DETAIL: `${ADMIN}/story-uploaded/:${PathHolders.STORY_ID}/detail`,
 
 	GENRE,
 

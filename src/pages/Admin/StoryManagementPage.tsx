@@ -299,7 +299,7 @@ const StoryManagementPage: React.FC = () => {
 									icon={<EyeOutlined />}
 									onClick={() =>
 										navigate(
-											RoutePaths.STORY_DETAIL.replace(
+											RoutePaths.STORY_UPLOADED_DETAIL.replace(
 												`:${PathHolders.STORY_ID}`,
 												String(params.id),
 											),
@@ -334,7 +334,7 @@ const StoryManagementPage: React.FC = () => {
 									icon={<CheckOutlined />}
 									onClick={() =>
 										navigate(
-											RoutePaths.APPROVE_STORY.replace(
+											RoutePaths.APPROVE_STORY_UPLOADED.replace(
 												`:${PathHolders.STORY_ID}`,
 												String(params.id),
 											),

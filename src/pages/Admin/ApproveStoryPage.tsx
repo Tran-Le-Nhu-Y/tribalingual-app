@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useNavigate, useParams } from 'react-router';
-import { Language, PathHolders, StoryStatus } from '../../util';
+import { Language, PathHolders, RoutePaths, StoryStatus } from '../../util';
 import type { Story } from '../../@types/entities';
 import {
 	useDeleteFile,
@@ -29,6 +29,7 @@ import {
 } from '../../service';
 import type { UpdateStoryRequest } from '../../@types/requests';
 import type { GetQuery } from '../../@types/queries';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const originStory: Story = {
 	id: '',
@@ -53,6 +54,7 @@ const ApproveStoryPage: React.FC = () => {
 	const { notification, modal } = App.useApp();
 	const navigate = useNavigate();
 	const [form] = Form.useForm();
+	const { user } = useAuth0();
 	const storyId = useParams()[PathHolders.STORY_ID];
 	useEffect(() => {
 		setStory(originStory);
@@ -107,7 +109,6 @@ const ApproveStoryPage: React.FC = () => {
 	const [uploadFile] = useUploadFile();
 	const [deleteFileTrigger] = useDeleteFile();
 	const file = useGetFileById(fileId, { skip: !fileId });
-
 	useEffect(() => {
 		if (!fileId) {
 			setFileList([]);
@@ -143,7 +144,7 @@ const ApproveStoryPage: React.FC = () => {
 				id: storyId!,
 				genreId: values.genreId,
 				fileId: fileId ?? '',
-				userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+				userId: user?.sub || '',
 
 				title: values.title,
 				description: values.description,
@@ -159,7 +160,7 @@ const ApproveStoryPage: React.FC = () => {
 			if (status === StoryStatus.PUBLISHED) {
 				await publishStoryTrigger({
 					storyId: storyId!,
-					adminId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+					adminId: user?.sub || '',
 				}).unwrap();
 			}
 
@@ -170,7 +171,7 @@ const ApproveStoryPage: React.FC = () => {
 						: t('rejectSuccess'),
 				placement: 'topRight',
 			});
-			navigate(-1);
+			navigate(RoutePaths.ADMIN);
 		} catch (error) {
 			console.error('Approve error:', error);
 			notification.error({
@@ -193,7 +194,7 @@ const ApproveStoryPage: React.FC = () => {
 				if (story.fileId && story.fileId !== originStory.fileId) {
 					setStory((prev) => ({ ...prev, fileId: story.fileId }));
 				}
-				navigate(-1);
+				navigate(RoutePaths.ADMIN);
 			},
 		});
 	};

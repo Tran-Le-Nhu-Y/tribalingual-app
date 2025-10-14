@@ -386,11 +386,6 @@ const RootLayout = () => {
 										<MailOutlined />
 									</a>
 								</div>
-
-								{/* Copyright */}
-								<div style={{ fontSize: 13, color: '#ebe6e6ff' }}>
-									TribalLingual ©{new Date().getFullYear()}
-								</div>
 							</div>
 						</Footer>
 					</Layout>

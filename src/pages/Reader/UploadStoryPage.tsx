@@ -23,10 +23,13 @@ import {
 import type { Story } from '../../@types/entities';
 import { Language, StoryStatus } from '../../util';
 import type { CreateStoryRequest } from '../../@types/requests';
+import { useAuth0 } from '@auth0/auth0-react';
+import type { GetQuery } from '../../@types/queries';
 
 const UploadStoryPage: React.FC = () => {
 	const { t } = useTranslation('standard');
 	const { notification, modal } = App.useApp();
+	const { user } = useAuth0();
 	const initialStory = {
 		id: '',
 		authorId: '',
@@ -87,7 +90,7 @@ const UploadStoryPage: React.FC = () => {
 	const hanldeSubmit = async () => {
 		try {
 			const newStory: CreateStoryRequest = {
-				authorId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+				authorId: user?.sub || '',
 				genreId: story.genreId,
 				...(story.fileId ? { fileId: story.fileId } : {}),
 				language: story.language,
