@@ -27,6 +27,7 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { App as AntdApp } from 'antd';
 import { Auth0Provider } from '@auth0/auth0-react';
+
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<RootLayout />}>

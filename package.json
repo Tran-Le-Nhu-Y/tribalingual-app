@@ -29,6 +29,7 @@
 		"dayjs": "^1.11.18",
 		"framer-motion": "^12.23.22",
 		"i18next": "^25.5.0",
+		"jsonwebtoken": "^9.0.2",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"react-highlight-words": "^0.21.0",
@@ -38,6 +39,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.33.0",
+		"@types/jsonwebtoken": "^9.0.10",
 		"@types/react": "^19.1.10",
 		"@types/react-dom": "^19.1.7",
 		"@types/react-highlight-words": "^0.20.0",
