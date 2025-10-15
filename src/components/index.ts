@@ -1,4 +1,5 @@
 import CommentList from './CommentList';
+import Guard from './Guard';
 import LoadingScreen from './LoadingScreen';
 import NewBooksList from './NewBookList';
 import RankingList from './RankingList';
@@ -18,4 +19,5 @@ export {
 	CommentList,
 	RankingListItem,
 	LoadingScreen,
+	Guard,
 };
