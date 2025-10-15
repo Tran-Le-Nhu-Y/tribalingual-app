@@ -6,11 +6,22 @@ import type {
 } from '@auth0/auth0-react';
 import { createContext, useContext } from 'react';
 
-export type Role = 'ADMIN' | 'READER';
+export type PermissionKey =
+	| 'READ_GENRE'
+	| 'CREATE_GENRE'
+	| 'UPDATE_GENRE'
+	| 'DELETE_GENRE';
+
+export const PermissionEnum: Record<PermissionKey, string> = {
+	READ_GENRE: 'read:genre',
+	CREATE_GENRE: 'create:genre',
+	UPDATE_GENRE: 'update:genre',
+	DELETE_GENRE: 'delete:genre',
+};
 
 export interface AuthenticatedUser extends Omit<User, 'sub'> {
 	id: string;
-	roles: Role[];
+	permissions: PermissionKey[];
 }
 
 export interface AuthzData {
@@ -18,7 +29,7 @@ export interface AuthzData {
 	isLoading: boolean;
 	isAuthenticated: boolean;
 	loginWithRedirect: (
-		options?: RedirectLoginOptions<AppState>,
+		options?: RedirectLoginOptions<AppState>
 	) => Promise<void>;
 	logout: (options?: LogoutOptions) => Promise<void>;
 }
@@ -29,4 +40,5 @@ export const useAuthz = () => {
 	const ctx = useContext(AuthzContext);
 	if (ctx === undefined)
 		throw new Error('useAuthz must be used within AuthzProvider');
+	return ctx;
 };
