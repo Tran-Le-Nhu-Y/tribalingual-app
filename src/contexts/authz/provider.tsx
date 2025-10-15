@@ -2,6 +2,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import {
 	AuthzContext,
 	PermissionEnum,
+	tokenHolder,
 	type AuthzData,
 	type PermissionKey,
 } from '.';
@@ -55,6 +56,8 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 						permissions,
 					},
 				}));
+
+				tokenHolder.setAccessToken(token);
 			})
 			.catch(async (err) => {
 				console.error(err);

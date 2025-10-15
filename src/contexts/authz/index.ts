@@ -42,3 +42,21 @@ export const useAuthz = () => {
 		throw new Error('useAuthz must be used within AuthzProvider');
 	return ctx;
 };
+
+export class TokenHolder {
+	private accessToken: string | undefined;
+
+	constructor() {
+		this.accessToken = undefined;
+	}
+
+	getAccessToken() {
+		return this.accessToken;
+	}
+
+	setAccessToken(token: string) {
+		this.accessToken = token;
+	}
+}
+
+export const tokenHolder = new TokenHolder();
