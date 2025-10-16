@@ -7,7 +7,16 @@ import {
 	type PermissionKey,
 } from '.';
 import { useEffect, useState, type PropsWithChildren } from 'react';
-import * as jwt from 'jsonwebtoken';
+import * as jose from 'jose';
+
+async function getPayloadFromToken(token: string) {
+	const jwksUrl: string | undefined = import.meta.env.VITE_AUTH0_JWKS;
+	if (jwksUrl === undefined)
+		throw new Error('No VITE_AUTH0_JWKS environment variable is found.');
+	const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl));
+	const { payload } = await jose.jwtVerify(token, JWKS);
+	return payload;
+}
 
 const AuthzProvider = ({ children }: PropsWithChildren) => {
 	const {
@@ -25,20 +34,15 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 		logout: logout,
 	});
 	useEffect(() => {
-		if (!isAuthenticated) return;
+		if (!isAuthenticated || isLoading) return;
 		getAccessTokenSilently()
 			.then(async (token) => {
 				const currentUser = user!;
 				if (currentUser.sub === undefined)
 					throw new Error('Token error: No subject claim in access token');
 
-				const payload = jwt.decode(token, { json: true });
-				if (!payload)
-					throw new Error(
-						'Token error: Cannot retrieve payload from access token.'
-					);
-
-				const permissions = (currentUser['roles'] as string[])
+				const payload = await getPayloadFromToken(token);
+				const permissions = (payload['permissions'] as string[])
 					.map((value) => {
 						const entry = Object.entries(PermissionEnum).find(
 							([, v]) => v === value
@@ -48,6 +52,7 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 						return entry[0] as PermissionKey;
 					})
 					.filter((permission) => permission !== null);
+
 				setState((pre) => ({
 					...pre,
 					user: {
@@ -63,7 +68,7 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 				console.error(err);
 				await logout();
 			});
-	}, [getAccessTokenSilently, isAuthenticated, logout, user]);
+	}, [getAccessTokenSilently, isAuthenticated, isLoading, logout, user]);
 
 	return (
 		<AuthzContext.Provider value={state}>{children}</AuthzContext.Provider>
