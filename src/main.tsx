@@ -27,6 +27,7 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import { App as AntdApp } from 'antd';
 import { Auth0Provider } from '@auth0/auth0-react';
+import AuthzProvider from './contexts/authz/provider.tsx';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -49,8 +50,8 @@ const router = createBrowserRouter(
 				element={<StoryUploadedDetailPage />}
 			/>
 			<Route path={RoutePaths.GENRE} element={<GenreManagementPage />} />
-		</Route>,
-	),
+		</Route>
+	)
 );
 
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
@@ -62,14 +63,17 @@ createRoot(document.getElementById('root')!).render(
 		clientId={clientId}
 		authorizationParams={{
 			redirect_uri: window.location.origin,
+			audience: `${import.meta.env.VITE_API_GATEWAY}/api`,
 		}}
 	>
-		<Provider store={store}>
-			<MantineProvider>
-				<AntdApp>
-					<RouterProvider router={router} />
-				</AntdApp>
-			</MantineProvider>
-		</Provider>
-	</Auth0Provider>,
+		<AuthzProvider>
+			<Provider store={store}>
+				<MantineProvider>
+					<AntdApp>
+						<RouterProvider router={router} />
+					</AntdApp>
+				</MantineProvider>
+			</Provider>
+		</AuthzProvider>
+	</Auth0Provider>
 );
