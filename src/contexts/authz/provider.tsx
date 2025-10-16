@@ -10,9 +10,10 @@ import { useEffect, useState, type PropsWithChildren } from 'react';
 import * as jose from 'jose';
 
 async function getPayloadFromToken(token: string) {
-	const jwksUrl: string | undefined = import.meta.env.VITE_AUTH0_JWKS;
-	if (jwksUrl === undefined)
+	const domain: string | undefined = import.meta.env.VITE_AUTH0_DOMAIN;
+	if (domain === undefined)
 		throw new Error('No VITE_AUTH0_JWKS environment variable is found.');
+	const jwksUrl = new URL(`https://${domain}/.well-known/jwks.json`);
 	const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl));
 	const { payload } = await jose.jwtVerify(token, JWKS);
 	return payload;
