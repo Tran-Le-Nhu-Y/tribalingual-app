@@ -217,14 +217,17 @@ const GenreManagementPage: React.FC = () => {
 						>
 							{t('genreManagement')}
 						</Title>
-						<Button
-							type="primary"
-							icon={<PlusOutlined />}
-							onClick={() => handleAdd()}
-							style={{ borderRadius: 8 }}
-						>
-							{t('addGenre')}
-						</Button>
+						<Guard requiredPermissions={['CREATE_GENRE', 'UPDATE_GENRE']}>
+							<Button
+								type="primary"
+								aria-label="Add genre"
+								icon={<PlusOutlined />}
+								onClick={() => handleAdd()}
+								style={{ borderRadius: 8 }}
+							>
+								{t('addGenre')}
+							</Button>
+						</Guard>
 					</Space>
 
 					<Table
