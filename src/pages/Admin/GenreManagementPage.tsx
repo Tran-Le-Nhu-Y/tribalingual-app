@@ -28,6 +28,7 @@ import type {
 	UpdateGenreRequest,
 } from '../../@types/requests';
 import type { GetQuery } from '../../@types/queries';
+import { Guard } from '../../components';
 
 const { Title } = Typography;
 
@@ -107,7 +108,7 @@ const GenreManagementPage: React.FC = () => {
 					({
 						...genre,
 						id: genre.id,
-					} as Genre),
+					} as Genre)
 			);
 		else return [];
 	}, [genres.data?.content, genres.isError]);
@@ -216,14 +217,17 @@ const GenreManagementPage: React.FC = () => {
 						>
 							{t('genreManagement')}
 						</Title>
-						<Button
-							type="primary"
-							icon={<PlusOutlined />}
-							onClick={() => handleAdd()}
-							style={{ borderRadius: 8 }}
-						>
-							{t('addGenre')}
-						</Button>
+						<Guard requiredPermissions={['CREATE_GENRE', 'UPDATE_GENRE']}>
+							<Button
+								type="primary"
+								aria-label="Add genre"
+								icon={<PlusOutlined />}
+								onClick={() => handleAdd()}
+								style={{ borderRadius: 8 }}
+							>
+								{t('addGenre')}
+							</Button>
+						</Guard>
 					</Space>
 
 					<Table
@@ -246,28 +250,30 @@ const GenreManagementPage: React.FC = () => {
 					/>
 				</Card>
 
-				<Modal
-					title={editingGenre ? t('updateGenre') : t('addGenre')}
-					open={openModal}
-					onOk={() => handleSave()}
-					onCancel={() => setOpenModal(false)}
-					okText={t('save')}
-					cancelText={t('cancel')}
-					centered
-				>
-					<Form form={form} layout="vertical">
-						<Form.Item
-							label={t('genreName')}
-							name="name"
-							rules={[{ required: true, message: t('genreNameRequired') }]}
-						>
-							<Input placeholder={t('enterGenreName')} />
-						</Form.Item>
-						<Form.Item label={t('description')} name="description">
-							<Input.TextArea rows={3} placeholder={t('enterDescription')} />
-						</Form.Item>
-					</Form>
-				</Modal>
+				<Guard requiredPermissions={['CREATE_GENRE', 'UPDATE_GENRE']}>
+					<Modal
+						title={editingGenre ? t('updateGenre') : t('addGenre')}
+						open={openModal}
+						onOk={() => handleSave()}
+						onCancel={() => setOpenModal(false)}
+						okText={t('save')}
+						cancelText={t('cancel')}
+						centered
+					>
+						<Form form={form} layout="vertical">
+							<Form.Item
+								label={t('genreName')}
+								name="name"
+								rules={[{ required: true, message: t('genreNameRequired') }]}
+							>
+								<Input placeholder={t('enterGenreName')} />
+							</Form.Item>
+							<Form.Item label={t('description')} name="description">
+								<Input.TextArea rows={3} placeholder={t('enterDescription')} />
+							</Form.Item>
+						</Form>
+					</Modal>
+				</Guard>
 			</ConfigProvider>
 		</>
 	);

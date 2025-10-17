@@ -1,12 +1,13 @@
 import type { BaseQueryFn, FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import type {
+import {
 	AxiosError,
-	AxiosInstance,
-	AxiosRequestConfig,
-	CreateAxiosDefaults,
+	type AxiosInstance,
+	type AxiosRequestConfig,
+	type CreateAxiosDefaults,
 } from 'axios';
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
+import { tokenHolder } from '../contexts/authz';
 
 export const PathHolders = {
 	STORY_ID: 'storyId',
@@ -83,7 +84,7 @@ export const axiosQueryHandler = async <T>(func: () => Promise<T>) => {
 
 export const axiosBaseQuery =
 	(
-		instance: AxiosInstance,
+		instance: AxiosInstance
 	): BaseQueryFn<
 		{
 			url: string;
@@ -97,19 +98,26 @@ export const axiosBaseQuery =
 	> =>
 	async ({ url, method, body, params, headers }) => {
 		try {
+			const accessToken = tokenHolder.getAccessToken();
+			if (accessToken === undefined)
+				throw new AxiosError('No access token is found.');
+
 			const result = await instance({
 				url,
 				method,
 				data: body,
 				params,
-				headers,
+				headers: {
+					...headers,
+					Authorization: `Bearer ${accessToken}`,
+				},
 			});
 			return { data: result.data };
 		} catch (axiosError) {
 			const err = axiosError as AxiosError;
 			return {
 				error: {
-					status: err.response!.status!,
+					status: err.response?.status || 500,
 					data: err.response?.data || err.message,
 				},
 			};
@@ -126,7 +134,7 @@ export function createAxiosInstance(config?: CreateAxiosDefaults) {
 		function (error) {
 			// Do something with request error
 			return Promise.reject(error);
-		},
+		}
 	);
 
 	return instance;
