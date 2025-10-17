@@ -1,5 +1,4 @@
 import { Language, StoryStatus } from './../util/index';
-import type { Story, User } from './entities';
 declare interface PagingWrapper<T> {
 	content: T[];
 	page_number: number;
@@ -53,6 +52,6 @@ declare interface CommentResponse {
 	id: string;
 	content: string;
 	createdAt: Date;
-	story: Story;
-	user: User;
+	userId: string;
+	storyId: string;
 }

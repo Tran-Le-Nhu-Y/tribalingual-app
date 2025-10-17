@@ -17,10 +17,11 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import { useParams } from 'react-router';
-import { useGetStoryById } from '../../service';
+import { useGetAllComments, useGetStoryById } from '../../service';
 import { Language, PathHolders, StoryStatus } from '../../util';
 import { useAuth0 } from '@auth0/auth0-react';
 import dayjs from 'dayjs';
+import type { GetCommentQuery } from '../../@types/queries';
 
 const { Title, Paragraph } = Typography;
 const paragraphStyle = {
@@ -56,111 +57,43 @@ const BookDetailPage = () => {
 		t,
 	]);
 
-	const [comments, setComments] = useState([
-		{
-			id: 1,
-			author: 'Như Ý',
-			avatar: 'https://i.pravatar.cc/150?img=1',
-			content: 'Bài viết này hay quá 👍',
-			datetime: '2025-10-01 10:30',
-		},
-		{
-			id: 2,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 3,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 4,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 5,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 6,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 7,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 8,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 9,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 10,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 11,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 12,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-		{
-			id: 13,
-			author: 'Minh',
-			avatar: 'https://i.pravatar.cc/150?img=2',
-			content: 'Mình cũng thấy vậy 😍',
-			datetime: '2025-10-01 11:00',
-		},
-	]);
-	// Xử lý submit comment
-	const handleAddComment = (values: { content: string }) => {
-		const newComment = {
-			id: comments.length + 1,
-			author: 'Bạn đọc', // có thể lấy từ user login
-			avatar: 'https://i.pravatar.cc/150?img=5',
-			content: values.content,
-			datetime: new Date().toLocaleString(),
-		};
-		setComments([newComment, ...comments]);
-	};
-	if (storyDetail.isFetching || storyDetail.isLoading) {
+	//Get all comment of story
+	const [commnetsQuery] = useState<GetCommentQuery>({
+		offset: 0,
+		limit: 5, //  5 item
+		storyId: storyId!,
+	});
+	const comments = useGetAllComments(commnetsQuery!, {
+		skip: !commnetsQuery,
+	});
+	useEffect(() => {
+		if (comments.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('commentLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [comments.data, comments.isError, notification, t]);
+
+	// // Xử lý submit comment
+	// const handleAddComment = (values: { content: string }) => {
+	// 	const newComment = {
+	// 		id: comments.length + 1,
+	// 		author: 'Bạn đọc', // có thể lấy từ user login
+	// 		avatar: 'https://i.pravatar.cc/150?img=5',
+	// 		content: values.content,
+	// 		datetime: new Date().toLocaleString(),
+	// 	};
+	// 	setComments([newComment, ...comments]);
+	// };
+
+	if (
+		storyDetail.isFetching ||
+		storyDetail.isLoading ||
+		comments.isLoading ||
+		comments.isFetching
+	) {
 		return <LoadingScreen />;
 	}
 	return (
@@ -276,7 +209,7 @@ const BookDetailPage = () => {
 				{/* Comment list */}
 				<Space direction="vertical" style={{ width: '100%', marginTop: 32 }}>
 					<Form
-						onFinish={handleAddComment}
+						// onFinish={handleAddComment}
 						layout="vertical"
 						style={{ marginTop: 16 }}
 					>
@@ -298,7 +231,7 @@ const BookDetailPage = () => {
 					</Form>
 					<Divider orientation="left" style={{ borderColor: '#d9d9d9' }}>
 						<Title level={5} style={{ margin: 0, color: 'grey' }}>
-							13 {t('comment')}
+							{storyDetail.data?.commentCount ?? 0} {t('comment')}
 						</Title>
 					</Divider>
 					{/* <CommentList comments={comments} /> */}

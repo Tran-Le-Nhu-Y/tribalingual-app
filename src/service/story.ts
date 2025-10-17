@@ -2,22 +2,27 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from '../util';
 import { tribalingualInstance } from './instance';
 import { DeleteError } from '../util/errors';
-import type { Story } from '../@types/entities';
-import { toEntity } from './mapper/story-mapper';
-import type { PagingWrapper, StoryResponse } from '../@types/response';
+import type { Comment, Story } from '../@types/entities';
+import { toStoryEntity } from './mapper/story-mapper';
+import type {
+	CommentResponse,
+	PagingWrapper,
+	StoryResponse,
+} from '../@types/response';
 import type {
 	CreateStoryRequest,
 	DeleteStoryRequest,
 	PublishStoryRequest,
 	UpdateStoryRequest,
 } from '../@types/requests';
-import type { GetStoryQuery } from '../@types/queries';
+import type { GetCommentQuery, GetStoryQuery } from '../@types/queries';
+import { toCommentEntity } from './mapper/comment-mapper';
 
 const EXTENSION_URL = 'api/v1/story';
 export const storyApi = createApi({
 	reducerPath: 'storyApi',
 	baseQuery: axiosBaseQuery(tribalingualInstance),
-	tagTypes: ['PagingStory', 'Story'],
+	tagTypes: ['PagingStory', 'Story', 'PagingComment', 'Comment'],
 	endpoints: (builder) => ({
 		getStoryById: builder.query<Story, string>({
 			query: (genreId: string) => ({
@@ -38,7 +43,7 @@ export const storyApi = createApi({
 				return baseQueryReturnValue.status;
 			},
 			transformResponse(rawResult: StoryResponse) {
-				return toEntity(rawResult);
+				return toStoryEntity(rawResult);
 			},
 		}),
 
@@ -82,8 +87,8 @@ export const storyApi = createApi({
 						content: [],
 					};
 				}
-				// Map each GenreResponse to Genre entity
-				const mappedContent: Story[] = content.map(toEntity);
+				// Map each StoryResponse to Story entity
+				const mappedContent: Story[] = content.map(toStoryEntity);
 
 				return {
 					...rawResult,
@@ -159,6 +164,56 @@ export const storyApi = createApi({
 				return DeleteError.UNKNOWN_ERROR;
 			},
 		}),
+
+		// comment
+		getAllComments: builder.query<PagingWrapper<Comment>, GetCommentQuery>({
+			query: ({ offset = 0, limit = 100, storyId }) => ({
+				url: `/${EXTENSION_URL}/${storyId}/comments/all`,
+				method: 'GET',
+				params: {
+					offset: offset,
+					limit: limit,
+				},
+				headers: { 'Cache-Control': 'no-cache' },
+			}),
+
+			providesTags(result) {
+				const pagingTag = {
+					type: 'PagingComment',
+					id: `${result?.page_number}-${result?.total_pages}-${result?.page_size}-${result?.total_elements}`,
+				} as const;
+
+				return result
+					? [
+							...result.content.map(
+								({ id }) => ({ type: 'Comment', id } as const),
+							),
+							pagingTag,
+					  ]
+					: [pagingTag];
+			},
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+			transformResponse(
+				rawResult: PagingWrapper<CommentResponse>,
+			): PagingWrapper<Comment> {
+				const content = rawResult.content;
+				if (!content || content.length === 0) {
+					return {
+						...rawResult,
+						content: [],
+					};
+				}
+				// Map each CommentResponse to Comment entity
+				const mappedContent: Comment[] = content.map(toCommentEntity);
+
+				return {
+					...rawResult,
+					content: mappedContent,
+				};
+			},
+		}),
 	}),
 });
 
@@ -171,4 +226,5 @@ export const {
 	useUpdateStoryMutation,
 	useDeleteStoryMutation,
 	usePublishStoryMutation,
+	useGetAllCommentsQuery,
 } = storyApi;

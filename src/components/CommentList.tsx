@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { List, Avatar, Typography, Space, Card, Button } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const { Text, Paragraph } = Typography;
 
@@ -13,21 +14,20 @@ interface CommentItem {
 
 interface CommentListProps {
 	comments: CommentItem[];
+	onLoadMore?: () => void;
+	hasMore?: boolean;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ comments }) => {
-	const [visibleCount, setVisibleCount] = useState(5);
-
-	const visibleComments = comments.slice(0, visibleCount);
-
-	const handleLoadMore = () => {
-		setVisibleCount((prev) => prev + 5);
-	};
-
+const CommentList: React.FC<CommentListProps> = ({
+	comments,
+	onLoadMore,
+	hasMore,
+}) => {
+	const { t } = useTranslation('standard');
 	return (
 		<>
 			<List
-				dataSource={visibleComments}
+				dataSource={comments}
 				renderItem={(item) => (
 					<List.Item
 						key={item.id}
@@ -64,9 +64,9 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
 				)}
 			/>
 
-			{visibleCount < comments.length && (
+			{hasMore && (
 				<Space style={{ textAlign: 'center', marginTop: 16 }}>
-					<Button onClick={handleLoadMore}>Xem thêm bình luận</Button>
+					<Button onClick={onLoadMore}>{t('seeMoreComments')}</Button>
 				</Space>
 			)}
 		</>

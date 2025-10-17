@@ -1,7 +1,7 @@
 import type { Story } from '../../@types/entities';
 import type { StoryResponse } from '../../@types/response';
 
-function toEntity(response: StoryResponse): Story {
+function toStoryEntity(response: StoryResponse): Story {
 	const story: Story = {
 		id: response.id,
 		authorId: response.authorId,
@@ -48,4 +48,4 @@ function toEntity(response: StoryResponse): Story {
 	return story;
 }
 
-export { toEntity };
+export { toStoryEntity };

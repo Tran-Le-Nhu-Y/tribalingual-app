@@ -27,8 +27,8 @@ import {
 	useUpdateStoryMutation as useUpdateStory,
 	useDeleteStoryMutation as useDeleteStory,
 	usePublishStoryMutation as usePublishStory,
+	useGetAllCommentsQuery as useGetAllComments,
 } from './story';
-
 export {
 	useGetStories,
 	useGetStoryById,
@@ -36,4 +36,5 @@ export {
 	useUpdateStory,
 	useDeleteStory,
 	usePublishStory,
+	useGetAllComments,
 };

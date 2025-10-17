@@ -37,7 +37,6 @@
 	"cannotSyncAccount": "Không thể đồng bộ tài khoản.",
 	"tryAgainLater": "Vui lòng thử lại sau.",
 	"userSyncError": "Lỗi đồng bộ người dùng",
-	"storyDetail": "Chi tiết câu chuyện",
 	"pending": "Đang chờ duyệt",
 	"published": "Đã phát hành",
 	"rejected": "Từ chối duyệt",
@@ -94,6 +93,10 @@
 	"createStoryFailed": "Đăng tải câu chuyện thất bại!",
 
 	"approveStory": "Duyệt câu chuyện",
+
+	"storyDetail": "Chi tiết câu chuyện",
+	"commentLoadingErrorDescription": "Không thể tải danh sách các bình luận. Vui lòng thử lại.",
+	"seeMoreComments": "Xem thêm bình luận",
 
 	"genreManagement": "Quản lý thể loại truyện",
 	"genreName": "Tên thể loại",
