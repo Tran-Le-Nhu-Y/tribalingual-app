@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
 	HomeOutlined,
 	BookOutlined,
@@ -12,6 +12,7 @@ import {
 	HeartOutlined,
 	FormOutlined,
 	SnippetsOutlined,
+	CarryOutOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import {
@@ -33,64 +34,78 @@ import { useTranslation } from 'react-i18next';
 import { appComponents, appTheme } from '../theme/theme';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LoadingScreen } from '../components';
+import { useAuthz, type PermissionKey } from '../contexts/authz';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
+
+type MenuItem = {
+	key: string;
+	icon: React.ReactNode;
+	label: React.ReactNode;
+	requiredPermissions?: PermissionKey[];
+};
 
 const RootLayout = () => {
 	const { t } = useTranslation('standard');
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { pathname } = location;
-	const { user, isAuthenticated, isLoading, loginWithRedirect, logout } =
-		useAuth0();
-
-	const items: MenuProps['items'] = [
-		{ key: RoutePaths.HOME, icon: <HomeOutlined />, label: t('homePage') },
-		{
-			key: RoutePaths.UPLOAD_STORY,
-			icon: <FormOutlined />,
-			label: t('uploadStory'),
-		},
-		{
-			key: RoutePaths.STORY,
-			icon: <BookOutlined />,
-			label: t('bookStorage'),
-		},
-		{
-			key: RoutePaths.FAVORITEBOOK,
-			icon: <HeartOutlined />,
-			label: t('favorite'),
-		},
-		{ key: RoutePaths.PROFILE, icon: <UserOutlined />, label: t('account') },
-		{
-			key: RoutePaths.STORY_DETAIL,
-			icon: <LogoutOutlined />,
-			label: t('logout'),
-		},
-		{
-			key: RoutePaths.ADMIN,
-			icon: <LogoutOutlined />,
-			label: 'Admin',
-		},
-		{
-			key: RoutePaths.GENRE,
-			icon: <SnippetsOutlined />,
-			label: 'Genre',
-		},
-	];
-
-	const selectedKey = pathname.startsWith(RoutePaths.ADMIN)
-		? RoutePaths.ADMIN
-		: items?.some((item) => item?.key === pathname)
-		? pathname
-		: RoutePaths.HOME;
+	const { user, isLoading, logout } = useAuth0();
 
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
 
 	const isMobile = screens.xs;
 	const isTablet = screens.sm && !screens.md;
+
+	const items = useMemo<MenuItem[]>(
+		() => [
+			{ key: RoutePaths.HOME, icon: <HomeOutlined />, label: t('homePage') },
+			{
+				key: RoutePaths.UPLOAD_STORY,
+				icon: <FormOutlined />,
+				label: t('uploadStory'),
+				requiredPermissions: ['CREATE_STORY'],
+			},
+			{
+				key: RoutePaths.STORY,
+				icon: <BookOutlined />,
+				label: t('bookStorage'),
+				requiredPermissions: ['READ_STORY'],
+			},
+			{
+				key: RoutePaths.FAVORITEBOOK,
+				icon: <HeartOutlined />,
+				label: t('favorite'),
+				requiredPermissions: ['CREATE_FAVORITE', 'DELETE_FAVORITE'],
+			},
+			{
+				key: RoutePaths.PROFILE,
+				icon: <UserOutlined />,
+				label: t('account'),
+			},
+			{
+				key: RoutePaths.ADMIN,
+				icon: <CarryOutOutlined />,
+				label: t('approveStory'),
+				requiredPermissions: ['PUBLISH_STORY'],
+			},
+			{
+				key: RoutePaths.GENRE,
+				icon: <SnippetsOutlined />,
+				label: t('genre'),
+				requiredPermissions: ['CREATE_GENRE'],
+			},
+		],
+		[t],
+	);
+
+	const selectedKey = pathname.startsWith(RoutePaths.ADMIN)
+		? RoutePaths.ADMIN
+		: items?.some((item) => item?.key === pathname)
+		? pathname
+		: RoutePaths.HOME;
 
 	const onMenuClick: MenuProps['onClick'] = (e) => {
 		if (e.key === 'logout') {
@@ -103,12 +118,23 @@ const RootLayout = () => {
 		}
 	};
 
+	const { user: userAuthz } = useAuthz();
+
+	const permittedItems = useMemo(() => {
+		if (!userAuthz) return [];
+		return items.filter((item) => {
+			if (!item.requiredPermissions) return true;
+			return item.requiredPermissions.some((perm: PermissionKey) =>
+				userAuthz.permissions.includes(perm),
+			);
+		});
+	}, [userAuthz, items]);
+
 	const renderSiderMenu = (collapsed: boolean) => (
 		<Menu
 			mode="inline"
 			selectedKeys={[selectedKey]}
 			onClick={onMenuClick}
-			items={items}
 			style={{
 				width: '100%',
 				borderInlineEnd: 'none',
@@ -116,6 +142,7 @@ const RootLayout = () => {
 				background: 'transparent',
 			}}
 			inlineCollapsed={collapsed}
+			items={permittedItems}
 		/>
 	);
 
@@ -123,10 +150,6 @@ const RootLayout = () => {
 
 	if (isLoading) {
 		return <LoadingScreen />;
-	}
-	if (!isAuthenticated) {
-		loginWithRedirect();
-		return null;
 	}
 	return (
 		<>

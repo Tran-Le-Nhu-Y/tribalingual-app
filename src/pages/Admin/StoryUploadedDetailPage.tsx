@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TextEditor, LoadingScreen } from '../../components';
+import { TextEditor, LoadingScreen, Guard } from '../../components';
 import Title from 'antd/es/typography/Title';
 import {
 	Form,
@@ -56,135 +56,136 @@ const StoryUploadedDetailPage: React.FC = () => {
 		return <LoadingScreen />;
 	}
 	return (
-		<Card
-			style={{
-				maxWidth: 920,
-				margin: '0 auto',
-				padding: '10px',
-				background: '#fff',
-				borderRadius: 8,
-				boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-			}}
-		>
-			<Title
+		<Guard requiredPermissions={['READ_STORY']}>
+			<Card
 				style={{
-					margin: 0,
-					paddingTop: 4,
-					marginBottom: 16,
-					color: '#03506F',
-					fontSize: 28,
-					fontWeight: 700,
-					letterSpacing: 1,
+					maxWidth: 920,
+					margin: '0 auto',
+					padding: '10px',
+					background: '#fff',
+					borderRadius: 8,
+					boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
 				}}
-				level={3}
 			>
-				{t('storyDetail')}
-			</Title>
-
-			<Form form={form} layout="vertical" initialValues={storyDetail.data}>
-				<Form.Item>
-					<Image
-						src={storyDetail.data?.file?.url}
-						style={{
-							width: '100%',
-							maxWidth: 260,
-							aspectRatio: '3/4',
-							objectFit: 'cover',
-							borderRadius: 12,
-							marginBottom: 16,
-							boxShadow: '0 6px 14px rgba(0,0,0,0.15)',
-						}}
-					/>
-				</Form.Item>
-				<Descriptions
-					column={1}
-					colon={false}
-					size="middle"
-					bordered
-					style={{ marginBottom: 20 }}
+				<Title
+					style={{
+						margin: 0,
+						paddingTop: 4,
+						marginBottom: 16,
+						color: '#03506F',
+						fontSize: 28,
+						fontWeight: 700,
+						letterSpacing: 1,
+					}}
+					level={3}
 				>
-					<Descriptions.Item label={t('author')}>
-						{user?.name}
-					</Descriptions.Item>
-					<Descriptions.Item label={t('genre')}>
-						{storyDetail.data?.genre?.name || 'N/A'}
-					</Descriptions.Item>
-					<Descriptions.Item label={t('language')}>
-						{storyDetail.data?.language === Language.VIETNAMESE
-							? t('vietnamese')
-							: storyDetail.data?.language === Language.HMONG
-							? t('hmong')
-							: t('english')}
-					</Descriptions.Item>
-					<Descriptions.Item label={t('status')}>
-						{storyDetail.data?.status === StoryStatus.PENDING
-							? t('pending')
-							: storyDetail.data?.status === StoryStatus.PUBLISHED
-							? t('published')
-							: storyDetail.data?.status === StoryStatus.REJECTED
-							? t('rejected')
-							: storyDetail.data?.status === StoryStatus.HIDDEN
-							? t('hidden')
-							: t('updated')}
-					</Descriptions.Item>
-					<Descriptions.Item label={t('uploadedDate')}>
-						{storyDetail.data?.uploadedDate
-							? dayjs(storyDetail.data?.uploadedDate).format(
-									'DD/MM/YYYY HH:mm:ss',
-							  )
-							: '-'}
-					</Descriptions.Item>
-					<Descriptions.Item label={t('publishedDate')}>
-						{storyDetail.data?.publishedDate
-							? dayjs(storyDetail.data?.publishedDate).format(
-									'DD/MM/YYYY HH:mm:ss',
-							  )
-							: '-'}
-					</Descriptions.Item>
-					<Descriptions.Item label={t('lastUpdatedDate')}>
-						{storyDetail.data?.lastUpdatedDate
-							? dayjs(storyDetail.data?.lastUpdatedDate).format(
-									'DD/MM/YYYY HH:mm:ss',
-							  )
-							: '-'}
-					</Descriptions.Item>
-				</Descriptions>
-				<Form.Item
-					label={t('storyTitle')}
-					name="title"
-					rules={[{ message: t('storyTitleRequired') }]}
-				>
-					<Input placeholder={t('storyTitlePlaceholder')} readOnly />
-				</Form.Item>
+					{t('storyDetail')}
+				</Title>
 
-				<Form.Item label={t('storyDescription')} name="description">
-					<TextArea
-						rows={5}
-						placeholder={t('storyDescriptionPlaceholder')}
-						readOnly
-					/>
-				</Form.Item>
-
-				<Form.Item
-					label={t('storyContent')}
-					name={
-						storyDetail.data?.language === Language.VIETNAMESE
-							? 'vietnameseContent'
-							: storyDetail.data?.language === Language.ENGLISH
-							? 'englishContent'
-							: 'hmongContent'
-					}
-				>
-					<TextEditor readOnly={true} />
-				</Form.Item>
-				{translatedLanguages.map((lang) => (
-					<Card
-						key={lang}
-						style={{ marginTop: 20, background: '#fafafa', borderRadius: 6 }}
-						size="small"
-						title={`${t('translateTo')} ${lang}`}
+				<Form form={form} layout="vertical" initialValues={storyDetail.data}>
+					<Form.Item>
+						<Image
+							src={storyDetail.data?.file?.url}
+							style={{
+								width: '100%',
+								maxWidth: 260,
+								aspectRatio: '3/4',
+								objectFit: 'cover',
+								borderRadius: 12,
+								marginBottom: 16,
+								boxShadow: '0 6px 14px rgba(0,0,0,0.15)',
+							}}
+						/>
+					</Form.Item>
+					<Descriptions
+						column={1}
+						colon={false}
+						size="middle"
+						bordered
+						style={{ marginBottom: 20 }}
 					>
-						{/* <Form.Item
+						<Descriptions.Item label={t('author')}>
+							{user?.name}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('genre')}>
+							{storyDetail.data?.genre?.name || 'N/A'}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('language')}>
+							{storyDetail.data?.language === Language.VIETNAMESE
+								? t('vietnamese')
+								: storyDetail.data?.language === Language.HMONG
+								? t('hmong')
+								: t('english')}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('status')}>
+							{storyDetail.data?.status === StoryStatus.PENDING
+								? t('pending')
+								: storyDetail.data?.status === StoryStatus.PUBLISHED
+								? t('published')
+								: storyDetail.data?.status === StoryStatus.REJECTED
+								? t('rejected')
+								: storyDetail.data?.status === StoryStatus.HIDDEN
+								? t('hidden')
+								: t('updated')}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('uploadedDate')}>
+							{storyDetail.data?.uploadedDate
+								? dayjs(storyDetail.data?.uploadedDate).format(
+										'DD/MM/YYYY HH:mm:ss',
+								  )
+								: '-'}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('publishedDate')}>
+							{storyDetail.data?.publishedDate
+								? dayjs(storyDetail.data?.publishedDate).format(
+										'DD/MM/YYYY HH:mm:ss',
+								  )
+								: '-'}
+						</Descriptions.Item>
+						<Descriptions.Item label={t('lastUpdatedDate')}>
+							{storyDetail.data?.lastUpdatedDate
+								? dayjs(storyDetail.data?.lastUpdatedDate).format(
+										'DD/MM/YYYY HH:mm:ss',
+								  )
+								: '-'}
+						</Descriptions.Item>
+					</Descriptions>
+					<Form.Item
+						label={t('storyTitle')}
+						name="title"
+						rules={[{ message: t('storyTitleRequired') }]}
+					>
+						<Input placeholder={t('storyTitlePlaceholder')} readOnly />
+					</Form.Item>
+
+					<Form.Item label={t('storyDescription')} name="description">
+						<TextArea
+							rows={5}
+							placeholder={t('storyDescriptionPlaceholder')}
+							readOnly
+						/>
+					</Form.Item>
+
+					<Form.Item
+						label={t('storyContent')}
+						name={
+							storyDetail.data?.language === Language.VIETNAMESE
+								? 'vietnameseContent'
+								: storyDetail.data?.language === Language.ENGLISH
+								? 'englishContent'
+								: 'hmongContent'
+						}
+					>
+						<TextEditor readOnly={true} />
+					</Form.Item>
+					{translatedLanguages.map((lang) => (
+						<Card
+							key={lang}
+							style={{ marginTop: 20, background: '#fafafa', borderRadius: 6 }}
+							size="small"
+							title={`${t('translateTo')} ${lang}`}
+						>
+							{/* <Form.Item
 							label={`${t('storyTitle')}(${lang})`}
 							name={['translations', lang, 'title']}
 							rules={[
@@ -197,30 +198,31 @@ const StoryUploadedDetailPage: React.FC = () => {
 							<Input placeholder={t('storyTitlePlaceholder')} />
 						</Form.Item> */}
 
-						<Form.Item
-							label={`${t('storyContent')} (${lang})`}
-							name={
-								lang === Language.ENGLISH
-									? 'englishContent'
-									: lang === Language.HMONG
-									? 'hmongContent'
-									: 'vietnameseContent'
-							}
-						>
-							<TextEditor readOnly={true} />
-						</Form.Item>
-					</Card>
-				))}
+							<Form.Item
+								label={`${t('storyContent')} (${lang})`}
+								name={
+									lang === Language.ENGLISH
+										? 'englishContent'
+										: lang === Language.HMONG
+										? 'hmongContent'
+										: 'vietnameseContent'
+								}
+							>
+								<TextEditor readOnly={true} />
+							</Form.Item>
+						</Card>
+					))}
 
-				<Form.Item>
-					<Space style={{ marginTop: 15 }}>
-						<Button onClick={() => navigate(RoutePaths.ADMIN)}>
-							{t('return')}
-						</Button>
-					</Space>
-				</Form.Item>
-			</Form>
-		</Card>
+					<Form.Item>
+						<Space style={{ marginTop: 15 }}>
+							<Button onClick={() => navigate(RoutePaths.ADMIN)}>
+								{t('return')}
+							</Button>
+						</Space>
+					</Form.Item>
+				</Form>
+			</Card>
+		</Guard>
 	);
 };
 

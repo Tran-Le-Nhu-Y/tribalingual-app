@@ -1,9 +1,9 @@
 import { Row, Col } from 'antd';
-import { StoryCard } from '../../components';
+import { Guard, StoryCard } from '../../components';
 
 const FavoriteBooksPage = () => {
 	return (
-		<>
+		<Guard requiredPermissions={['READ_STORY']}>
 			<Row gutter={[16, 24]}>
 				{Array.from({ length: 2 }).map((_, index) => {
 					const key = `col-${index}`;
@@ -36,7 +36,7 @@ const FavoriteBooksPage = () => {
 					);
 				})}
 			</Row>
-		</>
+		</Guard>
 	);
 };
 

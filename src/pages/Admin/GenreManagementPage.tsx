@@ -108,7 +108,7 @@ const GenreManagementPage: React.FC = () => {
 					({
 						...genre,
 						id: genre.id,
-					} as Genre)
+					} as Genre),
 			);
 		else return [];
 	}, [genres.data?.content, genres.isError]);

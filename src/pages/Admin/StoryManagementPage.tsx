@@ -33,7 +33,7 @@ import type { Story } from '../../@types/entities';
 import dayjs from 'dayjs';
 import type { GetQuery } from '../../@types/queries';
 import { DeleteError } from '../../util/errors';
-import { LoadingScreen } from '../../components';
+import { Guard, LoadingScreen } from '../../components';
 import { useAuthUserId } from '../../util/useAuthUserId';
 
 type DataIndex = keyof Story;
@@ -378,47 +378,57 @@ const StoryManagementPage: React.FC = () => {
 	}
 
 	return (
-		<Card style={{ padding: 5 }}>
-			<ConfigProvider
-				theme={{
-					token: appTheme.token,
-				}}
-			>
-				<Title
-					style={{
-						margin: 0,
-						paddingTop: 4,
-						marginBottom: 16,
-						fontSize: 28,
-						fontWeight: 700,
-						letterSpacing: 1,
-						color: appTheme.token.colorPrimary,
+		<Guard
+			requiredPermissions={[
+				'READ_STORY',
+				'CREATE_STORY',
+				'UPDATE_STORY',
+				'DELETE_STORY',
+				'PUBLISH_STORY',
+			]}
+		>
+			<Card style={{ padding: 5 }}>
+				<ConfigProvider
+					theme={{
+						token: appTheme.token,
 					}}
-					level={3}
 				>
-					{t('storyUploadedManagement')}
-				</Title>
+					<Title
+						style={{
+							margin: 0,
+							paddingTop: 4,
+							marginBottom: 16,
+							fontSize: 28,
+							fontWeight: 700,
+							letterSpacing: 1,
+							color: appTheme.token.colorPrimary,
+						}}
+						level={3}
+					>
+						{t('storyUploadedManagement')}
+					</Title>
 
-				<Table<Story>
-					rowKey="id"
-					columns={columns}
-					dataSource={content}
-					scroll={{ x: 'max-content' }}
-					pagination={{
-						current: (stories.data?.page_number ?? 0) + 1,
-						pageSize: stories.data?.page_size ?? 5,
-						total: stories.data?.total_elements ?? 0,
-						onChange: (page, pageSize) => {
-							setStoriesQuery({
-								offset: (page - 1) * pageSize,
-								limit: pageSize,
-							});
-						},
-					}}
-					bordered
-				/>
-			</ConfigProvider>
-		</Card>
+					<Table<Story>
+						rowKey="id"
+						columns={columns}
+						dataSource={content}
+						scroll={{ x: 'max-content' }}
+						pagination={{
+							current: (stories.data?.page_number ?? 0) + 1,
+							pageSize: stories.data?.page_size ?? 5,
+							total: stories.data?.total_elements ?? 0,
+							onChange: (page, pageSize) => {
+								setStoriesQuery({
+									offset: (page - 1) * pageSize,
+									limit: pageSize,
+								});
+							},
+						}}
+						bordered
+					/>
+				</ConfigProvider>
+			</Card>
+		</Guard>
 	);
 };
 

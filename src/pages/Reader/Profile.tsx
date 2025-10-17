@@ -19,6 +19,7 @@ import {
 	MessageOutlined,
 	EditOutlined,
 } from '@ant-design/icons';
+import { Guard } from '../../components';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -107,7 +108,7 @@ const ProfilePage = () => {
 	];
 
 	return (
-		<>
+		<Guard requiredPermissions={['READ_STORY']}>
 			{/* --- Stats Section --- */}
 			<Row gutter={[16, 16]} justify="center">
 				{stats.map((item, idx) => (
@@ -301,7 +302,7 @@ const ProfilePage = () => {
 					</Card>
 				))}
 			</Space>
-		</>
+		</Guard>
 	);
 };
 

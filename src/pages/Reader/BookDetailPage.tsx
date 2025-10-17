@@ -12,7 +12,7 @@ import {
 	App,
 } from 'antd';
 import { EyeOutlined, HeartOutlined } from '@ant-design/icons';
-import { LoadingScreen } from '../../components';
+import { Guard, LoadingScreen } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
@@ -164,86 +164,87 @@ const BookDetailPage = () => {
 		return <LoadingScreen />;
 	}
 	return (
-		<Card style={{ padding: 16, borderRadius: 8 }}>
-			<Row gutter={[24, 24]} align="top">
-				<Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={6}>
-					<Space style={{ textAlign: 'center' }}>
-						<Image
-							src={storyDetail.data?.file?.url}
-							style={{
-								width: '100%',
-								maxWidth: 260,
-								aspectRatio: '3/4',
-								objectFit: 'cover',
-								borderRadius: 12,
-								marginBottom: 16,
-								boxShadow: '0 6px 14px rgba(0,0,0,0.15)',
-							}}
-						/>
-					</Space>
+		<Guard requiredPermissions={['READ_STORY']}>
+			<Card style={{ padding: 16, borderRadius: 8 }}>
+				<Row gutter={[24, 24]} align="top">
+					<Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={6}>
+						<Space style={{ textAlign: 'center' }}>
+							<Image
+								src={storyDetail.data?.file?.url}
+								style={{
+									width: '100%',
+									maxWidth: 260,
+									aspectRatio: '3/4',
+									objectFit: 'cover',
+									borderRadius: 12,
+									marginBottom: 16,
+									boxShadow: '0 6px 14px rgba(0,0,0,0.15)',
+								}}
+							/>
+						</Space>
 
-					<Descriptions column={1} colon={false} size="middle" bordered>
-						<Descriptions.Item label={t('author')}>
-							{user?.name}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('genre')}>
-							{storyDetail.data?.genre?.name || 'N/A'}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('language')}>
-							{storyDetail.data?.language === Language.VIETNAMESE
-								? t('vietnamese')
-								: storyDetail.data?.language === Language.HMONG
-								? t('hmong')
-								: t('english')}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('status')}>
-							{storyDetail.data?.status === StoryStatus.PENDING
-								? t('pending')
-								: storyDetail.data?.status === StoryStatus.PUBLISHED
-								? t('published')
-								: storyDetail.data?.status === StoryStatus.REJECTED
-								? t('rejected')
-								: storyDetail.data?.status === StoryStatus.HIDDEN
-								? t('hidden')
-								: t('updated')}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('uploadedDate')}>
-							{storyDetail.data?.uploadedDate
-								? dayjs(storyDetail.data?.uploadedDate).format(
-										'DD/MM/YYYY HH:mm:ss',
-								  )
-								: '-'}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('publishedDate')}>
-							{storyDetail.data?.publishedDate
-								? dayjs(storyDetail.data?.publishedDate).format(
-										'DD/MM/YYYY HH:mm:ss',
-								  )
-								: '-'}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('lastUpdatedDate')}>
-							{storyDetail.data?.lastUpdatedDate
-								? dayjs(storyDetail.data?.lastUpdatedDate).format(
-										'DD/MM/YYYY HH:mm:ss',
-								  )
-								: '-'}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('view')}>
-							{storyDetail.data?.viewCount || '0'}
-						</Descriptions.Item>
-						<Descriptions.Item label={t('favorite')}>
-							{storyDetail.data?.favoriteCount || '0'}
-						</Descriptions.Item>
-					</Descriptions>
-				</Col>
+						<Descriptions column={1} colon={false} size="middle" bordered>
+							<Descriptions.Item label={t('author')}>
+								{user?.name}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('genre')}>
+								{storyDetail.data?.genre?.name || 'N/A'}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('language')}>
+								{storyDetail.data?.language === Language.VIETNAMESE
+									? t('vietnamese')
+									: storyDetail.data?.language === Language.HMONG
+									? t('hmong')
+									: t('english')}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('status')}>
+								{storyDetail.data?.status === StoryStatus.PENDING
+									? t('pending')
+									: storyDetail.data?.status === StoryStatus.PUBLISHED
+									? t('published')
+									: storyDetail.data?.status === StoryStatus.REJECTED
+									? t('rejected')
+									: storyDetail.data?.status === StoryStatus.HIDDEN
+									? t('hidden')
+									: t('updated')}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('uploadedDate')}>
+								{storyDetail.data?.uploadedDate
+									? dayjs(storyDetail.data?.uploadedDate).format(
+											'DD/MM/YYYY HH:mm:ss',
+									  )
+									: '-'}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('publishedDate')}>
+								{storyDetail.data?.publishedDate
+									? dayjs(storyDetail.data?.publishedDate).format(
+											'DD/MM/YYYY HH:mm:ss',
+									  )
+									: '-'}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('lastUpdatedDate')}>
+								{storyDetail.data?.lastUpdatedDate
+									? dayjs(storyDetail.data?.lastUpdatedDate).format(
+											'DD/MM/YYYY HH:mm:ss',
+									  )
+									: '-'}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('view')}>
+								{storyDetail.data?.viewCount || '0'}
+							</Descriptions.Item>
+							<Descriptions.Item label={t('favorite')}>
+								{storyDetail.data?.favoriteCount || '0'}
+							</Descriptions.Item>
+						</Descriptions>
+					</Col>
 
-				{/* Nội dung sách */}
-				<Col xs={24} sm={24} md={24} lg={12} xl={14} xxl={18}>
-					<div style={{ paddingRight: 12 }}>
-						<Title level={2} style={{ marginBottom: 24, color: '#146C94' }}>
-							{storyDetail.data?.title || 'N/A'}
-						</Title>
-						{/* <Title level={4} style={{ margin: '4px 0' }}>
+					{/* Nội dung sách */}
+					<Col xs={24} sm={24} md={24} lg={12} xl={14} xxl={18}>
+						<div style={{ paddingRight: 12 }}>
+							<Title level={2} style={{ marginBottom: 24, color: '#146C94' }}>
+								{storyDetail.data?.title || 'N/A'}
+							</Title>
+							{/* <Title level={4} style={{ margin: '4px 0' }}>
 							CỔ TÍCH NGƯỜI H’MÔNG
 						</Title>
 						<Title
@@ -253,56 +254,57 @@ const BookDetailPage = () => {
 							ZAJ DAB NEEG HMOOB
 						</Title> */}
 
-						<Paragraph style={paragraphStyle}>
-							{storyDetail.data?.description || 'N/A'}
-						</Paragraph>
+							<Paragraph style={paragraphStyle}>
+								{storyDetail.data?.description || 'N/A'}
+							</Paragraph>
 
-						<Space size="middle" style={{ marginTop: 32, flexWrap: 'wrap' }}>
-							<Button style={{ color: 'red' }} icon={<HeartOutlined />}>
-								{t('favorite')}
-							</Button>
-							<Button
-								type="primary"
-								icon={<EyeOutlined />}
-								style={{ borderRadius: 6 }}
-							>
-								{t('see')}
-							</Button>
-						</Space>
-					</div>
-				</Col>
-			</Row>
-			{/* Comment list */}
-			<Space direction="vertical" style={{ width: '100%', marginTop: 32 }}>
-				<Form
-					onFinish={handleAddComment}
-					layout="vertical"
-					style={{ marginTop: 16 }}
-				>
-					<Form.Item
-						name="content"
-						rules={[{ required: false, message: 'Vui lòng nhập bình luận!' }]}
+							<Space size="middle" style={{ marginTop: 32, flexWrap: 'wrap' }}>
+								<Button style={{ color: 'red' }} icon={<HeartOutlined />}>
+									{t('favorite')}
+								</Button>
+								<Button
+									type="primary"
+									icon={<EyeOutlined />}
+									style={{ borderRadius: 6 }}
+								>
+									{t('see')}
+								</Button>
+							</Space>
+						</div>
+					</Col>
+				</Row>
+				{/* Comment list */}
+				<Space direction="vertical" style={{ width: '100%', marginTop: 32 }}>
+					<Form
+						onFinish={handleAddComment}
+						layout="vertical"
+						style={{ marginTop: 16 }}
 					>
-						<TextArea
-							rows={3}
-							placeholder={t('enterComment')}
-							maxLength={500}
-						/>
-					</Form.Item>
-					<Form.Item>
-						<Button type="primary" htmlType="submit">
-							{t('sendComment')}
-						</Button>
-					</Form.Item>
-				</Form>
-				<Divider orientation="left" style={{ borderColor: '#d9d9d9' }}>
-					<Title level={5} style={{ margin: 0, color: 'grey' }}>
-						13 {t('comment')}
-					</Title>
-				</Divider>
-				{/* <CommentList comments={comments} /> */}
-			</Space>
-		</Card>
+						<Form.Item
+							name="content"
+							rules={[{ required: false, message: 'Vui lòng nhập bình luận!' }]}
+						>
+							<TextArea
+								rows={3}
+								placeholder={t('enterComment')}
+								maxLength={500}
+							/>
+						</Form.Item>
+						<Form.Item>
+							<Button type="primary" htmlType="submit">
+								{t('sendComment')}
+							</Button>
+						</Form.Item>
+					</Form>
+					<Divider orientation="left" style={{ borderColor: '#d9d9d9' }}>
+						<Title level={5} style={{ margin: 0, color: 'grey' }}>
+							13 {t('comment')}
+						</Title>
+					</Divider>
+					{/* <CommentList comments={comments} /> */}
+				</Space>
+			</Card>
+		</Guard>
 	);
 };
 

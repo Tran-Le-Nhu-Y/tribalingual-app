@@ -8,6 +8,7 @@ import {
 } from '.';
 import { useEffect, useState, type PropsWithChildren } from 'react';
 import * as jose from 'jose';
+import { LoadingScreen } from '../../components';
 
 async function getPayloadFromToken(token: string) {
 	const domain: string | undefined = import.meta.env.VITE_AUTH0_DOMAIN;
@@ -35,42 +36,86 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 		logout: logout,
 	});
 	useEffect(() => {
-		if (!isAuthenticated || isLoading) return;
-		getAccessTokenSilently()
-			.then(async (token) => {
+		const init = async () => {
+			if (isLoading) return;
+			try {
+				if (!isAuthenticated) {
+					await loginWithRedirect();
+					return;
+				}
+				const token = await getAccessTokenSilently();
 				const currentUser = user!;
 				if (currentUser.sub === undefined)
 					throw new Error('Token error: No subject claim in access token');
-
 				const payload = await getPayloadFromToken(token);
 				const permissions = (payload['permissions'] as string[])
 					.map((value) => {
 						const entry = Object.entries(PermissionEnum).find(
-							([, v]) => v === value
+							([, v]) => v === value,
 						);
 						if (entry === undefined) return null;
-
 						return entry[0] as PermissionKey;
 					})
 					.filter((permission) => permission !== null);
-
-				setState((pre) => ({
-					...pre,
+				tokenHolder.setAccessToken(token);
+				setState({
+					isLoading: false,
+					isAuthenticated: true,
+					loginWithRedirect,
+					logout,
 					user: {
 						id: currentUser.sub!,
 						...currentUser,
 						permissions,
 					},
-				}));
+				});
+			} catch (error) {
+				console.error(error);
+				await logout({ logoutParams: { returnTo: window.location.origin } });
+			}
+		};
+		init();
+		// getAccessTokenSilently()
+		// 	.then(async (token) => {
+		// 		const currentUser = user!;
+		// 		if (currentUser.sub === undefined)
+		// 			throw new Error('Token error: No subject claim in access token');
+		// 		const payload = await getPayloadFromToken(token);
+		// 		const permissions = (payload['permissions'] as string[])
+		// 			.map((value) => {
+		// 				const entry = Object.entries(PermissionEnum).find(
+		// 					([, v]) => v === value,
+		// 				);
+		// 				if (entry === undefined) return null;
+		// 				return entry[0] as PermissionKey;
+		// 			})
+		// 			.filter((permission) => permission !== null);
+		// 		setState((pre) => ({
+		// 			...pre,
+		// 			user: {
+		// 				id: currentUser.sub!,
+		// 				...currentUser,
+		// 				permissions,
+		// 			},
+		// 		}));
+		// 		tokenHolder.setAccessToken(token);
+		// 	})
+		// 	.catch(async (err) => {
+		// 		console.error(err);
+		// 		await logout({ logoutParams: { returnTo: window.location.origin } });
+		// 	});
+	}, [
+		getAccessTokenSilently,
+		isAuthenticated,
+		isLoading,
+		loginWithRedirect,
+		logout,
+		user,
+	]);
 
-				tokenHolder.setAccessToken(token);
-			})
-			.catch(async (err) => {
-				console.error(err);
-				await logout();
-			});
-	}, [getAccessTokenSilently, isAuthenticated, isLoading, logout, user]);
-
+	if (state.isLoading) {
+		return <LoadingScreen />;
+	}
 	return (
 		<AuthzContext.Provider value={state}>{children}</AuthzContext.Provider>
 	);

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { RankingList } from '../../components';
+import { Guard, RankingList } from '../../components';
 import { useEffect, useMemo, useState } from 'react';
 import { SortStoryOption, StoryStatus } from '../../util';
 import type { Story } from '../../@types/entities';
@@ -22,6 +22,8 @@ const HomePage = () => {
 		skip: !storiesQuery,
 	});
 	useEffect(() => {
+		console.log(stories.error);
+		console.log(storiesQuery);
 		if (stories.isError) {
 			notification.error({
 				message: t('dataLoadingError'),
@@ -29,7 +31,7 @@ const HomePage = () => {
 				placement: 'topRight',
 			});
 		}
-	}, [notification, stories.isError, t]);
+	}, [notification, stories.error, stories.isError, storiesQuery, t]);
 
 	const content = useMemo(() => {
 		if (stories.isError) return [];
@@ -45,7 +47,7 @@ const HomePage = () => {
 		return [];
 	}, [stories.data?.content, stories.isError]);
 	return (
-		<>
+		<Guard requiredPermissions={['READ_STORY', 'READ_FILE']}>
 			<div>
 				<RankingList
 					title={t('mostRead')}
@@ -70,7 +72,7 @@ const HomePage = () => {
 					maxItems={10}
 				/>
 			</div>
-		</>
+		</Guard>
 	);
 };
 

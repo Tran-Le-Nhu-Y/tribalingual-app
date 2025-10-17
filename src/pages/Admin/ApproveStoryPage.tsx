@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage, TextEditor, LoadingScreen } from '../../components';
+import {
+	UploadImage,
+	TextEditor,
+	LoadingScreen,
+	Guard,
+} from '../../components';
 import Title from 'antd/es/typography/Title';
 import {
 	Form,
@@ -212,191 +217,200 @@ const ApproveStoryPage: React.FC = () => {
 		return <LoadingScreen />;
 	}
 	return (
-		<Card
-			style={{
-				maxWidth: 920,
-				margin: '0 auto',
-				padding: '10px',
-				background: '#fff',
-				borderRadius: 8,
-				boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-			}}
+		<Guard
+			requiredPermissions={[
+				'READ_STORY',
+				'UPDATE_STORY',
+				'PUBLISH_STORY',
+				'CREATE_FILE',
+				'DELETE_FILE',
+			]}
 		>
-			<Title
+			<Card
 				style={{
-					margin: 0,
-					paddingTop: 4,
-					marginBottom: 16,
-					color: '#03506F',
-					fontSize: 28,
-					fontWeight: 700,
-					letterSpacing: 1,
-				}}
-				level={3}
-			>
-				{t('approveStory')}
-			</Title>
-
-			<Form
-				form={form}
-				layout="vertical"
-				onValuesChange={(_, allValues) => {
-					setStory((prev) => ({ ...prev, ...allValues }));
+					maxWidth: 920,
+					margin: '0 auto',
+					padding: '10px',
+					background: '#fff',
+					borderRadius: 8,
+					boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
 				}}
 			>
-				<Row style={{ marginBottom: 15 }}>
-					<Title level={5} style={{ margin: 0 }}>
-						{t('author')} : abc
-					</Title>
-				</Row>
-				<Form.Item
-					label={t('storyTitle')}
-					name="title"
-					rules={[{ required: true, message: t('storyTitleRequired') }]}
-				>
-					<Input placeholder={t('storyTitlePlaceholder')} />
-				</Form.Item>
-
-				<Form.Item label={t('storyDescription')} name="description">
-					<TextArea rows={4} placeholder={t('storyDescriptionPlaceholder')} />
-				</Form.Item>
-
-				<Form.Item label={t('uploadImage')}>
-					<Space
-						style={{
-							position: 'relative',
-							display: 'block',
-							width: 'fit-content',
-						}}
-					>
-						<UploadImage
-							maxCount={1}
-							fileList={fileList}
-							onChange={async (files) => {
-								if (!files || files.length === 0) {
-									setFileList([]);
-									return;
-								}
-								const file = files[0].originFileObj;
-								if (!file) return;
-								setFileloading(true);
-								try {
-									const uploadedFile = await uploadFile({ file }).unwrap();
-									setStory((prev) => ({ ...prev, fileId: uploadedFile.id }));
-									setFileId(uploadedFile.id);
-									setFileList(files);
-								} catch (error) {
-									console.error('Upload file failed:', error);
-									notification.error({
-										message: t('uploadFileFailed'),
-										placement: 'topRight',
-									});
-								} finally {
-									setFileloading(false);
-								}
-							}}
-							onRemove={async () => {
-								if (!fileId) return;
-								setFileloading(true);
-								const currentId = fileId;
-								setFileId('');
-								setFileList([]);
-								setStory((prev) => ({ ...prev, fileId: '' }));
-								try {
-									await deleteFileTrigger(currentId).unwrap();
-								} catch (error) {
-									console.error('Delete file failed:', error);
-									notification.error({
-										message: t('deleteFileFailed'),
-										placement: 'topRight',
-									});
-								} finally {
-									setFileloading(false);
-								}
-							}}
-						/>
-						{fileloading && (
-							<Space
-								style={{
-									position: 'absolute',
-									top: 0,
-									left: 0,
-									width: '100%',
-									height: '100%',
-									background: 'rgba(255, 255, 255, 0.6)',
-									display: 'flex',
-									justifyContent: 'center',
-									alignItems: 'center',
-									zIndex: 10,
-								}}
-							>
-								<Spin />
-							</Space>
-						)}
-					</Space>
-				</Form.Item>
-				<Space
+				<Title
 					style={{
-						display: 'flex',
-						marginBottom: 30,
-						alignItems: 'center',
+						margin: 0,
+						paddingTop: 4,
+						marginBottom: 16,
+						color: '#03506F',
+						fontSize: 28,
+						fontWeight: 700,
+						letterSpacing: 1,
+					}}
+					level={3}
+				>
+					{t('approveStory')}
+				</Title>
+
+				<Form
+					form={form}
+					layout="vertical"
+					onValuesChange={(_, allValues) => {
+						setStory((prev) => ({ ...prev, ...allValues }));
 					}}
 				>
+					<Row style={{ marginBottom: 15 }}>
+						<Title level={5} style={{ margin: 0 }}>
+							{t('author')} : abc
+						</Title>
+					</Row>
 					<Form.Item
-						label={t('genre')}
-						name="genreId"
-						rules={[{ required: true, message: t('storyGenreRequired') }]}
+						label={t('storyTitle')}
+						name="title"
+						rules={[{ required: true, message: t('storyTitleRequired') }]}
 					>
-						<Select
-							placeholder={t('chooseGenre')}
-							onChange={(value) => {
-								setStory((prev) => ({
-									...prev,
-									genreId: value,
-								}));
+						<Input placeholder={t('storyTitlePlaceholder')} />
+					</Form.Item>
+
+					<Form.Item label={t('storyDescription')} name="description">
+						<TextArea rows={4} placeholder={t('storyDescriptionPlaceholder')} />
+					</Form.Item>
+
+					<Form.Item label={t('uploadImage')}>
+						<Space
+							style={{
+								position: 'relative',
+								display: 'block',
+								width: 'fit-content',
 							}}
-							options={genres.data?.content.map((g) => ({
-								label: g.name,
-								value: g.id,
-							}))}
-							value={story.genreId}
-							style={{ width: 200 }}
-						/>
+						>
+							<UploadImage
+								maxCount={1}
+								fileList={fileList}
+								onChange={async (files) => {
+									if (!files || files.length === 0) {
+										setFileList([]);
+										return;
+									}
+									const file = files[0].originFileObj;
+									if (!file) return;
+									setFileloading(true);
+									try {
+										const uploadedFile = await uploadFile({ file }).unwrap();
+										setStory((prev) => ({ ...prev, fileId: uploadedFile.id }));
+										setFileId(uploadedFile.id);
+										setFileList(files);
+									} catch (error) {
+										console.error('Upload file failed:', error);
+										notification.error({
+											message: t('uploadFileFailed'),
+											placement: 'topRight',
+										});
+									} finally {
+										setFileloading(false);
+									}
+								}}
+								onRemove={async () => {
+									if (!fileId) return;
+									setFileloading(true);
+									const currentId = fileId;
+									setFileId('');
+									setFileList([]);
+									setStory((prev) => ({ ...prev, fileId: '' }));
+									try {
+										await deleteFileTrigger(currentId).unwrap();
+									} catch (error) {
+										console.error('Delete file failed:', error);
+										notification.error({
+											message: t('deleteFileFailed'),
+											placement: 'topRight',
+										});
+									} finally {
+										setFileloading(false);
+									}
+								}}
+							/>
+							{fileloading && (
+								<Space
+									style={{
+										position: 'absolute',
+										top: 0,
+										left: 0,
+										width: '100%',
+										height: '100%',
+										background: 'rgba(255, 255, 255, 0.6)',
+										display: 'flex',
+										justifyContent: 'center',
+										alignItems: 'center',
+										zIndex: 10,
+									}}
+								>
+									<Spin />
+								</Space>
+							)}
+						</Space>
 					</Form.Item>
-					<Form.Item label={t('language')}>
-						<Select
-							value={
-								story.language === Language.VIETNAMESE
-									? t('vietnamese')
-									: story.language === Language.ENGLISH
-									? t('english')
-									: t('hmong')
-							}
-							style={{ width: 200 }}
-							disabled
-						/>
-					</Form.Item>
-				</Space>
-				<Form.Item
-					label={t('storyContent')}
-					name={
-						story.language === Language.VIETNAMESE
-							? 'vietnameseContent'
-							: story.language === Language.ENGLISH
-							? 'englishContent'
-							: 'hmongContent'
-					}
-				>
-					<TextEditor />
-				</Form.Item>
-				{translatedLanguages.map((lang) => (
-					<Card
-						key={lang}
-						style={{ marginTop: 20, background: '#fafafa', borderRadius: 6 }}
-						size="small"
-						title={`${t('translateTo')} ${lang}`}
+					<Space
+						style={{
+							display: 'flex',
+							marginBottom: 30,
+							alignItems: 'center',
+						}}
 					>
-						{/* <Form.Item
+						<Form.Item
+							label={t('genre')}
+							name="genreId"
+							rules={[{ required: true, message: t('storyGenreRequired') }]}
+						>
+							<Select
+								placeholder={t('chooseGenre')}
+								onChange={(value) => {
+									setStory((prev) => ({
+										...prev,
+										genreId: value,
+									}));
+								}}
+								options={genres.data?.content.map((g) => ({
+									label: g.name,
+									value: g.id,
+								}))}
+								value={story.genreId}
+								style={{ width: 200 }}
+							/>
+						</Form.Item>
+						<Form.Item label={t('language')}>
+							<Select
+								value={
+									story.language === Language.VIETNAMESE
+										? t('vietnamese')
+										: story.language === Language.ENGLISH
+										? t('english')
+										: t('hmong')
+								}
+								style={{ width: 200 }}
+								disabled
+							/>
+						</Form.Item>
+					</Space>
+					<Form.Item
+						label={t('storyContent')}
+						name={
+							story.language === Language.VIETNAMESE
+								? 'vietnameseContent'
+								: story.language === Language.ENGLISH
+								? 'englishContent'
+								: 'hmongContent'
+						}
+					>
+						<TextEditor />
+					</Form.Item>
+					{translatedLanguages.map((lang) => (
+						<Card
+							key={lang}
+							style={{ marginTop: 20, background: '#fafafa', borderRadius: 6 }}
+							size="small"
+							title={`${t('translateTo')} ${lang}`}
+						>
+							{/* <Form.Item
 							label={`${t('storyTitle')}(${lang})`}
 							name={['translations', lang, 'title']}
 							rules={[
@@ -409,44 +423,45 @@ const ApproveStoryPage: React.FC = () => {
 							<Input placeholder={t('storyTitlePlaceholder')} />
 						</Form.Item> */}
 
-						<Form.Item
-							label={`${t('storyContent')} (${lang})`}
-							name={
-								lang === Language.ENGLISH
-									? 'englishContent'
-									: lang === Language.HMONG
-									? 'hmongContent'
-									: 'vietnameseContent'
-							}
-						>
-							<TextEditor />
-						</Form.Item>
-					</Card>
-				))}
+							<Form.Item
+								label={`${t('storyContent')} (${lang})`}
+								name={
+									lang === Language.ENGLISH
+										? 'englishContent'
+										: lang === Language.HMONG
+										? 'hmongContent'
+										: 'vietnameseContent'
+								}
+							>
+								<TextEditor />
+							</Form.Item>
+						</Card>
+					))}
 
-				<Form.Item>
-					<Space style={{ marginTop: 15 }}>
-						<Button
-							type="primary"
-							disabled={fileloading}
-							onClick={() => handleAction(StoryStatus.PUBLISHED)}
-						>
-							{t('approve')}
-						</Button>
-						<Button
-							danger
-							disabled={fileloading}
-							onClick={() => handleAction(StoryStatus.REJECTED)}
-						>
-							{t('reject')}
-						</Button>
-						<Button disabled={fileloading} onClick={handleCancel}>
-							{t('cancel')}
-						</Button>
-					</Space>
-				</Form.Item>
-			</Form>
-		</Card>
+					<Form.Item>
+						<Space style={{ marginTop: 15 }}>
+							<Button
+								type="primary"
+								disabled={fileloading}
+								onClick={() => handleAction(StoryStatus.PUBLISHED)}
+							>
+								{t('approve')}
+							</Button>
+							<Button
+								danger
+								disabled={fileloading}
+								onClick={() => handleAction(StoryStatus.REJECTED)}
+							>
+								{t('reject')}
+							</Button>
+							<Button disabled={fileloading} onClick={handleCancel}>
+								{t('cancel')}
+							</Button>
+						</Space>
+					</Form.Item>
+				</Form>
+			</Card>
+		</Guard>
 	);
 };
 

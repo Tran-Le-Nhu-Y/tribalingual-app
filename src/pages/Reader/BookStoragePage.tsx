@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Col, Row, Pagination, App } from 'antd';
 import type { PaginationProps } from 'antd';
-import { StoryCard } from '../../components';
+import { Guard, StoryCard } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useGetFileById, useGetStories } from '../../service';
 import type { Story } from '../../@types/entities';
@@ -111,30 +111,34 @@ const BookStoragePage = () => {
 	};
 
 	return (
-		<div
-			style={{
-				minHeight: '100vh',
-				maxWidth: 1200,
-				margin: '0 auto',
-			}}
-		>
-			<Row gutter={[16, 24]} style={{ justifyContent: 'flex-start' }}>
-				{paginatedStories.map((story) => (
-					<StoryItem key={story.id} story={story} />
-				))}
-			</Row>
-			{/* Pagination */}
-			<div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
-				<Pagination
-					showSizeChanger
-					current={currentPage}
-					pageSize={pageSize}
-					total={stories.data?.total_elements || 0}
-					onChange={handlePageChange}
-					onShowSizeChange={onShowSizeChange}
-				/>
+		<Guard requiredPermissions={['READ_STORY']}>
+			<div
+				style={{
+					minHeight: '100vh',
+					maxWidth: 1200,
+					margin: '0 auto',
+				}}
+			>
+				<Row gutter={[16, 24]} style={{ justifyContent: 'flex-start' }}>
+					{paginatedStories.map((story) => (
+						<StoryItem key={story.id} story={story} />
+					))}
+				</Row>
+				{/* Pagination */}
+				<div
+					style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}
+				>
+					<Pagination
+						showSizeChanger
+						current={currentPage}
+						pageSize={pageSize}
+						total={stories.data?.total_elements || 0}
+						onChange={handlePageChange}
+						onShowSizeChange={onShowSizeChange}
+					/>
+				</div>
 			</div>
-		</div>
+		</Guard>
 	);
 };
 

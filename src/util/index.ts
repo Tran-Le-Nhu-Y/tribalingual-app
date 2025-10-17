@@ -3,6 +3,7 @@ import {
 	AxiosError,
 	type AxiosInstance,
 	type AxiosRequestConfig,
+	type AxiosRequestHeaders,
 	type CreateAxiosDefaults,
 } from 'axios';
 import axios from 'axios';
@@ -84,7 +85,7 @@ export const axiosQueryHandler = async <T>(func: () => Promise<T>) => {
 
 export const axiosBaseQuery =
 	(
-		instance: AxiosInstance
+		instance: AxiosInstance,
 	): BaseQueryFn<
 		{
 			url: string;
@@ -98,23 +99,17 @@ export const axiosBaseQuery =
 	> =>
 	async ({ url, method, body, params, headers }) => {
 		try {
-			const accessToken = tokenHolder.getAccessToken();
-			if (accessToken === undefined)
-				throw new AxiosError('No access token is found.');
-
 			const result = await instance({
 				url,
 				method,
 				data: body,
 				params,
-				headers: {
-					...headers,
-					Authorization: `Bearer ${accessToken}`,
-				},
+				headers,
 			});
 			return { data: result.data };
 		} catch (axiosError) {
 			const err = axiosError as AxiosError;
+			console.error('API Error:', axiosError);
 			return {
 				error: {
 					status: err.response?.status || 500,
@@ -129,12 +124,21 @@ export function createAxiosInstance(config?: CreateAxiosDefaults) {
 
 	instance.interceptors.request.use(
 		async function (config) {
-			return config;
+			const accessToken = tokenHolder.getAccessToken();
+			if (accessToken === undefined)
+				throw new AxiosError('No access token is found.');
+			return {
+				...config,
+				headers: {
+					...config.headers,
+					Authorization: `Bearer ${accessToken}`,
+				} as AxiosRequestHeaders,
+			};
 		},
 		function (error) {
 			// Do something with request error
 			return Promise.reject(error);
-		}
+		},
 	);
 
 	return instance;
