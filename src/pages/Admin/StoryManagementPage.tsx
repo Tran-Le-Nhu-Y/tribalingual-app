@@ -34,7 +34,7 @@ import dayjs from 'dayjs';
 import type { GetQuery } from '../../@types/queries';
 import { DeleteError } from '../../util/errors';
 import { Guard, LoadingScreen } from '../../components';
-import { useAuthUserId } from '../../util/useAuthUserId';
+import { useAuthUserId } from '../../hook/useAuthUserId';
 
 type DataIndex = keyof Story;
 

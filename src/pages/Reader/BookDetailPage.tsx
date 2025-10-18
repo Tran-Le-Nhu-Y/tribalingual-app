@@ -12,7 +12,7 @@ import {
 	App,
 } from 'antd';
 import { EyeOutlined, HeartOutlined } from '@ant-design/icons';
-import { Guard, LoadingScreen } from '../../components';
+import { CommentList, Guard, LoadingScreen } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
@@ -22,6 +22,8 @@ import { Language, PathHolders, StoryStatus } from '../../util';
 import { useAuth0 } from '@auth0/auth0-react';
 import dayjs from 'dayjs';
 import type { GetCommentQuery } from '../../@types/queries';
+import type { Comment } from '../../@types/entities';
+import type { CommentResponse } from '../../@types/response';
 
 const { Title, Paragraph } = Typography;
 const paragraphStyle = {
@@ -58,14 +60,15 @@ const BookDetailPage = () => {
 	]);
 
 	//Get all comment of story
-	const [commnetsQuery] = useState<GetCommentQuery>({
+	const [commentsQuery, setCommentsQuery] = useState<GetCommentQuery>({
 		offset: 0,
 		limit: 5, //  5 item
 		storyId: storyId!,
 	});
-	const comments = useGetAllComments(commnetsQuery!, {
-		skip: !commnetsQuery,
+	const comments = useGetAllComments(commentsQuery!, {
+		skip: !commentsQuery,
 	});
+	const [allComments, setAllComments] = useState<CommentResponse[]>([]);
 	useEffect(() => {
 		if (comments.isError) {
 			notification.error({
@@ -74,7 +77,33 @@ const BookDetailPage = () => {
 				placement: 'topRight',
 			});
 		}
+		if (!comments.data?.content) return;
+		if (comments.data?.content?.length) {
+			setAllComments((prev) => [
+				...prev,
+				...comments.data!.content.map(
+					(cmt) =>
+						({
+							...cmt,
+							id: cmt.id,
+						} as Comment),
+				),
+			]);
+		}
 	}, [comments.data, comments.isError, notification, t]);
+
+	// const commentContent = useMemo(() => {
+	// 	if (comments.isError) return [];
+	// 	if (comments.data?.content)
+	// 		return comments.data.content.map(
+	// 			(cmt) =>
+	// 				({
+	// 					...cmt,
+	// 					id: cmt.id,
+	// 				} as Comment),
+	// 		);
+	// 	return [];
+	// }, [comments.data, comments.isError]);
 
 	// // Xử lý submit comment
 	// const handleAddComment = (values: { content: string }) => {
@@ -88,12 +117,7 @@ const BookDetailPage = () => {
 	// 	setComments([newComment, ...comments]);
 	// };
 
-	if (
-		storyDetail.isFetching ||
-		storyDetail.isLoading ||
-		comments.isLoading ||
-		comments.isFetching
-	) {
+	if (storyDetail.isFetching || storyDetail.isLoading) {
 		return <LoadingScreen />;
 	}
 	return (
@@ -207,35 +231,51 @@ const BookDetailPage = () => {
 					</Col>
 				</Row>
 				{/* Comment list */}
-				<Space direction="vertical" style={{ width: '100%', marginTop: 32 }}>
-					<Form
-						// onFinish={handleAddComment}
-						layout="vertical"
-						style={{ marginTop: 16 }}
-					>
-						<Form.Item
-							name="content"
-							rules={[{ required: false, message: 'Vui lòng nhập bình luận!' }]}
-						>
-							<TextArea
-								rows={3}
-								placeholder={t('enterComment')}
-								maxLength={500}
-							/>
-						</Form.Item>
-						<Form.Item>
-							<Button type="primary" htmlType="submit">
-								{t('sendComment')}
-							</Button>
-						</Form.Item>
-					</Form>
-					<Divider orientation="left" style={{ borderColor: '#d9d9d9' }}>
-						<Title level={5} style={{ margin: 0, color: 'grey' }}>
-							{storyDetail.data?.commentCount ?? 0} {t('comment')}
-						</Title>
-					</Divider>
-					{/* <CommentList comments={comments} /> */}
-				</Space>
+				<Guard requiredPermissions={['READ_USER']}>
+					<Space direction="vertical" style={{ width: '100%', marginTop: 32 }}>
+						<Form layout="vertical" style={{ marginTop: 16 }}>
+							<Form.Item
+								name="content"
+								rules={[
+									{ required: false, message: 'Vui lòng nhập bình luận!' },
+								]}
+							>
+								<TextArea
+									rows={3}
+									placeholder={t('enterComment')}
+									maxLength={500}
+								/>
+							</Form.Item>
+							<Form.Item>
+								<Button type="primary" htmlType="submit">
+									{t('sendComment')}
+								</Button>
+							</Form.Item>
+						</Form>
+						<Divider orientation="left" style={{ borderColor: '#d9d9d9' }}>
+							<Title level={5} style={{ margin: 0, color: 'grey' }}>
+								{storyDetail.data?.commentCount ?? 0} {t('comment')}
+							</Title>
+						</Divider>
+						<CommentList
+							comments={allComments ?? []}
+							onLoadMore={() => {
+								setCommentsQuery({
+									offset:
+										(commentsQuery?.offset ?? 0) + (commentsQuery?.limit ?? 5),
+									limit: commentsQuery.limit ?? 5,
+									storyId: storyId!,
+								});
+							}}
+							hasMore={
+								comments.data
+									? allComments.length < comments.data.total_elements
+									: false
+							}
+							loading={comments.isFetching || comments.isLoading}
+						/>
+					</Space>
+				</Guard>
 			</Card>
 		</Guard>
 	);

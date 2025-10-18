@@ -1,3 +1,4 @@
+import CommentItem from './CommentItem';
 import CommentList from './CommentList';
 import Guard from './Guard';
 import LoadingScreen from './LoadingScreen';
@@ -20,4 +21,5 @@ export {
 	RankingListItem,
 	LoadingScreen,
 	Guard,
+	CommentItem,
 };

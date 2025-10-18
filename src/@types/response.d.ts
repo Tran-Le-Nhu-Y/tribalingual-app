@@ -55,3 +55,10 @@ declare interface CommentResponse {
 	userId: string;
 	storyId: string;
 }
+
+declare interface Auth0UserResponse {
+	user_id: string;
+	name: string;
+	email: string;
+	picture: string;
+}
