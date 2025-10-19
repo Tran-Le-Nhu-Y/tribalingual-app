@@ -34,7 +34,7 @@ import dayjs from 'dayjs';
 import type { GetQuery } from '../../@types/queries';
 import { DeleteError } from '../../util/errors';
 import { Guard, LoadingScreen } from '../../components';
-import { useAuthUserId } from '../../hook/useAuthUserId';
+import { useAuth0 } from '@auth0/auth0-react';
 
 type DataIndex = keyof Story;
 
@@ -45,7 +45,7 @@ const StoryManagementPage: React.FC = () => {
 	const searchInput = useRef<InputRef>(null);
 	const { t } = useTranslation('standard');
 	const { notification } = App.useApp();
-	const { getUserId } = useAuthUserId();
+	const { user } = useAuth0();
 
 	//Get all stories
 	const [storiesQuery, setStoriesQuery] = useState<GetQuery>({
@@ -81,7 +81,7 @@ const StoryManagementPage: React.FC = () => {
 	// delete story
 	const [deleteStoryTrigger, deleteStory] = useDeleteStory();
 	const handleDelete = async (storyId: string) => {
-		const userId = getUserId();
+		const userId = user?.sub;
 		if (!userId) return;
 		try {
 			await deleteStoryTrigger({

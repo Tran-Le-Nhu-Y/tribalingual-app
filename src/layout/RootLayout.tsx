@@ -142,7 +142,8 @@ const RootLayout = () => {
 				background: 'transparent',
 			}}
 			inlineCollapsed={collapsed}
-			items={permittedItems}
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			items={permittedItems.map(({ requiredPermissions, ...rest }) => rest)}
 		/>
 	);
 
@@ -174,6 +175,27 @@ const RootLayout = () => {
 
 				.ant-menu-item:active {
 					transform: scale(0.97);
+				}
+
+				::-webkit-scrollbar {
+					width: 10px;
+					height: 10px;
+				}
+
+
+				::-webkit-scrollbar-track {
+					background: #e9eef3; 
+					border-radius: 10px;
+				}
+
+				::-webkit-scrollbar-thumb {
+					background: linear-gradient(180deg, #146C94, #146C94);
+					border-radius: 10px;
+					border: 2px solid #e9eef3;
+				}
+
+				::-webkit-scrollbar-thumb:hover {
+					background: linear-gradient(180deg, #3396D3, #3396D3);
 				}
         `}
 			</style>
