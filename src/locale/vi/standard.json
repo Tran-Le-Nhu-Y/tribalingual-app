@@ -97,6 +97,11 @@
 	"storyDetail": "Chi tiết câu chuyện",
 	"commentLoadingErrorDescription": "Không thể tải danh sách các bình luận. Vui lòng thử lại.",
 	"seeMoreComments": "Xem thêm bình luận",
+	"addCommentSuccess": "Thêm bình luận thành công",
+	"addCommentFailed": "Thêm bình luận thất bại",
+	"commentContentRequired": "Vui lòng nhập nội dung bình luận!",
+	"pleaseEnterCommentBeforeSubmit": "Vui lòng nhập nội dung bình luận trước khi gửi.",
+	"youMustBeLoggedInToComment": "Bạn phải đăng nhập để có thể bình luận.",
 
 	"genreManagement": "Quản lý thể loại truyện",
 	"genreName": "Tên thể loại",

@@ -17,12 +17,16 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import { useParams } from 'react-router';
-import { useGetAllComments, useGetStoryById } from '../../service';
+import {
+	useCreateComment,
+	useGetAllComments,
+	useGetStoryById,
+} from '../../service';
 import { Language, PathHolders, StoryStatus } from '../../util';
 import { useAuth0 } from '@auth0/auth0-react';
 import dayjs from 'dayjs';
 import type { GetCommentQuery } from '../../@types/queries';
-import type { Comment } from '../../@types/entities';
+import type { CreateCommentRequest } from '../../@types/requests';
 import type { CommentResponse } from '../../@types/response';
 
 const { Title, Paragraph } = Typography;
@@ -38,6 +42,7 @@ const BookDetailPage = () => {
 	const { notification } = App.useApp();
 	const storyId = useParams()[PathHolders.STORY_ID];
 	const { user } = useAuth0();
+	const [form] = Form.useForm();
 	//Get story detail
 	const storyDetail = useGetStoryById(storyId!, {
 		skip: !storyId,
@@ -78,46 +83,58 @@ const BookDetailPage = () => {
 			});
 		}
 		if (!comments.data?.content) return;
-		if (comments.data?.content?.length) {
+		if (commentsQuery.offset === 0) {
+			setAllComments(comments.data.content);
+		} else {
 			setAllComments((prev) => [
 				...prev,
-				...comments.data!.content.map(
-					(cmt) =>
-						({
-							...cmt,
-							id: cmt.id,
-						} as Comment),
+				...comments.data!.content.filter(
+					(newCmt) => !prev.some((oldCmt) => oldCmt.id === newCmt.id),
 				),
 			]);
 		}
-	}, [comments.data, comments.isError, notification, t]);
+	}, [comments.data, comments.isError, commentsQuery.offset, notification, t]);
 
-	// const commentContent = useMemo(() => {
-	// 	if (comments.isError) return [];
-	// 	if (comments.data?.content)
-	// 		return comments.data.content.map(
-	// 			(cmt) =>
-	// 				({
-	// 					...cmt,
-	// 					id: cmt.id,
-	// 				} as Comment),
-	// 		);
-	// 	return [];
-	// }, [comments.data, comments.isError]);
+	// comment story
+	const [createCommentTrigger, { isLoading: isCommentCreating }] =
+		useCreateComment();
+	const handleCreateComment = async () => {
+		try {
+			if (!user?.sub) {
+				notification.warning({
+					message: t('youMustBeLoggedInToComment'),
+					placement: 'topRight',
+				});
+				return;
+			}
+			const content = form.getFieldValue('content')?.trim();
+			if (!content) {
+				notification.warning({
+					message: t('pleaseEnterCommentBeforeSubmit'),
+					placement: 'topRight',
+				});
+				return;
+			}
+			const payload: CreateCommentRequest = {
+				storyId: storyId!,
+				userId: user.sub,
+				content: content,
+			};
+			await createCommentTrigger(payload).unwrap();
+			setCommentsQuery({ storyId: storyId!, offset: 0, limit: 5 });
+			await comments.refetch();
+			await storyDetail.refetch();
+			notification.success({ message: t('addCommentSuccess') });
+			form.resetFields();
+		} catch (error) {
+			notification.error({
+				message: t('addCommentFailed'),
+			});
+			console.log('Error: ', error);
+		}
+	};
 
-	// // Xử lý submit comment
-	// const handleAddComment = (values: { content: string }) => {
-	// 	const newComment = {
-	// 		id: comments.length + 1,
-	// 		author: 'Bạn đọc', // có thể lấy từ user login
-	// 		avatar: 'https://i.pravatar.cc/150?img=5',
-	// 		content: values.content,
-	// 		datetime: new Date().toLocaleString(),
-	// 	};
-	// 	setComments([newComment, ...comments]);
-	// };
-
-	if (storyDetail.isFetching || storyDetail.isLoading) {
+	if (storyDetail.isLoading) {
 		return <LoadingScreen />;
 	}
 	return (
@@ -195,21 +212,12 @@ const BookDetailPage = () => {
 						</Descriptions>
 					</Col>
 
-					{/* Nội dung sách */}
+					{/* Story Content */}
 					<Col xs={24} sm={24} md={24} lg={12} xl={14} xxl={18}>
 						<div style={{ paddingRight: 12 }}>
 							<Title level={2} style={{ marginBottom: 24, color: '#146C94' }}>
 								{storyDetail.data?.title || 'N/A'}
 							</Title>
-							{/* <Title level={4} style={{ margin: '4px 0' }}>
-							CỔ TÍCH NGƯỜI H’MÔNG
-						</Title>
-						<Title
-							level={4}
-							style={{ marginTop: 0, marginBottom: 24, color: '#146C94' }}
-						>
-							ZAJ DAB NEEG HMOOB
-						</Title> */}
 
 							<Paragraph style={paragraphStyle}>
 								{storyDetail.data?.description || 'N/A'}
@@ -231,23 +239,33 @@ const BookDetailPage = () => {
 					</Col>
 				</Row>
 				{/* Comment list */}
-				<Guard requiredPermissions={['READ_USER']}>
+				<Guard requiredPermissions={['READ_USER', 'CREATE_COMMENT']}>
 					<Space direction="vertical" style={{ width: '100%', marginTop: 32 }}>
-						<Form layout="vertical" style={{ marginTop: 16 }}>
+						<Form
+							layout="vertical"
+							style={{ marginTop: 16 }}
+							form={form}
+							onFinish={handleCreateComment}
+						>
 							<Form.Item
 								name="content"
 								rules={[
-									{ required: false, message: 'Vui lòng nhập bình luận!' },
+									{ required: true, message: t('commentContentRequired') },
 								]}
 							>
 								<TextArea
 									rows={3}
 									placeholder={t('enterComment')}
 									maxLength={500}
+									showCount
 								/>
 							</Form.Item>
 							<Form.Item>
-								<Button type="primary" htmlType="submit">
+								<Button
+									type="primary"
+									htmlType="submit"
+									loading={isCommentCreating}
+								>
 									{t('sendComment')}
 								</Button>
 							</Form.Item>
@@ -260,19 +278,19 @@ const BookDetailPage = () => {
 						<CommentList
 							comments={allComments ?? []}
 							onLoadMore={() => {
-								setCommentsQuery({
-									offset:
-										(commentsQuery?.offset ?? 0) + (commentsQuery?.limit ?? 5),
-									limit: commentsQuery.limit ?? 5,
-									storyId: storyId!,
-								});
+								setCommentsQuery((prev) => ({
+									...prev,
+									offset: (prev?.offset ?? 0) + (prev?.limit ?? 5),
+								}));
 							}}
 							hasMore={
 								comments.data
 									? allComments.length < comments.data.total_elements
 									: false
 							}
-							loading={comments.isFetching || comments.isLoading}
+							loading={
+								comments.isFetching || comments.isLoading || isCommentCreating
+							}
 						/>
 					</Space>
 				</Guard>

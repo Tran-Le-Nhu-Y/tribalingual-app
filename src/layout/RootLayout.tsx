@@ -216,12 +216,12 @@ const RootLayout = () => {
 								}}
 							>
 								<img
-									src="./tribalingual_logo_removebg.png"
+									src="/tribalingual_logo_removebg.png"
 									alt="Logo"
 									style={{
 										width: 100,
-										backgroundColor: '#fff', // nền trắng
-										borderRadius: '50%', // bo tròn thành hình tròn
+										backgroundColor: '#fff',
+										borderRadius: '50%',
 									}}
 								/>
 							</div>

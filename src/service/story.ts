@@ -10,6 +10,7 @@ import type {
 	StoryResponse,
 } from '../@types/response';
 import type {
+	CreateCommentRequest,
 	CreateStoryRequest,
 	DeleteStoryRequest,
 	PublishStoryRequest,
@@ -214,6 +215,20 @@ export const storyApi = createApi({
 				};
 			},
 		}),
+		createComment: builder.mutation<string, CreateCommentRequest>({
+			query: (data: CreateCommentRequest) => ({
+				url: `/${EXTENSION_URL}/${data.storyId}/comment/create`,
+				method: 'POST',
+				body: data,
+			}),
+			invalidatesTags() {
+				return [{ type: 'PagingComment' } as const];
+			},
+			transformResponse: (response: string) => response,
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+		}),
 	}),
 });
 
@@ -227,4 +242,5 @@ export const {
 	useDeleteStoryMutation,
 	usePublishStoryMutation,
 	useGetAllCommentsQuery,
+	useCreateCommentMutation,
 } = storyApi;
