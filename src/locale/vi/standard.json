@@ -53,6 +53,7 @@
 	"myStories": "Câu chuyện của tôi",
 
 	"topViewStoriesLoadingErrorDescription": "Không thể tải danh sách các sách có lượt xem nhiều nhất. Vui lòng thử lại.",
+	"noFavoriteStories": "Không có câu chuyện yêu thích.",
 
 	"storyUploadedManagement": "Quản lý câu chuyện được đăng tải",
 	"storiesLoadingErrorDescription": "Không thể tải danh sách các câu chuyện. Vui lòng thử lại.",

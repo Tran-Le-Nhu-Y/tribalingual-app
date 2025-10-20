@@ -22,8 +22,6 @@ const HomePage = () => {
 		skip: !storiesQuery,
 	});
 	useEffect(() => {
-		console.log(stories.error);
-		console.log(storiesQuery);
 		if (stories.isError) {
 			notification.error({
 				message: t('dataLoadingError'),

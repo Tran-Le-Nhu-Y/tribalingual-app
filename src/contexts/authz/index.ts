@@ -24,6 +24,7 @@ export type PermissionKey =
 	| 'CREATE_COMMENT'
 	| 'DELETE_COMMENT'
 	| 'CREATE_FAVORITE'
+	| 'READ_FAVORITE'
 	| 'DELETE_FAVORITE'
 	| 'CREATE_VIEW'
 	| 'READ_STORY_HISTORY'
@@ -51,6 +52,7 @@ export const PermissionEnum: Record<PermissionKey, string> = {
 	CREATE_COMMENT: 'create:comment',
 	DELETE_COMMENT: 'delete:comment',
 	CREATE_FAVORITE: 'create:favorite',
+	READ_FAVORITE: 'read:favorite',
 	DELETE_FAVORITE: 'delete:favorite',
 	CREATE_VIEW: 'create:view',
 

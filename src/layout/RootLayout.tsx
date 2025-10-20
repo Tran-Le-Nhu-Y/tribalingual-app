@@ -101,11 +101,23 @@ const RootLayout = () => {
 		[t],
 	);
 
-	const selectedKey = pathname.startsWith(RoutePaths.ADMIN)
-		? RoutePaths.ADMIN
-		: items?.some((item) => item?.key === pathname)
-		? pathname
-		: RoutePaths.HOME;
+	const selectedKey = useMemo(() => {
+		if (pathname.startsWith(RoutePaths.ADMIN)) return RoutePaths.ADMIN;
+		if (pathname.startsWith(RoutePaths.UPLOAD_STORY))
+			return RoutePaths.UPLOAD_STORY;
+		if (pathname.startsWith(RoutePaths.GENRE)) return RoutePaths.GENRE;
+		if (pathname.startsWith(RoutePaths.FAVORITEBOOK))
+			return RoutePaths.FAVORITEBOOK;
+		if (pathname.startsWith(RoutePaths.PROFILE)) return RoutePaths.PROFILE;
+
+		if (pathname.startsWith(RoutePaths.STORY)) return RoutePaths.STORY;
+
+		const exactMatch = items.find((item) => item.key === pathname);
+		if (exactMatch) return exactMatch.key;
+
+		const matched = items.find((item) => pathname.startsWith(item.key));
+		return matched ? matched.key : RoutePaths.HOME;
+	}, [pathname, items]);
 
 	const onMenuClick: MenuProps['onClick'] = (e) => {
 		if (e.key === 'logout') {
@@ -133,7 +145,7 @@ const RootLayout = () => {
 	const renderSiderMenu = (collapsed: boolean) => (
 		<Menu
 			mode="inline"
-			selectedKeys={[selectedKey]}
+			selectedKeys={selectedKey ? [selectedKey] : []}
 			onClick={onMenuClick}
 			style={{
 				width: '100%',

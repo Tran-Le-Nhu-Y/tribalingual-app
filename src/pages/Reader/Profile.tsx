@@ -12,8 +12,6 @@ import {
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
-	CheckCircleOutlined,
-	HeartOutlined,
 	EyeOutlined,
 	LikeOutlined,
 	MessageOutlined,
@@ -39,23 +37,23 @@ interface Story {
 	comments: number;
 }
 
-// Hàm để trả về màu Tag dựa trên trạng thái (sử dụng chuyên nghiệp hơn)
-const getStatusTag = (status: string) => {
-	switch (status) {
-		case 'Published':
-			return <Tag color="green">Đã đăng</Tag>;
-		case 'Pending':
-			return <Tag color="orange">Đang chờ</Tag>;
-		case 'Draft':
-			return <Tag color="default">Bản nháp</Tag>;
-		default:
-			return <Tag>{status}</Tag>;
-	}
-};
-
 const ProfilePage = () => {
 	const { t } = useTranslation();
 
+	const getStatusTag = (status: string) => {
+		switch (status) {
+			case 'PUBLISHED':
+				return <Tag color="green">{t('published')}</Tag>;
+			case 'PENDING':
+				return <Tag color="orange">{t('pending')}</Tag>;
+			case 'REJECTED':
+				return <Tag color="red">{t('rejected')}</Tag>;
+			case 'UPDATED':
+				return <Tag color="blue">{t('updated')}</Tag>;
+			default:
+				return <Tag>{status}</Tag>;
+		}
+	};
 	// fake data stories
 	const stories: Story[] = [
 		{
@@ -92,25 +90,25 @@ const ProfilePage = () => {
 		},
 	];
 
-	const stats = [
-		{
-			value: 10,
-			label: t('read') || 'Đã đọc',
-			icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
-			bgColor: '#f6ffed',
-		},
-		{
-			value: 4,
-			label: t('favorite') || 'Yêu thích',
-			icon: <HeartOutlined style={{ color: '#ff4d4f' }} />,
-			bgColor: '#f0f5ff',
-		},
-	];
+	// const stats = [
+	// 	{
+	// 		value: 10,
+	// 		label: t('read') || 'Đã đọc',
+	// 		icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
+	// 		bgColor: '#f6ffed',
+	// 	},
+	// 	{
+	// 		value: 4,
+	// 		label: t('favorite') || 'Yêu thích',
+	// 		icon: <HeartOutlined style={{ color: '#ff4d4f' }} />,
+	// 		bgColor: '#f0f5ff',
+	// 	},
+	// ];
 
 	return (
 		<Guard requiredPermissions={['READ_STORY']}>
 			{/* --- Stats Section --- */}
-			<Row gutter={[16, 16]} justify="center">
+			{/* <Row gutter={[16, 16]} justify="center">
 				{stats.map((item, idx) => (
 					<Col key={idx} xs={12} sm={12} md={10} lg={8} xl={6}>
 						<Card hoverable style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
@@ -151,7 +149,7 @@ const ProfilePage = () => {
 						</Card>
 					</Col>
 				))}
-			</Row>
+			</Row> */}
 
 			<Space
 				direction="vertical"

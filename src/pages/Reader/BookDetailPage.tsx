@@ -149,7 +149,6 @@ const BookDetailPage = () => {
 		},
 	);
 	useEffect(() => {
-		console.log('checkFavorited data: ', checkFavorited.data);
 		if (typeof checkFavorited.data === 'boolean') {
 			setIsFavorited(checkFavorited.data);
 		}

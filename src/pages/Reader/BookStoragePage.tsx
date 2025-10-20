@@ -49,7 +49,7 @@ const BookStoragePage = () => {
 		return [];
 	}, [stories.data?.content, stories.isError]);
 
-	// Xử lý phân trang
+	// handle paging
 	const startIndex = (currentPage - 1) * pageSize;
 	const endIndex = startIndex + pageSize;
 	const paginatedStories = content.slice(startIndex, endIndex);
@@ -99,9 +99,9 @@ const BookStoragePage = () => {
 					views={story.viewCount}
 					onDetailClick={() =>
 						navigate(
-							RoutePaths.STORY.replace(
+							RoutePaths.STORY_DETAIL.replace(
 								`:${PathHolders.STORY_ID}`,
-								String(story.id),
+								story.id,
 							),
 						)
 					}

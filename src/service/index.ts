@@ -32,6 +32,7 @@ import {
 	useCreateFavoriteMutation as useCreateFavorite,
 	useDeleteFavoriteMutation as useDeleteFavorite,
 	useIsFavoritedQuery as useIsFavorited,
+	useGetAllFavoritedStoriesByUserQuery as useGetAllFavoritedStoriesByUser,
 } from './story';
 export {
 	useGetStories,
@@ -45,4 +46,5 @@ export {
 	useCreateFavorite,
 	useDeleteFavorite,
 	useIsFavorited,
+	useGetAllFavoritedStoriesByUser,
 };

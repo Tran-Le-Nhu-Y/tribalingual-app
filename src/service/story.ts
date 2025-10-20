@@ -233,6 +233,20 @@ export const storyApi = createApi({
 		}),
 
 		// favorite
+		getAllFavoritedStoriesByUser: builder.query<
+			StoryResponse[],
+			{ userId: string }
+		>({
+			query: ({ userId }) => ({
+				url: `/${EXTENSION_URL}/favorite/all`,
+				method: 'GET',
+				params: { userId: userId },
+				headers: { 'Cache-Control': 'no-cache' },
+			}),
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+		}),
 		createFavorite: builder.mutation<string, CreateFavoriteRequest>({
 			query: (data: CreateFavoriteRequest) => ({
 				url: `/${EXTENSION_URL}/${data.storyId}/favorite/add`,
@@ -302,4 +316,5 @@ export const {
 	useCreateFavoriteMutation,
 	useDeleteFavoriteMutation,
 	useIsFavoritedQuery,
+	useGetAllFavoritedStoriesByUserQuery,
 } = storyApi;
