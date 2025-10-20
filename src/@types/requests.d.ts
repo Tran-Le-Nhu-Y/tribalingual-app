@@ -61,7 +61,11 @@ declare interface CreateCommentRequest {
 declare interface CreateFavoriteRequest {
 	storyId: string;
 	userId: string;
-	addedDate?: Date;
+}
+
+declare interface DeleteFavoriteRequest {
+	storyId: string;
+	userId: string;
 }
 
 declare interface CreateViewRequest {

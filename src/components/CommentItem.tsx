@@ -41,7 +41,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
 						}}
 					>
 						<Text strong>
-							{loading ? t('loading') : user?.name || 'Unknown'}
+							{loading ? t('dataLoading') : user?.name || 'Unknown'}
 						</Text>
 						<Text type="secondary" style={{ fontSize: 12 }}>
 							{new Date(comment.createdAt).toLocaleString()}

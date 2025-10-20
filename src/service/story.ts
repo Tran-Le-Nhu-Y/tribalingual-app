@@ -11,7 +11,9 @@ import type {
 } from '../@types/response';
 import type {
 	CreateCommentRequest,
+	CreateFavoriteRequest,
 	CreateStoryRequest,
+	DeleteFavoriteRequest,
 	DeleteStoryRequest,
 	PublishStoryRequest,
 	UpdateStoryRequest,
@@ -229,6 +231,60 @@ export const storyApi = createApi({
 				return baseQueryReturnValue.status;
 			},
 		}),
+
+		// favorite
+		createFavorite: builder.mutation<string, CreateFavoriteRequest>({
+			query: (data: CreateFavoriteRequest) => ({
+				url: `/${EXTENSION_URL}/${data.storyId}/favorite/add`,
+				method: 'POST',
+				body: data,
+			}),
+			invalidatesTags() {
+				return [{ type: 'PagingStory' } as const];
+			},
+			transformResponse: (response: string) => response,
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+		}),
+
+		deleteFavorite: builder.mutation<
+			{ message: string },
+			DeleteFavoriteRequest
+		>({
+			query: (data: DeleteFavoriteRequest) => ({
+				url: `/${EXTENSION_URL}/${data.storyId}/favorite/delete/${data.userId}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags(_result, _error, arg) {
+				return [
+					{ type: 'Story', id: arg.storyId } as const,
+					{ type: 'PagingStory' } as const,
+				];
+			},
+			transformErrorResponse(baseQueryReturnValue) {
+				const status = baseQueryReturnValue.status;
+				const { message } = baseQueryReturnValue.data as { message: string };
+				if (
+					status === 404 &&
+					message.includes('Favorite with story id') &&
+					message.includes('not found')
+				)
+					return DeleteError.NOT_FOUND;
+				return DeleteError.UNKNOWN_ERROR;
+			},
+		}),
+		isFavorited: builder.query<boolean, { storyId: string; userId: string }>({
+			query: ({ storyId, userId }) => ({
+				url: `/${EXTENSION_URL}/${storyId}/favorite/is-favorited/${userId}`,
+			}),
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+			transformResponse(rawResult: { isFavorited: boolean }) {
+				return rawResult.isFavorited;
+			},
+		}),
 	}),
 });
 
@@ -243,4 +299,7 @@ export const {
 	usePublishStoryMutation,
 	useGetAllCommentsQuery,
 	useCreateCommentMutation,
+	useCreateFavoriteMutation,
+	useDeleteFavoriteMutation,
+	useIsFavoritedQuery,
 } = storyApi;

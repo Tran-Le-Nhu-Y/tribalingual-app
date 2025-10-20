@@ -29,6 +29,9 @@ import {
 	usePublishStoryMutation as usePublishStory,
 	useGetAllCommentsQuery as useGetAllComments,
 	useCreateCommentMutation as useCreateComment,
+	useCreateFavoriteMutation as useCreateFavorite,
+	useDeleteFavoriteMutation as useDeleteFavorite,
+	useIsFavoritedQuery as useIsFavorited,
 } from './story';
 export {
 	useGetStories,
@@ -39,4 +42,7 @@ export {
 	usePublishStory,
 	useGetAllComments,
 	useCreateComment,
+	useCreateFavorite,
+	useDeleteFavorite,
+	useIsFavorited,
 };

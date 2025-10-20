@@ -102,6 +102,11 @@
 	"commentContentRequired": "Vui lòng nhập nội dung bình luận!",
 	"pleaseEnterCommentBeforeSubmit": "Vui lòng nhập nội dung bình luận trước khi gửi.",
 	"youMustBeLoggedInToComment": "Bạn phải đăng nhập để có thể bình luận.",
+	"unfavorite": "Bỏ yêu thích",
+	"youMustBeLoggedInToFavorite": "Bạn phải đăng nhập để có thể yêu thích câu chuyện.",
+	"removeFavoriteSuccess": "Gỡ yêu thích câu chuyện thành công.",
+	"addFavoriteSuccess": "Thêm yêu thích câu chuyện thành công.",
+	"favoriteActionFailed": "Thao tác yêu thích câu chuyện thất bại.",
 
 	"genreManagement": "Quản lý thể loại truyện",
 	"genreName": "Tên thể loại",

@@ -11,7 +11,7 @@ import {
 	Divider,
 	App,
 } from 'antd';
-import { EyeOutlined, HeartOutlined } from '@ant-design/icons';
+import { EyeOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
 import { CommentList, Guard, LoadingScreen } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -19,8 +19,11 @@ import TextArea from 'antd/es/input/TextArea';
 import { useParams } from 'react-router';
 import {
 	useCreateComment,
+	useCreateFavorite,
+	useDeleteFavorite,
 	useGetAllComments,
 	useGetStoryById,
+	useIsFavorited,
 } from '../../service';
 import { Language, PathHolders, StoryStatus } from '../../util';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -134,6 +137,64 @@ const BookDetailPage = () => {
 		}
 	};
 
+	// favorite and remove favorite story
+	const [isFavorited, setIsFavorited] = useState(false);
+	const checkFavorited = useIsFavorited(
+		{
+			storyId: storyId!,
+			userId: user?.sub || '',
+		},
+		{
+			skip: !storyId || !user?.sub,
+		},
+	);
+	useEffect(() => {
+		console.log('checkFavorited data: ', checkFavorited.data);
+		if (typeof checkFavorited.data === 'boolean') {
+			setIsFavorited(checkFavorited.data);
+		}
+	}, [checkFavorited.data]);
+
+	const [createFavoriteTrigger, { isLoading: isFavoriteCreating }] =
+		useCreateFavorite();
+	const [deleteFavoriteTrigger, { isLoading: isFavoriteDeleting }] =
+		useDeleteFavorite();
+	const handleToggleFavorite = async () => {
+		if (!storyId) return;
+		if (!user?.sub) {
+			notification.warning({
+				message: t('youMustBeLoggedInToFavorite'),
+				placement: 'topRight',
+			});
+			return;
+		}
+
+		try {
+			if (isFavorited) {
+				await deleteFavoriteTrigger({
+					storyId: storyId!,
+					userId: user.sub,
+				}).unwrap();
+				setIsFavorited(false);
+				notification.info({ message: t('removeFavoriteSuccess') });
+			} else {
+				await createFavoriteTrigger({
+					storyId: storyId!,
+					userId: user.sub,
+				}).unwrap();
+				setIsFavorited(true);
+				notification.success({ message: t('addFavoriteSuccess') });
+			}
+
+			await storyDetail.refetch();
+		} catch (error) {
+			notification.error({
+				message: t('favoriteActionFailed'),
+			});
+			console.error(error);
+		}
+	};
+
 	if (storyDetail.isLoading) {
 		return <LoadingScreen />;
 	}
@@ -224,8 +285,41 @@ const BookDetailPage = () => {
 							</Paragraph>
 
 							<Space size="middle" style={{ marginTop: 32, flexWrap: 'wrap' }}>
-								<Button style={{ color: 'red' }} icon={<HeartOutlined />}>
-									{t('favorite')}
+								<Button
+									type={isFavorited ? 'primary' : 'default'}
+									icon={isFavorited ? <HeartFilled /> : <HeartOutlined />}
+									onClick={handleToggleFavorite}
+									loading={
+										isFavoriteCreating ||
+										isFavoriteDeleting ||
+										checkFavorited.isLoading
+									}
+									style={{
+										borderRadius: 20,
+										border: '1px solid red',
+										color: isFavorited ? '#fff' : 'red',
+										background: isFavorited
+											? 'linear-gradient(135deg, #ff4d4f, #ff7875)'
+											: 'transparent',
+										boxShadow: isFavorited
+											? '0 4px 10px rgba(255,77,79,0.4)'
+											: 'none',
+										transition: 'all 0.3s ease',
+									}}
+									onMouseEnter={(e) => {
+										const target = e.currentTarget;
+										if (!isFavorited) {
+											target.style.backgroundColor = 'rgba(255,0,0,0.1)';
+										}
+									}}
+									onMouseLeave={(e) => {
+										const target = e.currentTarget;
+										if (!isFavorited) {
+											target.style.backgroundColor = 'transparent';
+										}
+									}}
+								>
+									{isFavorited ? t('unfavorite') : t('favorite')}
 								</Button>
 								<Button
 									type="primary"
