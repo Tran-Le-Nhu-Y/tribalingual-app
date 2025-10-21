@@ -8,6 +8,7 @@ import ProfilePage from './Reader/Profile';
 import UploadStoryPage from './Reader/UploadStoryPage';
 import GenreManagementPage from './Admin/GenreManagementPage';
 import StoryUploadedDetailPage from './Admin/StoryUploadedDetailPage';
+import UpdateUploadedStoryPage from './Reader/UpdateUploadedStoryPage';
 
 export {
 	FavoriteBooksPage,
@@ -20,4 +21,5 @@ export {
 	ApproveStoryPage,
 	GenreManagementPage,
 	StoryUploadedDetailPage,
+	UpdateUploadedStoryPage,
 };

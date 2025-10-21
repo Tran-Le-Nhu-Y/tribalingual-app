@@ -51,13 +51,14 @@ export const storyApi = createApi({
 		}),
 
 		getStories: builder.query<PagingWrapper<Story>, GetStoryQuery>({
-			query: ({ offset = 0, limit = 100, status }) => ({
+			query: ({ offset = 0, limit = 20, status, authorId }) => ({
 				url: `/${EXTENSION_URL}/all`,
 				method: 'GET',
 				params: {
 					offset: offset,
 					limit: limit,
 					status: status,
+					authorId: authorId,
 				},
 				headers: { 'Cache-Control': 'no-cache' },
 			}),
@@ -291,12 +292,14 @@ export const storyApi = createApi({
 		isFavorited: builder.query<boolean, { storyId: string; userId: string }>({
 			query: ({ storyId, userId }) => ({
 				url: `/${EXTENSION_URL}/${storyId}/favorite/is-favorited/${userId}`,
+				method: 'GET',
+				headers: { 'Cache-Control': 'no-cache' },
 			}),
 			transformErrorResponse(baseQueryReturnValue) {
 				return baseQueryReturnValue.status;
 			},
-			transformResponse(rawResult: { isFavorited: boolean }) {
-				return rawResult.isFavorited;
+			transformResponse(rawResult: boolean) {
+				return rawResult;
 			},
 		}),
 	}),

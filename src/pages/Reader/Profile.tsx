@@ -8,7 +8,8 @@ import {
 	Divider,
 	Image,
 	Descriptions,
-	Tooltip,
+	App,
+	Button,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
@@ -16,29 +17,25 @@ import {
 	LikeOutlined,
 	MessageOutlined,
 	EditOutlined,
+	EyeFilled,
 } from '@ant-design/icons';
 import { Guard } from '../../components';
+import { useAuth0 } from '@auth0/auth0-react';
+import type { GetStoryQuery } from '../../@types/queries';
+import { useEffect, useMemo, useState } from 'react';
+import { useGetStories } from '../../service';
+import type { Story } from '../../@types/entities';
+import { PathHolders, RoutePaths, StoryStatus } from '../../util';
+import dayjs from 'dayjs';
+import { useNavigate } from 'react-router';
 
 const { Title, Paragraph, Text } = Typography;
 
-interface Story {
-	id: string;
-	title: string;
-	thumbnail: string;
-	description: string;
-	genre: string;
-	language: string;
-	status: string;
-	createdAt: string;
-	publishedAt?: string;
-	updatedAt: string;
-	views: number;
-	likes: number;
-	comments: number;
-}
-
 const ProfilePage = () => {
 	const { t } = useTranslation();
+	const { notification } = App.useApp();
+	const { user } = useAuth0();
+	const navigate = useNavigate();
 
 	const getStatusTag = (status: string) => {
 		switch (status) {
@@ -54,41 +51,38 @@ const ProfilePage = () => {
 				return <Tag>{status}</Tag>;
 		}
 	};
-	// fake data stories
-	const stories: Story[] = [
-		{
-			id: '1',
-			title: 'Chuyện cổ tích H’Mông',
-			thumbnail: 'https://picsum.photos/140/100?random=1',
-			description:
-				'Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam.',
-			genre: 'Truyện dân gian',
-			language: 'Hmong',
-			status: 'Pending',
-			createdAt: '2025-09-01',
-			publishedAt: '2025-09-01',
-			updatedAt: '2025-09-05',
-			views: 0,
-			likes: 0,
-			comments: 0,
-		},
-		{
-			id: '2',
-			title: 'Truyền thuyết Con Rồng Cháu Tiên',
-			thumbnail: 'https://picsum.photos/140/100?random=2',
-			description:
-				'Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam. Câu chuyện về nguồn gốc dân tộc Việt Nam.',
-			genre: 'Truyền thuyết',
-			language: 'Vietnamese',
-			status: 'Published',
-			createdAt: '2025-08-15',
-			publishedAt: '2025-08-20',
-			updatedAt: '2025-09-01',
-			views: 520,
-			likes: 200,
-			comments: 85,
-		},
-	];
+
+	//Get all stories
+	const [storiesQuery] = useState<GetStoryQuery>({
+		offset: 0,
+		limit: 10, //  10 item
+		authorId: user?.sub,
+	});
+	const stories = useGetStories(storiesQuery!, {
+		skip: !storiesQuery,
+	});
+	useEffect(() => {
+		if (stories.isError) {
+			notification.error({
+				message: t('dataLoadingError'),
+				description: t('storiesLoadingErrorDescription'),
+				placement: 'topRight',
+			});
+		}
+	}, [notification, stories.isError, t]);
+
+	const content = useMemo(() => {
+		if (stories.isError) return [];
+		if (stories.data?.content)
+			return stories.data.content.map(
+				(story) =>
+					({
+						...story,
+						id: story.id,
+					} as Story),
+			);
+		return [];
+	}, [stories.data?.content, stories.isError]);
 
 	// const stats = [
 	// 	{
@@ -156,7 +150,7 @@ const ProfilePage = () => {
 				style={{ width: '100%', margin: '24px 0' }}
 				size="large"
 			>
-				{stories.map((story) => (
+				{content.map((story) => (
 					<Card
 						key={story.id}
 						style={{
@@ -165,35 +159,78 @@ const ProfilePage = () => {
 						}}
 						hoverable
 					>
-						{story.status === 'Pending' && (
-							<Tooltip title={t('update')} color="geekblue">
-								<EditOutlined
-									onClick={() => {
-										console.log('Cập nhật câu chuyện:', story.id);
-										// TODO: mở modal cập nhật hoặc điều hướng đến trang edit
-									}}
+						<Row
+							justify="end"
+							style={{ position: 'absolute', top: 10, right: 16, gap: 12 }}
+						>
+							<Button
+								onClick={() =>
+									navigate(
+										RoutePaths.STORY_DETAIL.replace(
+											`:${PathHolders.STORY_ID}`,
+											story.id,
+										),
+									)
+								}
+								style={{
+									display: 'inline-flex',
+									alignItems: 'center',
+									gap: 6,
+									background: '#e6f4ff',
+									padding: '4px 10px',
+									borderRadius: 6,
+									cursor: 'pointer',
+									transition: 'all 0.2s ease',
+								}}
+								onMouseEnter={(e) => {
+									(e.currentTarget as HTMLElement).style.background = '#bae0ff';
+								}}
+								onMouseLeave={(e) => {
+									(e.currentTarget as HTMLElement).style.background = '#e6f4ff';
+								}}
+							>
+								<EyeFilled style={{ color: '#1677ff' }} />
+								<Text style={{ color: '#1677ff', fontWeight: 500 }}>
+									{t('seeDetails')}
+								</Text>
+							</Button>
+
+							{story.status === StoryStatus.PENDING && (
+								<Button
+									onClick={() =>
+										navigate(
+											RoutePaths.UPDATE_UPLOADED_STORY.replace(
+												`:${PathHolders.STORY_ID}`,
+												String(story.id),
+											),
+										)
+									}
 									style={{
-										fontSize: 20,
-										color: '#1890ff',
-										cursor: 'pointer',
-										position: 'absolute',
-										top: 10,
-										right: 12,
-										padding: 4,
+										display: 'inline-flex',
+										alignItems: 'center',
+										gap: 6,
+										background: '#fff7e6',
+										padding: '4px 10px',
 										borderRadius: 6,
-										transition: 'background 0.2s',
+										cursor: 'pointer',
+										transition: 'all 0.2s ease',
 									}}
 									onMouseEnter={(e) => {
 										(e.currentTarget as HTMLElement).style.background =
-											'#e6f7ff';
+											'#ffe7ba';
 									}}
 									onMouseLeave={(e) => {
 										(e.currentTarget as HTMLElement).style.background =
-											'transparent';
+											'#fff7e6';
 									}}
-								/>
-							</Tooltip>
-						)}
+								>
+									<EditOutlined style={{ color: '#fa8c16' }} />
+									<Text style={{ color: '#fa8c16', fontWeight: 500 }}>
+										{t('update')}
+									</Text>
+								</Button>
+							)}
+						</Row>
 						<Row gutter={[16, 16]}>
 							<Col xs={24} sm={24} md={24} lg={8} xl={6}>
 								<Row gutter={[16, 16]} align="top">
@@ -212,7 +249,7 @@ const ProfilePage = () => {
 												objectFit: 'cover',
 												boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
 											}}
-											src={story.thumbnail}
+											src={story.file?.url ?? '/unknow_image.jpg'}
 											alt={story.title}
 											preview={false}
 										/>
@@ -226,7 +263,7 @@ const ProfilePage = () => {
 											contentStyle={{ marginLeft: 8 }}
 										>
 											<Descriptions.Item label="Thể loại">
-												<Tag color="blue">{story.genre}</Tag>
+												<Tag color="blue">{story.genre?.name}</Tag>
 											</Descriptions.Item>
 											<Descriptions.Item label="Ngôn ngữ">
 												<Tag color="purple">{story.language}</Tag>
@@ -236,17 +273,29 @@ const ProfilePage = () => {
 											</Descriptions.Item>
 											<Descriptions.Item label="Ngày đăng">
 												<Text type="secondary" style={{ fontSize: 13 }}>
-													{story.createdAt ?? 'Chưa'}
+													{story?.uploadedDate
+														? dayjs(story?.uploadedDate).format(
+																'DD/MM/YYYY HH:mm:ss',
+														  )
+														: '-'}
 												</Text>
 											</Descriptions.Item>
 											<Descriptions.Item label="Ngày phát hành">
 												<Text type="secondary" style={{ fontSize: 13 }}>
-													{story.publishedAt ?? 'Chưa'}
+													{story?.publishedDate
+														? dayjs(story?.publishedDate).format(
+																'DD/MM/YYYY HH:mm:ss',
+														  )
+														: '-'}
 												</Text>
 											</Descriptions.Item>
 											<Descriptions.Item label="Cập nhật lần cuối">
 												<Text type="secondary" style={{ fontSize: 13 }}>
-													{story.updatedAt}
+													{story?.lastUpdatedDate
+														? dayjs(story?.lastUpdatedDate).format(
+																'DD/MM/YYYY HH:mm:ss',
+														  )
+														: '-'}
 												</Text>
 											</Descriptions.Item>
 										</Descriptions>
@@ -260,8 +309,11 @@ const ProfilePage = () => {
 									size={8}
 									style={{ width: '100%', minHeight: 140 }}
 								>
-									<Title level={4} style={{ margin: 0 }}>
-										{story.title}
+									<Title
+										level={3}
+										style={{ marginBottom: 12, color: '#146C94' }}
+									>
+										{story?.title || 'N/A'}
 									</Title>
 									<Paragraph
 										type="secondary"
@@ -286,15 +338,15 @@ const ProfilePage = () => {
 						>
 							<Col>
 								<EyeOutlined style={{ marginRight: 4 }} />
-								{story.views} {t('view')}
+								{story.viewCount} {t('view')}
 							</Col>
 							<Col>
 								<LikeOutlined style={{ marginRight: 4 }} />
-								{story.likes} {t('favorite')}
+								{story.favoriteCount} {t('favorite')}
 							</Col>
 							<Col>
 								<MessageOutlined style={{ marginRight: 4 }} />
-								{story.comments} {t('comment')}
+								{story.commentCount} {t('comment')}
 							</Col>
 						</Row>
 					</Card>

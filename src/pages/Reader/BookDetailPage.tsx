@@ -138,21 +138,18 @@ const BookDetailPage = () => {
 	};
 
 	// favorite and remove favorite story
-	const [isFavorited, setIsFavorited] = useState(false);
 	const checkFavorited = useIsFavorited(
-		{
-			storyId: storyId!,
-			userId: user?.sub || '',
-		},
-		{
-			skip: !storyId || !user?.sub,
-		},
+		{ storyId: storyId!, userId: user?.sub || '' },
+		{ skip: !storyId || !user?.sub },
 	);
+
+	const [isFavorited, setIsFavorited] = useState<boolean>(false);
+
 	useEffect(() => {
-		if (typeof checkFavorited.data === 'boolean') {
+		if (checkFavorited.isSuccess && typeof checkFavorited.data === 'boolean') {
 			setIsFavorited(checkFavorited.data);
 		}
-	}, [checkFavorited.data]);
+	}, [checkFavorited.data, checkFavorited.isSuccess]);
 
 	const [createFavoriteTrigger, { isLoading: isFavoriteCreating }] =
 		useCreateFavorite();
@@ -167,30 +164,31 @@ const BookDetailPage = () => {
 			});
 			return;
 		}
+		const currentlyFav = isFavorited; // read current
+		setIsFavorited(!currentlyFav);
 
 		try {
-			if (isFavorited) {
+			if (currentlyFav) {
 				await deleteFavoriteTrigger({
 					storyId: storyId!,
 					userId: user.sub,
 				}).unwrap();
-				setIsFavorited(false);
 				notification.info({ message: t('removeFavoriteSuccess') });
 			} else {
 				await createFavoriteTrigger({
 					storyId: storyId!,
 					userId: user.sub,
 				}).unwrap();
-				setIsFavorited(true);
 				notification.success({ message: t('addFavoriteSuccess') });
 			}
-
 			await storyDetail.refetch();
+			await checkFavorited.refetch();
 		} catch (error) {
 			notification.error({
 				message: t('favoriteActionFailed'),
 			});
 			console.error(error);
+			setIsFavorited(currentlyFav);
 		}
 	};
 

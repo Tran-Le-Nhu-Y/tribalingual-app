@@ -21,6 +21,7 @@ import {
 	StoryUploadedDetailPage,
 	StoryManagementPage,
 	UploadStoryPage,
+	UpdateUploadedStoryPage,
 } from './pages/index.ts';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
@@ -49,9 +50,13 @@ const router = createBrowserRouter(
 				path={RoutePaths.STORY_UPLOADED_DETAIL}
 				element={<StoryUploadedDetailPage />}
 			/>
+			<Route
+				path={RoutePaths.UPDATE_UPLOADED_STORY}
+				element={<UpdateUploadedStoryPage />}
+			/>
 			<Route path={RoutePaths.GENRE} element={<GenreManagementPage />} />
-		</Route>
-	)
+		</Route>,
+	),
 );
 
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
@@ -75,5 +80,5 @@ createRoot(document.getElementById('root')!).render(
 				</MantineProvider>
 			</Provider>
 		</AuthzProvider>
-	</Auth0Provider>
+	</Auth0Provider>,
 );

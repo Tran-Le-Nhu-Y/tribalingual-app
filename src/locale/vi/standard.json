@@ -92,6 +92,10 @@
 	"deleteFileFailed": "Xóa hình ảnh thất bại",
 	"createStorySuccess": "Đăng tải câu chuyện thành công.",
 	"createStoryFailed": "Đăng tải câu chuyện thất bại!",
+	"updateStorySuccess": "Cập nhật câu chuyện thành công.",
+	"updateStoryFailed": "Cập nhật câu chuyện thất bại!",
+	"updateYourStory": "Cập nhật câu chuyện",
+	"cancelFailed": "Quá trình hủy xảy ra lỗi",
 
 	"approveStory": "Duyệt câu chuyện",
 

@@ -32,6 +32,7 @@ export const RoutePaths = {
 	STORY,
 	STORY_DETAIL: `${STORY}/:${PathHolders.STORY_ID}/detail`,
 	UPLOAD_STORY: `${STORY}/upload`,
+	UPDATE_UPLOADED_STORY: `${STORY}/upload/:${PathHolders.STORY_ID}/update`,
 
 	FAVORITEBOOK,
 

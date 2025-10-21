@@ -8,6 +8,7 @@ declare interface GetStoryQuery {
 	offset?: number?;
 	limit?: number?;
 	status?: StoryStatus?;
+	authorId?: string?;
 }
 
 declare interface GetCommentQuery {
