@@ -31,6 +31,8 @@ declare interface Story {
 	title: string;
 	description?: string;
 	language: Language;
+	viewLink?: string | null;
+	gameLink?: string | null;
 	hmongContent?: string | null;
 	englishContent?: string | null;
 	vietnameseContent?: string | null;

@@ -24,7 +24,7 @@
 	"enterComment": "Nhập bình luận của bạn...",
 	"see": "Xem",
 	"approve": "Duyệt",
-	"seeAndApprove": "Xem xét duyệt",
+	"seeAndApprove": "Xét duyệt",
 	"reject": "Từ chối",
 	"author": "Tác giả",
 	"status": "Trạng thái",
@@ -42,6 +42,9 @@
 	"rejected": "Từ chối duyệt",
 	"updated": "Đã cập nhật",
 	"hidden": "Đã ẩn",
+	"viewLink": "Đường dẫn để đọc truyện",
+	"gameLink": "Đường dẫn để chơi game",
+	"pleaseFillBothLinksBeforeApproval": "Vui lòng điền hai đường dẫn trước khi duyệt",
 
 	"read": "Đã đọc",
 	"favorite": "Yêu thích",
@@ -98,6 +101,10 @@
 	"cancelFailed": "Quá trình hủy xảy ra lỗi",
 
 	"approveStory": "Duyệt câu chuyện",
+	"viewLinkRequired": "Đường dẫn để đọc truyện không được để trống",
+	"viewLinkPlaceholder": "Nhập đường dẫn để đọc truyện",
+	"gameLinkRequired": "Đường dẫn để chơi game không được để trống",
+	"gameLinkPlaceholder": "Nhập đường dẫn để chơi game",
 
 	"storyDetail": "Chi tiết câu chuyện",
 	"commentLoadingErrorDescription": "Không thể tải danh sách các bình luận. Vui lòng thử lại.",

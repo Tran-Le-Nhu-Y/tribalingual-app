@@ -14,11 +14,10 @@ import {
 import type { TableColumnsType, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import {
-	CheckOutlined,
-	CloseOutlined,
 	DeleteOutlined,
 	EditOutlined,
 	EyeOutlined,
+	FileDoneOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
 import type { InputRef } from 'antd';
@@ -112,10 +111,6 @@ const StoryManagementPage: React.FC = () => {
 				}
 			}
 		}
-	};
-
-	const handleReject = (id: string) => {
-		return id;
 	};
 
 	const handleSearch = (
@@ -325,13 +320,14 @@ const StoryManagementPage: React.FC = () => {
 							</Tooltip>
 						</>
 					)}
-					{params.status === StoryStatus.PENDING && (
+					{(params.status === StoryStatus.PENDING ||
+						params.status === StoryStatus.UPDATED) && (
 						<>
 							<Tooltip title={t('seeAndApprove')}>
 								<Button
 									type="primary"
 									size="small"
-									icon={<CheckOutlined />}
+									icon={<FileDoneOutlined />}
 									onClick={() =>
 										navigate(
 											RoutePaths.APPROVE_STORY_UPLOADED.replace(
@@ -342,7 +338,7 @@ const StoryManagementPage: React.FC = () => {
 									}
 								/>
 							</Tooltip>
-							<Tooltip title={t('reject')}>
+							{/* <Tooltip title={t('reject')}>
 								<Popconfirm
 									title={t('rejectStoryConfirm')}
 									onConfirm={() => handleReject(params.id)}
@@ -352,7 +348,7 @@ const StoryManagementPage: React.FC = () => {
 								>
 									<Button danger size="small" icon={<CloseOutlined />} />
 								</Popconfirm>
-							</Tooltip>
+							</Tooltip> */}
 						</>
 					)}
 

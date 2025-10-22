@@ -213,6 +213,13 @@ const StoryUploadedDetailPage: React.FC = () => {
 						</Card>
 					))}
 
+					<Form.Item label={t('viewLink')} name="viewLink">
+						<Input placeholder={t('viewLinkPlaceholder')} readOnly />
+					</Form.Item>
+					<Form.Item label={t('gameLink')} name="gameLink">
+						<Input placeholder={t('gameLinkPlaceholder')} readOnly />
+					</Form.Item>
+
 					<Form.Item>
 						<Space style={{ marginTop: 15 }}>
 							<Button onClick={() => navigate(RoutePaths.ADMIN)}>

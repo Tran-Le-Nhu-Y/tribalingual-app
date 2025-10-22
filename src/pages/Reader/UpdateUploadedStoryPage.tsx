@@ -336,15 +336,17 @@ const UpdateUploadedStoryPage: React.FC = () => {
 								rules={[{ required: true, message: t('storyGenreRequired') }]}
 							>
 								<Select
-									value={story.genreId}
 									placeholder={t('chooseGenre')}
-									onChange={(value) =>
-										setStory((prev) => prev && { ...prev, genreId: value })
-									}
+									onChange={(value) => {
+										setStory((prev) =>
+											prev ? { ...prev, genreId: value } : prev,
+										);
+									}}
 									options={genres.data?.content.map((g) => ({
 										label: g.name,
 										value: g.id,
 									}))}
+									value={story.genreId}
 									style={{ width: 200 }}
 								/>
 							</Form.Item>
