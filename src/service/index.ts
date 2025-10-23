@@ -33,7 +33,9 @@ import {
 	useDeleteFavoriteMutation as useDeleteFavorite,
 	useIsFavoritedQuery as useIsFavorited,
 	useGetAllFavoritedStoriesByUserQuery as useGetAllFavoritedStoriesByUser,
+	useLazySearchStoriesByTitleQuery as useLazySearchStoriesByTitle,
 } from './story';
+
 export {
 	useGetStories,
 	useGetStoryById,
@@ -47,4 +49,5 @@ export {
 	useDeleteFavorite,
 	useIsFavorited,
 	useGetAllFavoritedStoriesByUser,
+	useLazySearchStoriesByTitle,
 };

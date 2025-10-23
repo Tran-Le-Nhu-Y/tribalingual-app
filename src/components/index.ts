@@ -6,6 +6,7 @@ import NewBooksList from './NewBookList';
 import RankingList from './RankingList';
 import RankingListItem from './RankingListItem';
 import StoryCard from './StoryCard';
+import StorySearch from './StorySearch';
 import TextEditor from './TextEditor';
 import UploadFile from './UploadFile';
 import UploadImage from './UploadImage';
@@ -22,4 +23,5 @@ export {
 	LoadingScreen,
 	Guard,
 	CommentItem,
+	StorySearch,
 };

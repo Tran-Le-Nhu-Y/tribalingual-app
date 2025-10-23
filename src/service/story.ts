@@ -101,6 +101,56 @@ export const storyApi = createApi({
 			},
 		}),
 
+		searchStoriesByTitle: builder.query<PagingWrapper<Story>, GetStoryQuery>({
+			query: ({ offset = 0, limit = 10, title }) => ({
+				url: `/${EXTENSION_URL}/search`,
+				method: 'GET',
+				params: {
+					offset: offset,
+					limit: limit,
+					title: title,
+				},
+				headers: { 'Cache-Control': 'no-cache' },
+			}),
+
+			providesTags(result) {
+				const pagingTag = {
+					type: 'PagingStory',
+					id: `${result?.page_number}-${result?.total_pages}-${result?.page_size}-${result?.total_elements}`,
+				} as const;
+
+				return result
+					? [
+							...result.content.map(
+								({ id }) => ({ type: 'Story', id } as const),
+							),
+							pagingTag,
+					  ]
+					: [pagingTag];
+			},
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+			transformResponse(
+				rawResult: PagingWrapper<StoryResponse>,
+			): PagingWrapper<Story> {
+				const content = rawResult.content;
+				if (!content || content.length === 0) {
+					return {
+						...rawResult,
+						content: [],
+					};
+				}
+				// Map each StoryResponse to Story entity
+				const mappedContent: Story[] = content.map(toStoryEntity);
+
+				return {
+					...rawResult,
+					content: mappedContent,
+				};
+			},
+		}),
+
 		createStory: builder.mutation<string, CreateStoryRequest>({
 			query: (data: CreateStoryRequest) => ({
 				url: `/${EXTENSION_URL}/create`,
@@ -320,4 +370,5 @@ export const {
 	useDeleteFavoriteMutation,
 	useIsFavoritedQuery,
 	useGetAllFavoritedStoriesByUserQuery,
+	useLazySearchStoriesByTitleQuery,
 } = storyApi;

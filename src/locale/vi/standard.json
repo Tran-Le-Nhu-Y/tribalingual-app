@@ -45,13 +45,14 @@
 	"viewLink": "Đường dẫn để đọc truyện",
 	"gameLink": "Đường dẫn để chơi game",
 	"pleaseFillBothLinksBeforeApproval": "Vui lòng điền hai đường dẫn trước khi duyệt",
-
+	"searchStoriesPlaceholder": "Tìm kiếm truyện theo tên...",
+	"noStoriesFound": "Không tìm thấy truyện nào",
 	"read": "Đã đọc",
 	"favorite": "Yêu thích",
 	"mostRead": "Xem nhiều nhất",
 	"mostFavorited": "Yêu thích nhiều nhất",
-	"newBooks": "Sách mới",
-	"bookStorage": "Kho sách",
+	"newBooks": "Truyện mới",
+	"bookStorage": "Kho truyện",
 	"uploadStory": "Đăng câu chuyện",
 	"myStories": "Câu chuyện của tôi",
 

@@ -4,7 +4,6 @@ import {
 	BookOutlined,
 	UserOutlined,
 	LogoutOutlined,
-	BellOutlined,
 	FacebookOutlined,
 	InstagramOutlined,
 	MailOutlined,
@@ -20,12 +19,9 @@ import {
 	Layout,
 	Menu,
 	Avatar,
-	Input,
 	Grid,
 	Button,
 	Drawer,
-	Tooltip,
-	Badge,
 	Dropdown,
 } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router';
@@ -33,7 +29,7 @@ import { RoutePaths } from '../util';
 import { useTranslation } from 'react-i18next';
 import { appComponents, appTheme } from '../theme/theme';
 import { useAuth0 } from '@auth0/auth0-react';
-import { LoadingScreen } from '../components';
+import { LoadingScreen, StorySearch } from '../components';
 import { useAuthz, type PermissionKey } from '../contexts/authz';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -83,7 +79,7 @@ const RootLayout = () => {
 			{
 				key: RoutePaths.PROFILE,
 				icon: <UserOutlined />,
-				label: t('account'),
+				label: t('myStories'),
 			},
 			{
 				key: RoutePaths.ADMIN,
@@ -158,8 +154,6 @@ const RootLayout = () => {
 			items={permittedItems.map(({ requiredPermissions, ...rest }) => rest)}
 		/>
 	);
-
-	const [notificationCount, setNotificationCount] = useState(3);
 
 	if (isLoading) {
 		return <LoadingScreen />;
@@ -307,14 +301,11 @@ const RootLayout = () => {
 										onClick={() => setDrawerVisible(true)}
 									/>
 								)}
-								<Input.Search
-									placeholder="Tìm kiếm..."
-									style={{ width: 300 }}
-								/>
+								<StorySearch width={350} />
 							</div>
 
 							<div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-								<Tooltip title={t('notifications')}>
+								{/* <Tooltip title={t('notifications')}>
 									<Badge
 										count={notificationCount}
 										size="small"
@@ -329,14 +320,14 @@ const RootLayout = () => {
 											onClick={() => setNotificationCount(0)}
 										/>
 									</Badge>
-								</Tooltip>
+								</Tooltip> */}
 
 								<Dropdown
 									menu={{
 										items: [
 											{
 												key: 'account',
-												label: t('account'),
+												label: t('myStories'),
 												icon: <UserOutlined />,
 												onClick: () => navigate(RoutePaths.PROFILE),
 											},
