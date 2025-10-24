@@ -13,6 +13,7 @@ import type {
 	CreateCommentRequest,
 	CreateFavoriteRequest,
 	CreateStoryRequest,
+	CreateViewRequest,
 	DeleteFavoriteRequest,
 	DeleteStoryRequest,
 	PublishStoryRequest,
@@ -300,7 +301,7 @@ export const storyApi = createApi({
 		}),
 		createFavorite: builder.mutation<string, CreateFavoriteRequest>({
 			query: (data: CreateFavoriteRequest) => ({
-				url: `/${EXTENSION_URL}/${data.storyId}/favorite/add`,
+				url: `/${EXTENSION_URL}/favorite/add`,
 				method: 'POST',
 				body: data,
 			}),
@@ -352,6 +353,21 @@ export const storyApi = createApi({
 				return rawResult;
 			},
 		}),
+
+		createView: builder.mutation<string, CreateViewRequest>({
+			query: (data: CreateViewRequest) => ({
+				url: `/${EXTENSION_URL}/view/add`,
+				method: 'POST',
+				body: data,
+			}),
+			invalidatesTags() {
+				return [{ type: 'PagingStory' } as const];
+			},
+			transformResponse: (response: string) => response,
+			transformErrorResponse(baseQueryReturnValue) {
+				return baseQueryReturnValue.status;
+			},
+		}),
 	}),
 });
 
@@ -371,4 +387,5 @@ export const {
 	useIsFavoritedQuery,
 	useGetAllFavoritedStoriesByUserQuery,
 	useLazySearchStoriesByTitleQuery,
+	useCreateViewMutation,
 } = storyApi;

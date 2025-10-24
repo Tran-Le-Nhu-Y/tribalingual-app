@@ -6,6 +6,7 @@ import { toEntity } from './mapper/file-mapper';
 import type { FileResponse, PagingWrapper } from '../@types/response';
 import type { File } from '../@types/entities';
 import type { UploadFileRequest } from '../@types/requests';
+import type { GetQuery } from '../@types/queries';
 
 const EXTENSION_URL = 'api/v1/file';
 export const fileApi = createApi({

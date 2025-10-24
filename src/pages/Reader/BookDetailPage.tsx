@@ -11,7 +11,12 @@ import {
 	Divider,
 	App,
 } from 'antd';
-import { EyeOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
+import {
+	EyeOutlined,
+	HeartFilled,
+	HeartOutlined,
+	PlayCircleOutlined,
+} from '@ant-design/icons';
 import { CommentList, Guard, LoadingScreen } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -20,6 +25,7 @@ import { useParams } from 'react-router';
 import {
 	useCreateComment,
 	useCreateFavorite,
+	useCreateView,
 	useDeleteFavorite,
 	useGetAllComments,
 	useGetStoryById,
@@ -192,6 +198,63 @@ const BookDetailPage = () => {
 		}
 	};
 
+	//view
+	const [createViewTrigger, { isLoading: isViewCreating }] = useCreateView();
+	const handleCreateView = async () => {
+		if (!storyId) return;
+		if (!user?.sub) {
+			notification.warning({
+				message: t('youMustBeLoggedInToView'),
+				placement: 'topRight',
+			});
+			return;
+		}
+		try {
+			await createViewTrigger({
+				storyId: storyId!,
+				userId: user.sub,
+			}).unwrap();
+
+			const viewLink = storyDetail.data?.viewLink;
+			if (viewLink) {
+				if (viewLink.startsWith('http')) {
+					window.open(viewLink, '_blank');
+				} else {
+					notification.warning({
+						message: t('viewLinkNotFound'),
+						placement: 'topRight',
+					});
+					return;
+				}
+			} else {
+				notification.info({ message: t('viewLinkNotFound') });
+			}
+		} catch (error) {
+			console.error('Create view error: ', error);
+			notification.error({
+				message: t('viewActionFailed'),
+			});
+		}
+	};
+
+	//game
+	const handlePlayGame = () => {
+		const gameLink = storyDetail.data?.gameLink;
+		if (gameLink) {
+			if (gameLink.startsWith('http')) {
+				window.open(gameLink, '_blank');
+			} else {
+				notification.warning({
+					message: t('gameLinkNotFound'),
+					placement: 'topRight',
+				});
+				return;
+			}
+		} else {
+			notification.info({ message: t('gameLinkNotFound') });
+		}
+	};
+
 	if (storyDetail.isLoading) {
 		return <LoadingScreen />;
 	}
@@ -322,8 +385,18 @@ const BookDetailPage = () => {
 									type="primary"
 									icon={<EyeOutlined />}
 									style={{ borderRadius: 6 }}
+									loading={isViewCreating}
+									onClick={handleCreateView}
 								>
 									{t('see')}
+								</Button>
+								<Button
+									type="primary"
+									icon={<PlayCircleOutlined />}
+									style={{ borderRadius: 6 }}
+									onClick={handlePlayGame}
+								>
+									{t('game')}
 								</Button>
 							</Space>
 						</div>

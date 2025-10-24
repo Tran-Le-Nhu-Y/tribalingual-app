@@ -34,6 +34,7 @@ import {
 	useIsFavoritedQuery as useIsFavorited,
 	useGetAllFavoritedStoriesByUserQuery as useGetAllFavoritedStoriesByUser,
 	useLazySearchStoriesByTitleQuery as useLazySearchStoriesByTitle,
+	useCreateViewMutation as useCreateView,
 } from './story';
 
 export {
@@ -50,4 +51,5 @@ export {
 	useIsFavorited,
 	useGetAllFavoritedStoriesByUser,
 	useLazySearchStoriesByTitle,
+	useCreateView,
 };

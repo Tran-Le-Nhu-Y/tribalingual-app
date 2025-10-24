@@ -73,5 +73,4 @@ declare interface DeleteFavoriteRequest {
 declare interface CreateViewRequest {
 	storyId: string;
 	userId: string;
-	lastViewDate?: Date;
 }

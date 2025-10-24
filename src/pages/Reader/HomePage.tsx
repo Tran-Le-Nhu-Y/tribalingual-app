@@ -48,6 +48,14 @@ const HomePage = () => {
 		<Guard requiredPermissions={['READ_STORY', 'READ_FILE']}>
 			<div>
 				<RankingList
+					title={t('newBooks')}
+					items={content}
+					showRankingNumber={false}
+					maxItems={10}
+				/>
+			</div>
+			<div>
+				<RankingList
 					title={t('mostRead')}
 					items={content}
 					maxItems={10}
@@ -60,14 +68,6 @@ const HomePage = () => {
 					items={content}
 					maxItems={10}
 					sortOption={SortStoryOption.FAVORITECOUNT}
-				/>
-			</div>
-			<div>
-				<RankingList
-					title={t('newBooks')}
-					items={content}
-					showRankingNumber={false}
-					maxItems={10}
 				/>
 			</div>
 		</Guard>
