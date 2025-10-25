@@ -17,7 +17,7 @@ import {
 	FavoriteBooksPage,
 	GenreManagementPage,
 	HomePage,
-	ProfilePage,
+	MyStoriesPage,
 	StoryUploadedDetailPage,
 	StoryManagementPage,
 	UploadStoryPage,
@@ -38,18 +38,19 @@ const router = createBrowserRouter(
 			<Route path={RoutePaths.HOME} element={<HomePage />} />
 			<Route path={RoutePaths.STORY} element={<BookStoragePage />} />
 			<Route path={RoutePaths.FAVORITEBOOK} element={<FavoriteBooksPage />} />
-			<Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
 			<Route path={RoutePaths.STORY_DETAIL} element={<BookDetailPage />} />
-
 			<Route path={RoutePaths.ADMIN} element={<StoryManagementPage />} />
 			<Route
 				path={RoutePaths.APPROVE_STORY_UPLOADED}
 				element={<ApproveStoryPage />}
 			/>
+
 			<Route
 				path={RoutePaths.STORY_UPLOADED_DETAIL}
 				element={<StoryUploadedDetailPage />}
 			/>
+			<Route path={RoutePaths.MY_STORIES} element={<MyStoriesPage />} />
+
 			<Route
 				path={RoutePaths.UPDATE_UPLOADED_STORY}
 				element={<UpdateUploadedStoryPage />}

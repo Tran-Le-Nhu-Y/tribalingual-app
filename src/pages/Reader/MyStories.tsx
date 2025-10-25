@@ -10,6 +10,7 @@ import {
 	Descriptions,
 	App,
 	Button,
+	Empty,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import {
@@ -31,7 +32,7 @@ import { useNavigate } from 'react-router';
 
 const { Title, Paragraph, Text } = Typography;
 
-const ProfilePage = () => {
+const MyStoriesPage = () => {
 	const { t } = useTranslation();
 	const { notification } = App.useApp();
 	const { user } = useAuth0();
@@ -55,7 +56,7 @@ const ProfilePage = () => {
 	//Get all stories
 	const [storiesQuery] = useState<GetStoryQuery>({
 		offset: 0,
-		limit: 10, //  10 item
+		limit: 50, //  10 item
 		authorId: user?.sub,
 	});
 	const stories = useGetStories(storiesQuery!, {
@@ -98,6 +99,24 @@ const ProfilePage = () => {
 	// 		bgColor: '#f0f5ff',
 	// 	},
 	// ];
+
+	if (!stories || stories.data?.content.length === 0) {
+		return (
+			<Guard requiredPermissions={['READ_STORY']}>
+				<Empty
+					description={t('noUploadedStories')}
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						height: '100%',
+						width: '100%',
+						flexDirection: 'column',
+					}}
+				/>
+			</Guard>
+		);
+	}
 
 	return (
 		<Guard requiredPermissions={['READ_STORY']}>
@@ -163,38 +182,6 @@ const ProfilePage = () => {
 							justify="end"
 							style={{ position: 'absolute', top: 10, right: 16, gap: 12 }}
 						>
-							<Button
-								onClick={() =>
-									navigate(
-										RoutePaths.STORY_DETAIL.replace(
-											`:${PathHolders.STORY_ID}`,
-											story.id,
-										),
-									)
-								}
-								style={{
-									display: 'inline-flex',
-									alignItems: 'center',
-									gap: 6,
-									background: '#e6f4ff',
-									padding: '4px 10px',
-									borderRadius: 6,
-									cursor: 'pointer',
-									transition: 'all 0.2s ease',
-								}}
-								onMouseEnter={(e) => {
-									(e.currentTarget as HTMLElement).style.background = '#bae0ff';
-								}}
-								onMouseLeave={(e) => {
-									(e.currentTarget as HTMLElement).style.background = '#e6f4ff';
-								}}
-							>
-								<EyeFilled style={{ color: '#1677ff' }} />
-								<Text style={{ color: '#1677ff', fontWeight: 500 }}>
-									{t('seeDetails')}
-								</Text>
-							</Button>
-
 							{story.status === StoryStatus.PENDING && (
 								<Button
 									onClick={() =>
@@ -227,6 +214,42 @@ const ProfilePage = () => {
 									<EditOutlined style={{ color: '#fa8c16' }} />
 									<Text style={{ color: '#fa8c16', fontWeight: 500 }}>
 										{t('update')}
+									</Text>
+								</Button>
+							)}
+
+							{story.status === StoryStatus.PUBLISHED && (
+								<Button
+									onClick={() =>
+										navigate(
+											RoutePaths.STORY_DETAIL.replace(
+												`:${PathHolders.STORY_ID}`,
+												story.id,
+											),
+										)
+									}
+									style={{
+										display: 'inline-flex',
+										alignItems: 'center',
+										gap: 6,
+										background: '#e6f4ff',
+										padding: '4px 10px',
+										borderRadius: 6,
+										cursor: 'pointer',
+										transition: 'all 0.2s ease',
+									}}
+									onMouseEnter={(e) => {
+										(e.currentTarget as HTMLElement).style.background =
+											'#bae0ff';
+									}}
+									onMouseLeave={(e) => {
+										(e.currentTarget as HTMLElement).style.background =
+											'#e6f4ff';
+									}}
+								>
+									<EyeFilled style={{ color: '#1677ff' }} />
+									<Text style={{ color: '#1677ff', fontWeight: 500 }}>
+										{t('seeDetails')}
 									</Text>
 								</Button>
 							)}
@@ -356,4 +379,4 @@ const ProfilePage = () => {
 	);
 };
 
-export default ProfilePage;
+export default MyStoriesPage;

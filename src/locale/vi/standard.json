@@ -56,6 +56,7 @@
 	"uploadStory": "Đăng câu chuyện",
 	"myStories": "Câu chuyện của tôi",
 	"game": "Trò chơi",
+	"noUploadedStories": "Không có câu chuyện nào được bạn đăng tải.",
 
 	"topViewStoriesLoadingErrorDescription": "Không thể tải danh sách các sách có lượt xem nhiều nhất. Vui lòng thử lại.",
 	"noFavoriteStories": "Không có câu chuyện yêu thích.",

@@ -77,7 +77,7 @@ const RootLayout = () => {
 				requiredPermissions: ['CREATE_FAVORITE', 'DELETE_FAVORITE'],
 			},
 			{
-				key: RoutePaths.PROFILE,
+				key: RoutePaths.MY_STORIES,
 				icon: <UserOutlined />,
 				label: t('myStories'),
 			},
@@ -104,7 +104,8 @@ const RootLayout = () => {
 		if (pathname.startsWith(RoutePaths.GENRE)) return RoutePaths.GENRE;
 		if (pathname.startsWith(RoutePaths.FAVORITEBOOK))
 			return RoutePaths.FAVORITEBOOK;
-		if (pathname.startsWith(RoutePaths.PROFILE)) return RoutePaths.PROFILE;
+		if (pathname.startsWith(RoutePaths.MY_STORIES))
+			return RoutePaths.MY_STORIES;
 
 		if (pathname.startsWith(RoutePaths.STORY)) return RoutePaths.STORY;
 
@@ -329,7 +330,7 @@ const RootLayout = () => {
 												key: 'account',
 												label: t('myStories'),
 												icon: <UserOutlined />,
-												onClick: () => navigate(RoutePaths.PROFILE),
+												onClick: () => navigate(RoutePaths.MY_STORIES),
 											},
 
 											{

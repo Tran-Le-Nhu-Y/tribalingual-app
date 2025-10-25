@@ -32,7 +32,17 @@ const FavoriteBooksPage = () => {
 	if (!stories || stories.length === 0) {
 		return (
 			<Guard requiredPermissions={['READ_STORY']}>
-				<Empty description={t('noFavoriteStories')} />
+				<Empty
+					description={t('noFavoriteStories')}
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						height: '100%',
+						width: '100%',
+						flexDirection: 'column',
+					}}
+				/>
 			</Guard>
 		);
 	}

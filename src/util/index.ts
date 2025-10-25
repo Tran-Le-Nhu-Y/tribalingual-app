@@ -17,7 +17,7 @@ export const PathHolders = {
 const HOME = '/home';
 const STORY = '/story';
 const FAVORITEBOOK = '/favorite-books';
-const PROFILE = '/profile';
+const MY_STORIES = '/my-stories';
 const ADMIN = '/admin';
 const GENRE = '/genre';
 export const RoutePaths = {
@@ -32,11 +32,11 @@ export const RoutePaths = {
 	STORY,
 	STORY_DETAIL: `${STORY}/:${PathHolders.STORY_ID}/detail`,
 	UPLOAD_STORY: `${STORY}/upload`,
-	UPDATE_UPLOADED_STORY: `${STORY}/upload/:${PathHolders.STORY_ID}/update`,
 
 	FAVORITEBOOK,
 
-	PROFILE,
+	MY_STORIES,
+	UPDATE_UPLOADED_STORY: `${MY_STORIES}/upload/:${PathHolders.STORY_ID}/update`,
 };
 
 export const HideDuration = {
