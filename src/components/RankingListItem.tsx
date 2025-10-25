@@ -26,7 +26,8 @@ const RankingListItem: React.FC<Props> = ({
 		<div
 			style={{
 				position: 'relative',
-				flex: '0 0 auto',
+				flex: '0 0 240px',
+				flexShrink: 0,
 				width: 240,
 				transition: 'transform 0.3s',
 				marginBottom: 5,

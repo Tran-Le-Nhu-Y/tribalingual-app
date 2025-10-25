@@ -29,7 +29,7 @@ const RankingList: React.FC<RankingListProps> = ({
 
 	const scroll = (direction: 'left' | 'right') => {
 		if (listRef.current) {
-			const scrollAmount = 320;
+			const scrollAmount = 300;
 			listRef.current.scrollBy({
 				left: direction === 'left' ? -scrollAmount : scrollAmount,
 				behavior: 'smooth',
@@ -37,30 +37,40 @@ const RankingList: React.FC<RankingListProps> = ({
 		}
 	};
 
-	const handleScroll = () => {
-		if (listRef.current) {
-			const { scrollLeft, scrollWidth, clientWidth } = listRef.current;
-			setShowLeft(scrollLeft > 0);
-			setShowRight(scrollLeft + clientWidth < scrollWidth - 5);
-		}
-	};
-
-	useEffect(() => {
-		handleScroll();
-		const listEl = listRef.current;
-		listEl?.addEventListener('scroll', handleScroll);
-		window.addEventListener('resize', handleScroll);
-		return () => {
-			listEl?.removeEventListener('scroll', handleScroll);
-			window.removeEventListener('resize', handleScroll);
-		};
-	}, []);
 	const sortedItems = sortOption
 		? items
 				?.slice()
 				.sort((a, b) => (b[sortOption] || 0) - (a[sortOption] || 0))
 				.slice(0, maxItems)
 		: items?.slice(0, maxItems);
+
+	const handleScroll = () => {
+		const element = listRef.current;
+		if (!element) return;
+		const { scrollLeft, scrollWidth, clientWidth } = element;
+		const left = scrollLeft > 0;
+		const right = scrollLeft + clientWidth < scrollWidth - 1;
+		setShowLeft(left);
+		setShowRight(right);
+	};
+
+	useEffect(() => {
+		const listEl = listRef.current;
+		if (!listEl) return;
+
+		const timer = setTimeout(() => {
+			handleScroll();
+		}, 50);
+
+		listEl.addEventListener('scroll', handleScroll);
+		window.addEventListener('resize', handleScroll);
+
+		return () => {
+			clearTimeout(timer);
+			listEl.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('resize', handleScroll);
+		};
+	}, [sortedItems]);
 
 	return (
 		<div
@@ -117,9 +127,10 @@ const RankingList: React.FC<RankingListProps> = ({
 					overflowX: 'auto',
 					overflowY: 'hidden',
 					scrollBehavior: 'smooth',
-					padding: '10px 10px 0 10px',
+					padding: '10px 0px 0 15px',
 					scrollbarWidth: 'none',
 					msOverflowStyle: 'none',
+					gap: 10,
 				}}
 			>
 				{sortedItems?.map((item, index) => (
@@ -134,6 +145,7 @@ const RankingList: React.FC<RankingListProps> = ({
 
 			{showRight && (
 				<Button
+					role="next-btn"
 					shape="circle"
 					icon={<RightOutlined />}
 					onClick={() => scroll('right')}
