@@ -1,0 +1,13 @@
+services:
+  fe:
+    image: tribalingual-fe:latest
+    container_name: tribalingual-fe
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:80'
+    networks:
+      - tribalingual-net
+networks:
+  tribalingual-net:
