@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router';
 import { useLazySearchStoriesByTitle } from '../service';
 import type { Story } from '../@types/entities';
 import { PathHolders, RoutePaths } from '../util';
+import { useDebounce } from '../hook/useDebounce';
 
 // const getRandomInt = (max: number, min = 0) =>
 // 	Math.floor(Math.random() * (max - min + 1)) + min;
@@ -49,15 +50,24 @@ const StorySearch: React.FC<StorySearchProps> = ({ width = 300 }) => {
 	const { t } = useTranslation('standard');
 	const navigate = useNavigate();
 	const [options, setOptions] = useState<AutoCompleteProps['options']>([]);
-	const [inputValue, setInputValue] = useState('');
+	const [isSearching, setIsSearching] = useState(false);
+	const [searchTerm, setSearchTerm] = useState('');
+	const debouncedSearchTerm = useDebounce(searchTerm);
 
 	//search
 	const [searchTrigger, searchResults] = useLazySearchStoriesByTitle();
 
 	const handleSearch = (value: string) => {
-		setInputValue(value);
-		searchTrigger({ offset: 0, limit: 5, title: value });
+		setSearchTerm(value);
+		setIsSearching(true);
 	};
+
+	useEffect(() => {
+		setIsSearching(false);
+		if (debouncedSearchTerm.trim().length === 0) return;
+
+		searchTrigger({ offset: 0, limit: 5, title: debouncedSearchTerm });
+	}, [debouncedSearchTerm, searchTrigger]);
 
 	useEffect(() => {
 		if (!searchResults || !searchResults?.data) {
@@ -108,11 +118,11 @@ const StorySearch: React.FC<StorySearchProps> = ({ width = 300 }) => {
 	};
 
 	let notFoundContent = null;
-	if (searchResults.isLoading) {
+	if (searchResults.isLoading || isSearching) {
 		notFoundContent = <Spin size="small" />;
 	} else if (
 		!searchResults.isFetching &&
-		inputValue.trim() !== '' &&
+		searchTerm.trim() !== '' &&
 		searchResults?.data?.content?.length === 0
 	) {
 		notFoundContent = (
@@ -138,7 +148,7 @@ const StorySearch: React.FC<StorySearchProps> = ({ width = 300 }) => {
 				size="large"
 				placeholder={t('searchStoriesPlaceholder')}
 				enterButton
-				value={inputValue}
+				value={searchTerm}
 				onChange={(e) => handleSearch(e.target.value)}
 			/>
 		</AutoComplete>
