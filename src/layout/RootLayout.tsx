@@ -400,22 +400,89 @@ const RootLayout = () => {
 										href="https://www.instagram.com/tribalingual_/?igsh=MXRzaWphODE3MGlleQ%3D%3D&utm_source=qr"
 										target="_blank"
 										rel="noopener noreferrer"
-										style={{ color: '#ff0357ff' }}
+										style={{
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											width: 44,
+											height: 44,
+											borderRadius: '50%',
+											background: '#ffffff',
+											boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+											color: '#ff0357ff',
+											transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.transform = 'scale(1.15)';
+											e.currentTarget.style.boxShadow =
+												'0 6px 14px rgba(0,0,0,0.25)';
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.transform = 'scale(1)';
+											e.currentTarget.style.boxShadow =
+												'0 4px 10px rgba(0,0,0,0.15)';
+										}}
 									>
 										<InstagramOutlined />
 									</a>
+
 									<a
 										href="https://www.facebook.com/profile.php?id=61580547721780"
 										target="_blank"
 										rel="noopener noreferrer"
-										style={{ color: '#0026ffff' }}
+										style={{
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											width: 44,
+											height: 44,
+											borderRadius: '50%',
+											background: '#ffffff',
+											boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+											color: '#0026ffff',
+											transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.transform = 'scale(1.15)';
+											e.currentTarget.style.boxShadow =
+												'0 6px 14px rgba(0,0,0,0.25)';
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.transform = 'scale(1)';
+											e.currentTarget.style.boxShadow =
+												'0 4px 10px rgba(0,0,0,0.15)';
+										}}
 									>
 										<FacebookOutlined />
 									</a>
+
 									<a
-										href="mailto:tribalingual33@gmail.com
-"
-										style={{ color: '#ff1500ff' }}
+										href="https://mail.google.com/mail/?view=cm&fs=1&to=tribalingual33@gmail.com&su=Hello&body=I%20want%20to%20contact%20you"
+										target="_blank"
+										rel="noopener noreferrer"
+										style={{
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											width: 44,
+											height: 44,
+											borderRadius: '50%',
+											background: '#ffffff',
+											boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+											color: '#ff1500ff',
+											transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+											cursor: 'pointer',
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.transform = 'scale(1.15)';
+											e.currentTarget.style.boxShadow =
+												'0 6px 14px rgba(0,0,0,0.25)';
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.transform = 'scale(1)';
+											e.currentTarget.style.boxShadow =
+												'0 4px 10px rgba(0,0,0,0.15)';
+										}}
 									>
 										<MailOutlined />
 									</a>

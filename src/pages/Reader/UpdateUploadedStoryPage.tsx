@@ -209,7 +209,6 @@ const UpdateUploadedStoryPage: React.FC = () => {
 						margin: 0,
 						paddingTop: 4,
 						marginBottom: 16,
-						color: '#03506F',
 						fontSize: 28,
 						fontWeight: 700,
 						letterSpacing: 1,
