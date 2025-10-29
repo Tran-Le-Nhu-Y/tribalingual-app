@@ -14,7 +14,12 @@ import {
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useNavigate, useParams } from 'react-router';
-import { Language, PathHolders, RoutePaths, StoryStatus } from '../../util';
+import {
+	StoryLanguage,
+	PathHolders,
+	RoutePaths,
+	StoryStatus,
+} from '../../util';
 import { useGetStoryById } from '../../service';
 import { useAuth0 } from '@auth0/auth0-react';
 import dayjs from 'dayjs';
@@ -48,7 +53,7 @@ const StoryUploadedDetailPage: React.FC = () => {
 		t,
 	]);
 
-	const translatedLanguages = Object.values(Language).filter(
+	const translatedLanguages = Object.values(StoryLanguage).filter(
 		(lang) => lang !== storyDetail.data?.language,
 	);
 
@@ -111,9 +116,9 @@ const StoryUploadedDetailPage: React.FC = () => {
 							{storyDetail.data?.genre?.name || 'N/A'}
 						</Descriptions.Item>
 						<Descriptions.Item label={t('language')}>
-							{storyDetail.data?.language === Language.VIETNAMESE
+							{storyDetail.data?.language === StoryLanguage.VIETNAMESE
 								? t('vietnamese')
-								: storyDetail.data?.language === Language.HMONG
+								: storyDetail.data?.language === StoryLanguage.HMONG
 								? t('hmong')
 								: t('english')}
 						</Descriptions.Item>
@@ -169,9 +174,9 @@ const StoryUploadedDetailPage: React.FC = () => {
 					<Form.Item
 						label={t('storyContent')}
 						name={
-							storyDetail.data?.language === Language.VIETNAMESE
+							storyDetail.data?.language === StoryLanguage.VIETNAMESE
 								? 'vietnameseContent'
-								: storyDetail.data?.language === Language.ENGLISH
+								: storyDetail.data?.language === StoryLanguage.ENGLISH
 								? 'englishContent'
 								: 'hmongContent'
 						}
@@ -201,9 +206,9 @@ const StoryUploadedDetailPage: React.FC = () => {
 							<Form.Item
 								label={`${t('storyContent')} (${lang})`}
 								name={
-									lang === Language.ENGLISH
+									lang === StoryLanguage.ENGLISH
 										? 'englishContent'
-										: lang === Language.HMONG
+										: lang === StoryLanguage.HMONG
 										? 'hmongContent'
 										: 'vietnameseContent'
 								}

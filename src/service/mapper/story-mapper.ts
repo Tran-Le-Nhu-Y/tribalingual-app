@@ -13,6 +13,7 @@ function toStoryEntity(response: StoryResponse): Story {
 		language: response.language,
 		viewLink: response.viewLink,
 		gameLink: response.gameLink,
+		audioLink: response.audioLink,
 		hmongContent: response.hmongContent,
 		vietnameseContent: response.vietnameseContent,
 		englishContent: response.englishContent,

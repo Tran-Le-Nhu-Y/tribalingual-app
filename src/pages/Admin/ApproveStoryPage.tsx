@@ -21,7 +21,12 @@ import {
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useNavigate, useParams } from 'react-router';
-import { Language, PathHolders, RoutePaths, StoryStatus } from '../../util';
+import {
+	StoryLanguage,
+	PathHolders,
+	RoutePaths,
+	StoryStatus,
+} from '../../util';
 import type { Story } from '../../@types/entities';
 import {
 	useDeleteFile,
@@ -128,6 +133,7 @@ const ApproveStoryPage: React.FC = () => {
 				language: values.language,
 				viewLink: values.viewLink,
 				gameLink: values.gameLink,
+				audioLink: values.audioLink,
 				vietnameseContent: values.vietnameseContent,
 				englishContent: values.englishContent,
 				hmongContent: values.hmongContent,
@@ -201,6 +207,7 @@ const ApproveStoryPage: React.FC = () => {
 							language: originalStory.language,
 							viewLink: originalStory.viewLink,
 							gameLink: originalStory.gameLink,
+							audioLink: originalStory.audioLink,
 						});
 						setFileList(
 							originalStory.file
@@ -230,7 +237,7 @@ const ApproveStoryPage: React.FC = () => {
 	};
 
 	const translatedLanguages = story
-		? Object.values(Language).filter((lang) => lang !== story.language)
+		? Object.values(StoryLanguage).filter((lang) => lang !== story.language)
 		: [];
 
 	if (
@@ -411,9 +418,9 @@ const ApproveStoryPage: React.FC = () => {
 							<Form.Item label={t('language')}>
 								<Select
 									value={
-										story.language === Language.VIETNAMESE
+										story.language === StoryLanguage.VIETNAMESE
 											? t('vietnamese')
-											: story.language === Language.ENGLISH
+											: story.language === StoryLanguage.ENGLISH
 											? t('english')
 											: t('hmong')
 									}
@@ -425,9 +432,9 @@ const ApproveStoryPage: React.FC = () => {
 						<Form.Item
 							label={t('storyContent')}
 							name={
-								story.language === Language.VIETNAMESE
+								story.language === StoryLanguage.VIETNAMESE
 									? 'vietnameseContent'
-									: story.language === Language.ENGLISH
+									: story.language === StoryLanguage.ENGLISH
 									? 'englishContent'
 									: 'hmongContent'
 							}
@@ -462,9 +469,9 @@ const ApproveStoryPage: React.FC = () => {
 								<Form.Item
 									label={`${t('storyContent')} (${lang})`}
 									name={
-										lang === Language.ENGLISH
+										lang === StoryLanguage.ENGLISH
 											? 'englishContent'
-											: lang === Language.HMONG
+											: lang === StoryLanguage.HMONG
 											? 'hmongContent'
 											: 'vietnameseContent'
 									}
@@ -481,6 +488,15 @@ const ApproveStoryPage: React.FC = () => {
 							]}
 						>
 							<Input placeholder={t('viewLinkPlaceholder')} />
+						</Form.Item>
+						<Form.Item
+							label={t('audioLink')}
+							name="audioLink"
+							rules={[
+								{ required: isPublishing, message: t('audioLinkRequired') },
+							]}
+						>
+							<Input placeholder={t('audioLinkPlaceholder')} />
 						</Form.Item>
 						<Form.Item
 							label={t('gameLink')}

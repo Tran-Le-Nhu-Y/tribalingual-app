@@ -34,6 +34,7 @@ declare interface StoryResponse {
 	language: Language;
 	viewLink?: string | null;
 	gameLink?: string | null;
+	audioLink?: string | null;
 	hmongContent?: string | null;
 	englishContent?: string | null;
 	vietnameseContent?: string | null;

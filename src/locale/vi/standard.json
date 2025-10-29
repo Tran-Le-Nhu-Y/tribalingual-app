@@ -23,6 +23,7 @@
 	"sendComment": "Gửi bình luận",
 	"enterComment": "Nhập bình luận của bạn...",
 	"see": "Xem",
+	"listen": "Nghe",
 	"approve": "Duyệt",
 	"seeAndApprove": "Xét duyệt",
 	"reject": "Từ chối",
@@ -44,6 +45,7 @@
 	"hidden": "Đã ẩn",
 	"viewLink": "Đường dẫn để đọc truyện",
 	"gameLink": "Đường dẫn để chơi trò chơi",
+	"audioLink": "Đường dẫn để nghe truyện",
 	"pleaseFillBothLinksBeforeApproval": "Vui lòng điền hai đường dẫn trước khi duyệt",
 	"searchStoriesPlaceholder": "Tìm kiếm truyện theo tên...",
 	"noStoriesFound": "Không tìm thấy truyện nào",
@@ -57,6 +59,7 @@
 	"myStories": "Câu chuyện của tôi",
 	"game": "Trò chơi",
 	"noUploadedStories": "Không có câu chuyện nào được bạn đăng tải.",
+	"noStories": "Không có truyện nào để hiển thị.",
 
 	"topViewStoriesLoadingErrorDescription": "Không thể tải danh sách các sách có lượt xem nhiều nhất. Vui lòng thử lại.",
 	"noFavoriteStories": "Không có câu chuyện yêu thích.",
@@ -108,6 +111,8 @@
 	"viewLinkPlaceholder": "Nhập đường dẫn để đọc truyện",
 	"gameLinkRequired": "Đường dẫn để chơi game không được để trống",
 	"gameLinkPlaceholder": "Nhập đường dẫn để chơi game",
+	"audioLinkRequired": "Đường dẫn để nghe truyện không được để trống",
+	"audioLinkPlaceholder": "Nhập đường dẫn để nghe truyện",
 
 	"storyDetail": "Chi tiết câu chuyện",
 	"commentLoadingErrorDescription": "Không thể tải danh sách các bình luận. Vui lòng thử lại.",
@@ -127,6 +132,8 @@
 	"viewActionFailed": "Thao tác xem truyện thất bại",
 	"gameLinkNotFound": "Không tìm thấy đường dẫn đến trò chơi",
 	"gameActionFailed": "Thao tác chơi trò chơi thất bại",
+	"audioLinkNotFound": "Không tìm thấy đường dẫn để nghe truyện",
+	"listenActionFailed": "Thao tác nghe truyện thất bại",
 
 	"genreManagement": "Quản lý thể loại truyện",
 	"genreName": "Tên thể loại",

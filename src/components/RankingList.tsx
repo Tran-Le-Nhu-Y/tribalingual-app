@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button } from 'antd';
+import { Button, Empty } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 import { useTranslation } from 'react-i18next';
@@ -37,12 +37,12 @@ const RankingList: React.FC<RankingListProps> = ({
 		}
 	};
 
-	const sortedItems = sortOption
-		? items
-				?.slice()
+	const sortedItems: Story[] = sortOption
+		? (items ?? [])
+				.slice()
 				.sort((a, b) => (b[sortOption] || 0) - (a[sortOption] || 0))
 				.slice(0, maxItems)
-		: items?.slice(0, maxItems);
+		: (items ?? []).slice(0, maxItems);
 
 	const handleScroll = () => {
 		const element = listRef.current;
@@ -133,14 +133,30 @@ const RankingList: React.FC<RankingListProps> = ({
 					gap: 10,
 				}}
 			>
-				{sortedItems?.map((item, index) => (
-					<RankingListItem
-						key={item.id}
-						story={item}
-						index={index}
-						showRankingNumber={showRankingNumber}
+				{sortedItems.length > 0 ? (
+					sortedItems.map((item, index) => (
+						<RankingListItem
+							key={item.id}
+							story={item}
+							index={index}
+							showRankingNumber={showRankingNumber}
+						/>
+					))
+				) : (
+					<Empty
+						description={
+							<span style={{ color: '#fff' }}>{t('noStories')}</span>
+						}
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							height: '100%',
+							width: '100%',
+							flexDirection: 'column',
+						}}
 					/>
-				))}
+				)}
 			</div>
 
 			{showRight && (

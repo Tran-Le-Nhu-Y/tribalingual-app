@@ -25,7 +25,12 @@ import Highlighter from 'react-highlight-words';
 import Title from 'antd/es/typography/Title';
 import { appTheme } from '../../theme/theme';
 import { useNavigate } from 'react-router';
-import { PathHolders, RoutePaths, StoryStatus } from '../../util';
+import {
+	PathHolders,
+	RoutePaths,
+	StoryLanguage,
+	StoryStatus,
+} from '../../util';
 import { useTranslation } from 'react-i18next';
 import { useDeleteStory, useGetStories } from '../../service';
 import type { Story } from '../../@types/entities';
@@ -215,6 +220,19 @@ const StoryManagementPage: React.FC = () => {
 			),
 	});
 
+	const languageLabels: Record<StoryLanguage, string> = {
+		VIETNAMESE: 'Tiếng Việt',
+		ENGLISH: 'English',
+		HMONG: "Tiếng H'Mông",
+	};
+	const statusLabels: Record<StoryStatus, string> = {
+		PENDING: t('pending'),
+		PUBLISHED: t('published'),
+		REJECTED: t('rejected'),
+		HIDDEN: t('hidden'),
+		UPDATED: t('updated'),
+	};
+
 	const columns: TableColumnsType<Story> = [
 		{
 			title: t('storyTitle'),
@@ -228,6 +246,8 @@ const StoryManagementPage: React.FC = () => {
 			key: 'language',
 			width: 150,
 			...getColumnSearchProps('language'),
+			render: (language: Story['language']) =>
+				languageLabels[language as StoryLanguage] ?? language,
 		},
 		{
 			title: t('status'),
@@ -235,11 +255,17 @@ const StoryManagementPage: React.FC = () => {
 			key: 'status',
 			width: 120,
 			filters: [
-				{ text: t('pending'), value: StoryStatus.PENDING },
-				{ text: t('published'), value: StoryStatus.PUBLISHED },
-				{ text: t('rejected'), value: StoryStatus.REJECTED },
-				{ text: t('hidden'), value: StoryStatus.HIDDEN },
-				{ text: t('updated'), value: StoryStatus.UPDATED },
+				{ text: statusLabels[StoryStatus.PENDING], value: StoryStatus.PENDING },
+				{
+					text: statusLabels[StoryStatus.PUBLISHED],
+					value: StoryStatus.PUBLISHED,
+				},
+				{
+					text: statusLabels[StoryStatus.REJECTED],
+					value: StoryStatus.REJECTED,
+				},
+				{ text: statusLabels[StoryStatus.HIDDEN], value: StoryStatus.HIDDEN },
+				{ text: statusLabels[StoryStatus.UPDATED], value: StoryStatus.UPDATED },
 			],
 			onFilter: (value, record) => record.status === value,
 			render: (status: Story['status']) => {
@@ -250,7 +276,7 @@ const StoryManagementPage: React.FC = () => {
 					HIDDEN: 'gray',
 					UPDATED: 'blue',
 				};
-				return <Tag color={statusColors[status]}>{status}</Tag>;
+				return <Tag color={statusColors[status]}>{statusLabels[status]}</Tag>;
 			},
 		},
 		{

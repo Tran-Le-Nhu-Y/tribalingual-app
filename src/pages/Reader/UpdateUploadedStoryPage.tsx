@@ -27,7 +27,7 @@ import {
 	useUploadFile,
 } from '../../service';
 import type { Story } from '../../@types/entities';
-import { Language, PathHolders, StoryStatus } from '../../util';
+import { StoryLanguage, PathHolders, StoryStatus } from '../../util';
 import type { UpdateStoryRequest } from '../../@types/requests';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { GetQuery } from '../../@types/queries';
@@ -353,9 +353,9 @@ const UpdateUploadedStoryPage: React.FC = () => {
 							<Form.Item label={t('language')}>
 								<Select
 									value={
-										story.language === Language.VIETNAMESE
+										story.language === StoryLanguage.VIETNAMESE
 											? t('vietnamese')
-											: story.language === Language.ENGLISH
+											: story.language === StoryLanguage.ENGLISH
 											? t('english')
 											: t('hmong')
 									}
@@ -368,9 +368,9 @@ const UpdateUploadedStoryPage: React.FC = () => {
 						<Form.Item
 							label={t('storyContent')}
 							name={
-								story.language === Language.VIETNAMESE
+								story.language === StoryLanguage.VIETNAMESE
 									? 'vietnameseContent'
-									: story.language === Language.ENGLISH
+									: story.language === StoryLanguage.ENGLISH
 									? 'englishContent'
 									: 'hmongContent'
 							}
@@ -379,9 +379,9 @@ const UpdateUploadedStoryPage: React.FC = () => {
 								{
 									validator: () => {
 										const currentContent =
-											story.language === Language.VIETNAMESE
+											story.language === StoryLanguage.VIETNAMESE
 												? story.vietnameseContent
-												: story.language === Language.ENGLISH
+												: story.language === StoryLanguage.ENGLISH
 												? story.englishContent
 												: story.hmongContent;
 
@@ -395,9 +395,9 @@ const UpdateUploadedStoryPage: React.FC = () => {
 							<TextEditor
 								key={`${story.id}-${story.language}`}
 								value={
-									story.language === Language.VIETNAMESE
+									story.language === StoryLanguage.VIETNAMESE
 										? story.vietnameseContent ?? ''
-										: story.language === Language.ENGLISH
+										: story.language === StoryLanguage.ENGLISH
 										? story.englishContent ?? ''
 										: story.hmongContent ?? ''
 								}
@@ -407,15 +407,15 @@ const UpdateUploadedStoryPage: React.FC = () => {
 										return {
 											...prev,
 											vietnameseContent:
-												prev.language === Language.VIETNAMESE
+												prev.language === StoryLanguage.VIETNAMESE
 													? value
 													: prev.vietnameseContent,
 											englishContent:
-												prev.language === Language.ENGLISH
+												prev.language === StoryLanguage.ENGLISH
 													? value
 													: prev.englishContent,
 											hmongContent:
-												prev.language === Language.HMONG
+												prev.language === StoryLanguage.HMONG
 													? value
 													: prev.hmongContent,
 										};

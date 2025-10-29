@@ -21,7 +21,7 @@ import {
 	useUploadFile,
 } from '../../service';
 import type { Story } from '../../@types/entities';
-import { Language, StoryStatus } from '../../util';
+import { StoryLanguage, StoryStatus } from '../../util';
 import type { CreateStoryRequest } from '../../@types/requests';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { GetQuery } from '../../@types/queries';
@@ -297,9 +297,9 @@ const UploadStoryPage: React.FC = () => {
 										}));
 									}}
 									options={[
-										{ label: t('vietnamese'), value: Language.VIETNAMESE },
-										{ label: t('english'), value: Language.ENGLISH },
-										{ label: t('hmong'), value: Language.HMONG },
+										{ label: t('vietnamese'), value: StoryLanguage.VIETNAMESE },
+										{ label: t('english'), value: StoryLanguage.ENGLISH },
+										{ label: t('hmong'), value: StoryLanguage.HMONG },
 									]}
 									style={{ width: 200 }}
 								/>
@@ -314,9 +314,9 @@ const UploadStoryPage: React.FC = () => {
 								{
 									validator: () => {
 										const currentContent =
-											story.language === Language.VIETNAMESE
+											story.language === StoryLanguage.VIETNAMESE
 												? story.vietnameseContent
-												: story.language === Language.ENGLISH
+												: story.language === StoryLanguage.ENGLISH
 												? story.englishContent
 												: story.hmongContent;
 
@@ -329,9 +329,9 @@ const UploadStoryPage: React.FC = () => {
 						>
 							<TextEditor
 								value={
-									story.language === Language.VIETNAMESE
+									story.language === StoryLanguage.VIETNAMESE
 										? story.vietnameseContent ?? ''
-										: story.language === Language.ENGLISH
+										: story.language === StoryLanguage.ENGLISH
 										? story.englishContent ?? ''
 										: story.hmongContent ?? ''
 								}
@@ -339,15 +339,15 @@ const UploadStoryPage: React.FC = () => {
 									setStory((prev) => ({
 										...prev,
 										vietnameseContent:
-											prev.language === Language.VIETNAMESE
+											prev.language === StoryLanguage.VIETNAMESE
 												? value
 												: prev.vietnameseContent,
 										englishContent:
-											prev.language === Language.ENGLISH
+											prev.language === StoryLanguage.ENGLISH
 												? value
 												: prev.englishContent,
 										hmongContent:
-											prev.language === Language.HMONG
+											prev.language === StoryLanguage.HMONG
 												? value
 												: prev.hmongContent,
 									}));

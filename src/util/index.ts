@@ -63,11 +63,13 @@ export const StoryStatus = {
 
 export type StoryStatus = (typeof StoryStatus)[keyof typeof StoryStatus];
 
-export const Language = {
+export const StoryLanguage = {
 	HMONG: 'HMONG',
 	ENGLISH: 'ENGLISH',
 	VIETNAMESE: 'VIETNAMESE',
-};
+} as const;
+
+export type StoryLanguage = (typeof StoryLanguage)[keyof typeof StoryLanguage];
 
 export const axiosQueryHandler = async <T>(func: () => Promise<T>) => {
 	try {

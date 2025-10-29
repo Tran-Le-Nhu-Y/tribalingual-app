@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Col, Row, Pagination, App } from 'antd';
+import { Col, Row, Pagination, App, Empty } from 'antd';
 import type { PaginationProps } from 'antd';
 import { Guard, StoryCard } from '../../components';
 import { useTranslation } from 'react-i18next';
@@ -110,6 +110,24 @@ const BookStoragePage = () => {
 		);
 	};
 
+	if (!stories || stories.data?.content.length === 0) {
+		return (
+			<Guard requiredPermissions={['READ_STORY']}>
+				<Empty
+					description={t('noStories')}
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						height: '100%',
+						width: '100%',
+						flexDirection: 'column',
+					}}
+				/>
+			</Guard>
+		);
+	}
+
 	return (
 		<Guard requiredPermissions={['READ_STORY']}>
 			<div
@@ -126,7 +144,11 @@ const BookStoragePage = () => {
 				</Row>
 				{/* Pagination */}
 				<div
-					style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						marginTop: 24,
+					}}
 				>
 					<Pagination
 						showSizeChanger

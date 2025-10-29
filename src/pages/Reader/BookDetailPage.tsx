@@ -12,6 +12,7 @@ import {
 	App,
 } from 'antd';
 import {
+	CustomerServiceOutlined,
 	EyeOutlined,
 	HeartFilled,
 	HeartOutlined,
@@ -31,7 +32,7 @@ import {
 	useGetStoryById,
 	useIsFavorited,
 } from '../../service';
-import { Language, PathHolders, StoryStatus } from '../../util';
+import { StoryLanguage, PathHolders, StoryStatus } from '../../util';
 import { useAuth0 } from '@auth0/auth0-react';
 import dayjs from 'dayjs';
 import type { GetCommentQuery } from '../../@types/queries';
@@ -245,13 +246,31 @@ const BookDetailPage = () => {
 				window.open(gameLink, '_blank');
 			} else {
 				notification.warning({
-					message: t('gameLinkNotFound'),
+					message: t('gameActionFailed'),
 					placement: 'topRight',
 				});
 				return;
 			}
 		} else {
 			notification.info({ message: t('gameLinkNotFound') });
+		}
+	};
+
+	//listen
+	const handleListen = () => {
+		const audioLink = storyDetail.data?.audioLink;
+		if (audioLink) {
+			if (audioLink.startsWith('http')) {
+				window.open(audioLink, '_blank');
+			} else {
+				notification.warning({
+					message: t('listenActionFailed'),
+					placement: 'topRight',
+				});
+				return;
+			}
+		} else {
+			notification.info({ message: t('audioLinkNotFound') });
 		}
 	};
 
@@ -286,9 +305,9 @@ const BookDetailPage = () => {
 								{storyDetail.data?.genre?.name || 'N/A'}
 							</Descriptions.Item>
 							<Descriptions.Item label={t('language')}>
-								{storyDetail.data?.language === Language.VIETNAMESE
+								{storyDetail.data?.language === StoryLanguage.VIETNAMESE
 									? t('vietnamese')
-									: storyDetail.data?.language === Language.HMONG
+									: storyDetail.data?.language === StoryLanguage.HMONG
 									? t('hmong')
 									: t('english')}
 							</Descriptions.Item>
@@ -389,6 +408,15 @@ const BookDetailPage = () => {
 									onClick={handleCreateView}
 								>
 									{t('see')}
+								</Button>
+								<Button
+									type="primary"
+									icon={<CustomerServiceOutlined />}
+									style={{ borderRadius: 6 }}
+									loading={isViewCreating}
+									onClick={handleListen}
+								>
+									{t('listen')}
 								</Button>
 								<Button
 									type="primary"
