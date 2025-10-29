@@ -12,7 +12,7 @@ const LoadingScreen = () => {
 				justifyContent: 'center',
 				height: '100vh',
 				width: '100%',
-				background: 'linear-gradient(135deg, #146C94, #19A7CE)',
+				backgroundImage: `url('/bg_web.png') `,
 				color: '#fff',
 				overflow: 'hidden',
 			}}
@@ -43,7 +43,7 @@ const LoadingScreen = () => {
 					fontSize: '1.8rem',
 					fontWeight: 'bold',
 					letterSpacing: '2px',
-					color: '#F6F1F1',
+					color: '#107010ff',
 					marginBottom: 12,
 				}}
 			>

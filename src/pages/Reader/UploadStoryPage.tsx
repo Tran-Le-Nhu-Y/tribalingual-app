@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage, TextEditor, Guard } from '../../components'; // import UploadFile
+import {
+	UploadImage,
+	TextEditor,
+	Guard,
+	FullScreenLoader,
+} from '../../components'; // import UploadFile
 import Title from 'antd/es/typography/Title';
 import {
 	Form,
@@ -118,6 +123,8 @@ const UploadStoryPage: React.FC = () => {
 		}
 	};
 
+	if (genres.isLoading || createStory.isLoading) return <FullScreenLoader />;
+
 	return (
 		<Guard requiredPermissions={['CREATE_STORY']}>
 			<Card
@@ -135,7 +142,6 @@ const UploadStoryPage: React.FC = () => {
 						margin: 0,
 						paddingTop: 4,
 						marginBottom: 16,
-						color: '#03506F',
 						fontSize: 28,
 						fontWeight: 700,
 						letterSpacing: 1,

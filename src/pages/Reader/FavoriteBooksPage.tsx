@@ -1,5 +1,5 @@
 import { Row, Col, App, Empty } from 'antd';
-import { Guard, LoadingScreen, StoryCard } from '../../components';
+import { FullScreenLoader, Guard, StoryCard } from '../../components';
 import { useGetAllFavoritedStoriesByUser } from '../../service';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ const FavoriteBooksPage = () => {
 	}
 
 	if (isLoading) {
-		return <LoadingScreen />;
+		return <FullScreenLoader />;
 	}
 	if (!stories || stories.length === 0) {
 		return (

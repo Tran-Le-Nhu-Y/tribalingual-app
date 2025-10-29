@@ -1,5 +1,6 @@
 import CommentItem from './CommentItem';
 import CommentList from './CommentList';
+import FullScreenLoader from './FullScreenLoader';
 import Guard from './Guard';
 import LoadingScreen from './LoadingScreen';
 import NewBooksList from './NewBookList';
@@ -10,7 +11,6 @@ import StorySearch from './StorySearch';
 import TextEditor from './TextEditor';
 import UploadFile from './UploadFile';
 import UploadImage from './UploadImage';
-
 export {
 	StoryCard,
 	RankingList,
@@ -24,4 +24,5 @@ export {
 	Guard,
 	CommentItem,
 	StorySearch,
+	FullScreenLoader,
 };

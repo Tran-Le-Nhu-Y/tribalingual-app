@@ -28,7 +28,7 @@ import type {
 	UpdateGenreRequest,
 } from '../../@types/requests';
 import type { GetQuery } from '../../@types/queries';
-import { Guard } from '../../components';
+import { FullScreenLoader, Guard } from '../../components';
 
 const { Title } = Typography;
 
@@ -183,6 +183,10 @@ const GenreManagementPage: React.FC = () => {
 			console.log('Error: ', error);
 		}
 	};
+
+	if (genres.isLoading || isCreating || isUpdating || isDeleting) {
+		return <FullScreenLoader />;
+	}
 
 	return (
 		<>

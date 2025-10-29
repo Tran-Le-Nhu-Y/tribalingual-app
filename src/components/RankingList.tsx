@@ -75,17 +75,21 @@ const RankingList: React.FC<RankingListProps> = ({
 	return (
 		<div
 			style={{
-				background: 'linear-gradient(135deg, #0e2129ff,#0c5f80ff )',
+				background: `linear-gradient(180deg, rgba(184, 243, 182, 0.3), rgba(152, 209, 119, 0.5))`,
 				padding: '0px 10px 10px 0px',
+				backdropFilter: 'blur(18px)',
+				WebkitBackdropFilter: 'blur(18px)',
 				marginTop: 20,
 				position: 'relative',
 				borderRadius: 8,
+				border: '1px solid rgba(255,255,255,0.25)',
+				boxShadow: '0 5px 8px rgba(7, 7, 7, 0.1)',
+				overflow: 'visible',
 			}}
 		>
 			<Title
 				style={{
 					paddingTop: 10,
-					color: '#f9fbff',
 					fontSize: 28,
 					fontWeight: 700,
 					letterSpacing: 1,

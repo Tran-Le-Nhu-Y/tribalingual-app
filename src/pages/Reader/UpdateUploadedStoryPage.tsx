@@ -4,7 +4,7 @@ import {
 	UploadImage,
 	TextEditor,
 	Guard,
-	LoadingScreen,
+	FullScreenLoader,
 } from '../../components';
 import Title from 'antd/es/typography/Title';
 import {
@@ -190,7 +190,7 @@ const UpdateUploadedStoryPage: React.FC = () => {
 		});
 	};
 
-	if (storyDetail.isLoading || !story) return <LoadingScreen />;
+	if (storyDetail.isLoading || !story) return <FullScreenLoader />;
 
 	return (
 		<Guard requiredPermissions={['UPDATE_STORY']}>

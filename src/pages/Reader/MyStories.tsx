@@ -20,7 +20,7 @@ import {
 	EditOutlined,
 	EyeFilled,
 } from '@ant-design/icons';
-import { Guard } from '../../components';
+import { FullScreenLoader, Guard } from '../../components';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { GetStoryQuery } from '../../@types/queries';
 import { useEffect, useMemo, useState } from 'react';
@@ -116,6 +116,10 @@ const MyStoriesPage = () => {
 				/>
 			</Guard>
 		);
+	}
+
+	if (stories.isFetching || stories.isLoading) {
+		return <FullScreenLoader />;
 	}
 
 	return (
@@ -332,10 +336,7 @@ const MyStoriesPage = () => {
 									size={8}
 									style={{ width: '100%', minHeight: 140 }}
 								>
-									<Title
-										level={3}
-										style={{ marginBottom: 12, color: '#146C94' }}
-									>
+									<Title level={3} style={{ marginBottom: 12 }}>
 										{story?.title || 'N/A'}
 									</Title>
 									<Paragraph

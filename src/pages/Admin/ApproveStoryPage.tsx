@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import {
 	UploadImage,
 	TextEditor,
-	LoadingScreen,
 	Guard,
+	FullScreenLoader,
 } from '../../components';
 import Title from 'antd/es/typography/Title';
 import {
@@ -247,7 +247,7 @@ const ApproveStoryPage: React.FC = () => {
 		publishStory.isLoading ||
 		!story
 	) {
-		return <LoadingScreen />;
+		return <FullScreenLoader />;
 	}
 
 	return (

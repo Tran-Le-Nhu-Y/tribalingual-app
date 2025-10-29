@@ -196,13 +196,13 @@ const RootLayout = () => {
 				}
 
 				::-webkit-scrollbar-thumb {
-					background: linear-gradient(180deg, #146C94, #146C94);
+					background: #549F7A;
 					border-radius: 10px;
 					border: 2px solid #e9eef3;
 				}
 
 				::-webkit-scrollbar-thumb:hover {
-					background: linear-gradient(180deg, #3396D3, #3396D3);
+					background: #1b9c5cff;
 				}
         `}
 			</style>
@@ -290,7 +290,7 @@ const RootLayout = () => {
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'space-between',
-								backdropFilter: 'blur(20px)',
+								backdropFilter: 'blur(12px)',
 								boxShadow: '0 5px 8px rgba(2, 2, 2, 0.1)',
 							}}
 						>
@@ -369,6 +369,11 @@ const RootLayout = () => {
 									background: '#AFD3E2',
 									minHeight: 'calc(100vh - 163px)',
 									height: '100%',
+									backgroundImage: `url('/bg_web.png') `,
+									backgroundSize: 'cover',
+									backgroundPosition: 'center',
+									backgroundRepeat: 'no-repeat',
+									backgroundAttachment: 'fixed',
 								}}
 							>
 								<Outlet />
@@ -379,6 +384,7 @@ const RootLayout = () => {
 							style={{
 								textAlign: 'center',
 								padding: '15px ',
+								backdropFilter: 'blur(15px)',
 							}}
 						>
 							<div
@@ -389,7 +395,6 @@ const RootLayout = () => {
 									gap: 8,
 								}}
 							>
-								{/* Social icons */}
 								<div style={{ display: 'flex', gap: 24, fontSize: 24 }}>
 									<a
 										href="https://www.instagram.com/tribalingual_/?igsh=MXRzaWphODE3MGlleQ%3D%3D&utm_source=qr"

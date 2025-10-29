@@ -37,7 +37,7 @@ import type { Story } from '../../@types/entities';
 import dayjs from 'dayjs';
 import type { GetQuery } from '../../@types/queries';
 import { DeleteError } from '../../util/errors';
-import { Guard, LoadingScreen } from '../../components';
+import { FullScreenLoader, Guard } from '../../components';
 import { useAuth0 } from '@auth0/auth0-react';
 
 type DataIndex = keyof Story;
@@ -221,9 +221,9 @@ const StoryManagementPage: React.FC = () => {
 	});
 
 	const languageLabels: Record<StoryLanguage, string> = {
-		VIETNAMESE: 'Tiếng Việt',
-		ENGLISH: 'English',
-		HMONG: "Tiếng H'Mông",
+		VIETNAMESE: t('vietnamese'),
+		ENGLISH: t('english'),
+		HMONG: t('hmong'),
 	};
 	const statusLabels: Record<StoryStatus, string> = {
 		PENDING: t('pending'),
@@ -315,9 +315,9 @@ const StoryManagementPage: React.FC = () => {
 						<>
 							<Tooltip title={t('seeDetails')}>
 								<Button
-									type="primary"
 									size="small"
 									icon={<EyeOutlined />}
+									style={{ color: appTheme.token.colorSecondary }}
 									onClick={() =>
 										navigate(
 											RoutePaths.STORY_UPLOADED_DETAIL.replace(
@@ -330,7 +330,7 @@ const StoryManagementPage: React.FC = () => {
 							</Tooltip>
 							<Tooltip title={t('update')}>
 								<Button
-									type="primary"
+									style={{ color: appTheme.token.colorSecondary }}
 									size="small"
 									icon={<EditOutlined />}
 									onClick={
@@ -351,8 +351,8 @@ const StoryManagementPage: React.FC = () => {
 						<>
 							<Tooltip title={t('seeAndApprove')}>
 								<Button
-									type="primary"
 									size="small"
+									style={{ color: appTheme.token.colorSecondary }}
 									icon={<FileDoneOutlined />}
 									onClick={() =>
 										navigate(
@@ -396,7 +396,7 @@ const StoryManagementPage: React.FC = () => {
 	];
 
 	if (deleteStory.isLoading || stories.isLoading) {
-		return <LoadingScreen />;
+		return <FullScreenLoader />;
 	}
 
 	return (

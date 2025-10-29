@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TextEditor, LoadingScreen, Guard } from '../../components';
+import { TextEditor, Guard, FullScreenLoader } from '../../components';
 import Title from 'antd/es/typography/Title';
 import {
 	Form,
@@ -58,7 +58,7 @@ const StoryUploadedDetailPage: React.FC = () => {
 	);
 
 	if (storyDetail.isFetching || storyDetail.isLoading) {
-		return <LoadingScreen />;
+		return <FullScreenLoader />;
 	}
 	return (
 		<Guard requiredPermissions={['READ_STORY']}>

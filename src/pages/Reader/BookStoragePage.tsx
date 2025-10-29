@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Col, Row, Pagination, App, Empty } from 'antd';
 import type { PaginationProps } from 'antd';
-import { Guard, StoryCard } from '../../components';
+import { FullScreenLoader, Guard, StoryCard } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useGetFileById, useGetStories } from '../../service';
 import type { Story } from '../../@types/entities';
@@ -126,6 +126,10 @@ const BookStoragePage = () => {
 				/>
 			</Guard>
 		);
+	}
+
+	if (stories.isFetching || stories.isLoading) {
+		return <FullScreenLoader />;
 	}
 
 	return (

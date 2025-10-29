@@ -18,7 +18,7 @@ import {
 	HeartOutlined,
 	PlayCircleOutlined,
 } from '@ant-design/icons';
-import { CommentList, Guard, LoadingScreen } from '../../components';
+import { CommentList, FullScreenLoader, Guard } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
@@ -275,7 +275,7 @@ const BookDetailPage = () => {
 	};
 
 	if (storyDetail.isLoading) {
-		return <LoadingScreen />;
+		return <FullScreenLoader />;
 	}
 	return (
 		<Guard requiredPermissions={['READ_STORY']}>
@@ -355,7 +355,7 @@ const BookDetailPage = () => {
 					{/* Story Content */}
 					<Col xs={24} sm={24} md={24} lg={12} xl={14} xxl={18}>
 						<div style={{ paddingRight: 12 }}>
-							<Title level={2} style={{ marginBottom: 24, color: '#146C94' }}>
+							<Title level={2} style={{ marginBottom: 24 }}>
 								{storyDetail.data?.title || 'N/A'}
 							</Title>
 

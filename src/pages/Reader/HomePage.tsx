@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { Guard, RankingList } from '../../components';
+import { FullScreenLoader, Guard, RankingList } from '../../components';
 import { useEffect, useMemo, useState } from 'react';
 import { SortStoryOption, StoryStatus } from '../../util';
 import type { Story } from '../../@types/entities';
@@ -44,6 +44,11 @@ const HomePage = () => {
 		}
 		return [];
 	}, [stories.data?.content, stories.isError]);
+
+	if (stories.isFetching || stories.isLoading) {
+		return <FullScreenLoader />;
+	}
+
 	return (
 		<Guard requiredPermissions={['READ_STORY', 'READ_FILE']}>
 			<div>
