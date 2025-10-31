@@ -489,22 +489,10 @@ const ApproveStoryPage: React.FC = () => {
 						>
 							<Input placeholder={t('viewLinkPlaceholder')} />
 						</Form.Item>
-						<Form.Item
-							label={t('audioLink')}
-							name="audioLink"
-							rules={[
-								{ required: isPublishing, message: t('audioLinkRequired') },
-							]}
-						>
+						<Form.Item label={t('audioLink')} name="audioLink">
 							<Input placeholder={t('audioLinkPlaceholder')} />
 						</Form.Item>
-						<Form.Item
-							label={t('gameLink')}
-							name="gameLink"
-							rules={[
-								{ required: isPublishing, message: t('gameLinkRequired') },
-							]}
-						>
+						<Form.Item label={t('gameLink')} name="gameLink">
 							<Input placeholder={t('gameLinkPlaceholder')} />
 						</Form.Item>
 

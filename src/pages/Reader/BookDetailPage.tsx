@@ -409,23 +409,31 @@ const BookDetailPage = () => {
 								>
 									{t('see')}
 								</Button>
-								<Button
-									type="primary"
-									icon={<CustomerServiceOutlined />}
-									style={{ borderRadius: 6 }}
-									loading={isViewCreating}
-									onClick={handleListen}
-								>
-									{t('listen')}
-								</Button>
-								<Button
-									type="primary"
-									icon={<PlayCircleOutlined />}
-									style={{ borderRadius: 6 }}
-									onClick={handlePlayGame}
-								>
-									{t('game')}
-								</Button>
+								{storyDetail.data?.audioLink ? (
+									<Button
+										type="primary"
+										icon={<CustomerServiceOutlined />}
+										style={{ borderRadius: 6 }}
+										loading={isViewCreating}
+										onClick={handleListen}
+									>
+										{t('listen')}
+									</Button>
+								) : (
+									' '
+								)}
+								{storyDetail.data?.gameLink ? (
+									<Button
+										type="primary"
+										icon={<PlayCircleOutlined />}
+										style={{ borderRadius: 6 }}
+										onClick={handlePlayGame}
+									>
+										{t('game')}
+									</Button>
+								) : (
+									' '
+								)}
 							</Space>
 						</div>
 					</Col>
