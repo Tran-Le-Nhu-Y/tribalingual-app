@@ -46,7 +46,7 @@ interface StorySearchProps {
 // 			};
 // 		});
 
-const StorySearch: React.FC<StorySearchProps> = ({ width = 300 }) => {
+const StorySearch: React.FC<StorySearchProps> = ({ width }) => {
 	const { t } = useTranslation('standard');
 	const navigate = useNavigate();
 	const [options, setOptions] = useState<AutoCompleteProps['options']>([]);
@@ -136,7 +136,10 @@ const StorySearch: React.FC<StorySearchProps> = ({ width = 300 }) => {
 	return (
 		<AutoComplete
 			popupMatchSelectWidth={width}
-			style={{ width: width }}
+			style={{
+				width: '100%',
+				maxWidth: width,
+			}}
 			options={options}
 			onSelect={onSelect}
 			onSearch={handleSearch}

@@ -38,12 +38,13 @@ import dayjs from 'dayjs';
 import type { GetCommentQuery } from '../../@types/queries';
 import type { CreateCommentRequest } from '../../@types/requests';
 import type { CommentResponse } from '../../@types/response';
+import { useAuth0User } from '../../hook/useAuth0User';
 
 const { Title, Paragraph } = Typography;
 const paragraphStyle = {
 	lineHeight: 1.8,
 	textAlign: 'justify' as const,
-	maxHeight: '7.2em', // 3 lines * line-height (1.8em)
+	maxHeight: '18em', // 3 lines * line-height (1.8em)
 	overflow: 'hidden',
 };
 
@@ -73,6 +74,8 @@ const BookDetailPage = () => {
 		storyDetail.isFetching,
 		t,
 	]);
+
+	const { user: author } = useAuth0User(storyDetail.data?.authorId || '');
 
 	//Get all comment of story
 	const [commentsQuery, setCommentsQuery] = useState<GetCommentQuery>({
@@ -277,6 +280,7 @@ const BookDetailPage = () => {
 	if (storyDetail.isLoading) {
 		return <FullScreenLoader />;
 	}
+
 	return (
 		<Guard requiredPermissions={['READ_STORY']}>
 			<Card style={{ padding: 16, borderRadius: 8 }}>
@@ -299,7 +303,7 @@ const BookDetailPage = () => {
 
 						<Descriptions column={1} colon={false} size="middle" bordered>
 							<Descriptions.Item label={t('author')}>
-								{user?.name}
+								{author?.name || 'N/A'}
 							</Descriptions.Item>
 							<Descriptions.Item label={t('genre')}>
 								{storyDetail.data?.genre?.name || 'N/A'}

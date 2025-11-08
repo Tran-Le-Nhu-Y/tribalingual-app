@@ -32,7 +32,7 @@ const RankingListItem: React.FC<Props> = ({
 				transition: 'transform 0.3s',
 				marginBottom: 5,
 				overflow: 'visible',
-				zIndex: 10,
+				zIndex: 1,
 			}}
 			onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
 			onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}

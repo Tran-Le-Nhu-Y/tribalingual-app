@@ -263,18 +263,39 @@ const RootLayout = () => {
 					<Drawer
 						title={
 							<div
-								style={{ color: '#ff9800', fontWeight: 'bold', fontSize: 20 }}
+								style={{
+									marginBottom: 10,
+									fontSize: 20,
+									fontWeight: 'bold',
+									color: '#ff9800',
+									textAlign: 'center',
+								}}
 							>
-								TribalLingual
+								<img
+									src="/tribalingual_logo_removebg.png"
+									alt="Logo"
+									style={{
+										width: 100,
+										backgroundColor: '#fff',
+										borderRadius: '50%',
+									}}
+								/>
 							</div>
 						}
 						placement="left"
 						onClose={() => setDrawerVisible(false)}
 						open={drawerVisible}
-						style={{
-							backgroundColor: '#146C94',
-							color: '#F6F1F1',
-							padding: 5,
+						styles={{
+							header: {
+								background:
+									'linear-gradient(360deg, rgba(119, 238, 169, 0.35), rgba(16, 189, 88, 0.9))',
+								borderBottom: 'none',
+							},
+							body: {
+								background:
+									'linear-gradient(180deg, rgba(119, 238, 169, 0.35), rgba(16, 189, 88, 0.9))',
+								padding: 0,
+							},
 						}}
 					>
 						{renderSiderMenu(false)}
@@ -305,24 +326,12 @@ const RootLayout = () => {
 								<StorySearch width={350} />
 							</div>
 
-							<div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-								{/* <Tooltip title={t('notifications')}>
-									<Badge
-										count={notificationCount}
-										size="small"
-										offset={[-2, 2]}
-									>
-										<BellOutlined
-											style={{
-												fontSize: 24,
-												color: '#474541ff',
-												cursor: 'pointer',
-											}}
-											onClick={() => setNotificationCount(0)}
-										/>
-									</Badge>
-								</Tooltip> */}
-
+							<div
+								style={{
+									marginLeft: 8,
+									marginTop: 5,
+								}}
+							>
 								<Dropdown
 									menu={{
 										items: [
