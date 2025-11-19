@@ -8,7 +8,6 @@ import {
 } from '.';
 import { useEffect, useState, type PropsWithChildren } from 'react';
 import * as jose from 'jose';
-import { LoadingScreen } from '../../components';
 
 async function getPayloadFromToken(token: string) {
 	const domain: string | undefined = import.meta.env.VITE_AUTH0_DOMAIN;
@@ -20,7 +19,11 @@ async function getPayloadFromToken(token: string) {
 	return payload;
 }
 
-const AuthzProvider = ({ children }: PropsWithChildren) => {
+interface AuthzProviderProps extends PropsWithChildren {
+	freePaths?: string[];
+}
+
+const AuthzProvider = ({ children, freePaths }: AuthzProviderProps) => {
 	const {
 		user,
 		isAuthenticated,
@@ -40,7 +43,8 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 			if (isLoading) return;
 			try {
 				if (!isAuthenticated) {
-					await loginWithRedirect();
+					const isFreePath = freePaths?.includes(window.location.pathname);
+					if (!isFreePath) await loginWithRedirect();
 					return;
 				}
 				const token = await getAccessTokenSilently();
@@ -51,7 +55,7 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 				const permissions = (payload['permissions'] as string[])
 					.map((value) => {
 						const entry = Object.entries(PermissionEnum).find(
-							([, v]) => v === value,
+							([, v]) => v === value
 						);
 						if (entry === undefined) return null;
 						return entry[0] as PermissionKey;
@@ -75,36 +79,8 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 			}
 		};
 		init();
-		// getAccessTokenSilently()
-		// 	.then(async (token) => {
-		// 		const currentUser = user!;
-		// 		if (currentUser.sub === undefined)
-		// 			throw new Error('Token error: No subject claim in access token');
-		// 		const payload = await getPayloadFromToken(token);
-		// 		const permissions = (payload['permissions'] as string[])
-		// 			.map((value) => {
-		// 				const entry = Object.entries(PermissionEnum).find(
-		// 					([, v]) => v === value,
-		// 				);
-		// 				if (entry === undefined) return null;
-		// 				return entry[0] as PermissionKey;
-		// 			})
-		// 			.filter((permission) => permission !== null);
-		// 		setState((pre) => ({
-		// 			...pre,
-		// 			user: {
-		// 				id: currentUser.sub!,
-		// 				...currentUser,
-		// 				permissions,
-		// 			},
-		// 		}));
-		// 		tokenHolder.setAccessToken(token);
-		// 	})
-		// 	.catch(async (err) => {
-		// 		console.error(err);
-		// 		await logout({ logoutParams: { returnTo: window.location.origin } });
-		// 	});
 	}, [
+		freePaths,
 		getAccessTokenSilently,
 		isAuthenticated,
 		isLoading,
@@ -113,9 +89,6 @@ const AuthzProvider = ({ children }: PropsWithChildren) => {
 		user,
 	]);
 
-	if (state.isLoading) {
-		return <LoadingScreen />;
-	}
 	return (
 		<AuthzContext.Provider value={state}>{children}</AuthzContext.Provider>
 	);

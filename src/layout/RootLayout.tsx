@@ -47,7 +47,8 @@ const RootLayout = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { pathname } = location;
-	const { user, isLoading, logout } = useAuth0();
+	const { user, isAuthenticated, isLoading, logout, loginWithRedirect } =
+		useAuth0();
 
 	const screens = useBreakpoint();
 	const [drawerVisible, setDrawerVisible] = useState(false);
@@ -100,7 +101,7 @@ const RootLayout = () => {
 				requiredPermissions: ['CREATE_GENRE'],
 			},
 		],
-		[t],
+		[t]
 	);
 
 	const selectedKey = useMemo(() => {
@@ -140,7 +141,7 @@ const RootLayout = () => {
 		return items.filter((item) => {
 			if (!item.requiredPermissions) return true;
 			return item.requiredPermissions.some((perm: PermissionKey) =>
-				userAuthz.permissions.includes(perm),
+				userAuthz.permissions.includes(perm)
 			);
 		});
 	}, [userAuthz, items]);
@@ -338,37 +339,55 @@ const RootLayout = () => {
 									marginTop: 5,
 								}}
 							>
-								<Dropdown
-									menu={{
-										items: [
-											{
-												key: 'account',
-												label: t('myStories'),
-												icon: <UserOutlined />,
-												onClick: () => navigate(RoutePaths.MY_STORIES),
-											},
+								{isAuthenticated ? (
+									<Dropdown
+										menu={{
+											items: [
+												{
+													key: 'account',
+													label: t('myStories'),
+													icon: <UserOutlined />,
+													onClick: () => navigate(RoutePaths.MY_STORIES),
+												},
 
-											{
-												key: 'logout',
-												label: t('logout'),
-												icon: <LogoutOutlined />,
-												danger: true,
-												onClick: () =>
-													logout({
-														logoutParams: { returnTo: window.location.origin },
-													}),
-											},
-										],
-									}}
-									trigger={['click']}
-									placement="bottomRight"
-								>
-									<Avatar
-										src={user?.picture}
-										style={{ backgroundColor: '#ff9800', cursor: 'pointer' }}
-										icon={!user?.picture && <UserOutlined />}
-									/>
-								</Dropdown>
+												{
+													key: 'logout',
+													label: t('logout'),
+													icon: <LogoutOutlined />,
+													danger: true,
+													onClick: () =>
+														logout({
+															logoutParams: {
+																returnTo: window.location.origin,
+															},
+														}),
+												},
+											],
+										}}
+										trigger={['click']}
+										placement="bottomRight"
+									>
+										<Avatar
+											src={user?.picture}
+											style={{ backgroundColor: '#ff9800', cursor: 'pointer' }}
+											icon={!user?.picture && <UserOutlined />}
+										/>
+									</Dropdown>
+								) : (
+									<Button
+										type="primary"
+										onClick={() => loginWithRedirect()}
+										style={{
+											border: 'none',
+											fontWeight: 600,
+											padding: '0 30px',
+											height: 40,
+											borderRadius: 6,
+										}}
+									>
+										{t('login')}
+									</Button>
+								)}
 							</div>
 						</Header>
 
