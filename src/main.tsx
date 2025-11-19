@@ -29,6 +29,7 @@ import '@mantine/tiptap/styles.css';
 import { App as AntdApp } from 'antd';
 import { Auth0Provider } from '@auth0/auth0-react';
 import AuthzProvider from './contexts/authz/provider.tsx';
+import LandingPage from './pages/LandingPage/LandingPage.tsx';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -56,6 +57,7 @@ const router = createBrowserRouter(
 				element={<UpdateUploadedStoryPage />}
 			/>
 			<Route path={RoutePaths.GENRE} element={<GenreManagementPage />} />
+			<Route path={RoutePaths.LANDING} element={<LandingPage />} />
 		</Route>,
 	),
 );
