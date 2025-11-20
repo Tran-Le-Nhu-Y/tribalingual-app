@@ -1,16 +1,11 @@
 import { Button, Card, Typography } from 'antd';
+import { useAuthz } from '../../contexts/authz';
 
 const { Title, Paragraph } = Typography;
 
 const LandingPage = () => {
-	// const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
-	// const navigate = useNavigate();
-	// useEffect(() => {
-	// 	if (!isLoading && isAuthenticated) {
-	// 		navigate('/app');
-	// 	}
-	// }, [isAuthenticated, navigate, isLoading]);
-	// if (isLoading) return <LoadingScreen />;
+	const { isAuthenticated, loginWithRedirect } = useAuthz();
+
 	return (
 		<div
 			style={{
@@ -49,15 +44,17 @@ const LandingPage = () => {
 					of youth-led innovation for cultural sustainability.
 				</Paragraph>
 
-				<Button
-					type="primary"
-					size="large"
-					shape="round"
-					style={{ marginTop: 20, padding: '0 40px' }}
-					// onClick={() => loginWithRedirect()}
-				>
-					Login
-				</Button>
+				{!isAuthenticated && (
+					<Button
+						type="primary"
+						size="large"
+						shape="round"
+						style={{ marginTop: 20, padding: '0 40px' }}
+						onClick={() => loginWithRedirect()}
+					>
+						Login
+					</Button>
+				)}
 			</Card>
 		</div>
 	);
