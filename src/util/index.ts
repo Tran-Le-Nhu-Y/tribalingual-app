@@ -20,7 +20,7 @@ const FAVORITEBOOK = '/favorite-books';
 const MY_STORIES = '/my-stories';
 const ADMIN = '/admin';
 const GENRE = '/genre';
-const LANDING = '/landing';
+const LANDING = '/welcome';
 export const RoutePaths = {
 	ADMIN,
 	APPROVE_STORY_UPLOADED: `${ADMIN}/story-uploaded/:${PathHolders.STORY_ID}/approve`,

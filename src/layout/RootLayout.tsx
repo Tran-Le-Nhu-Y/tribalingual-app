@@ -101,7 +101,7 @@ const RootLayout = () => {
 				requiredPermissions: ['CREATE_GENRE'],
 			},
 		],
-		[t]
+		[t],
 	);
 
 	const selectedKey = useMemo(() => {
@@ -141,7 +141,7 @@ const RootLayout = () => {
 		return items.filter((item) => {
 			if (!item.requiredPermissions) return true;
 			return item.requiredPermissions.some((perm: PermissionKey) =>
-				userAuthz.permissions.includes(perm)
+				userAuthz.permissions.includes(perm),
 			);
 		});
 	}, [userAuthz, items]);
@@ -226,7 +226,7 @@ const RootLayout = () => {
 					}}
 				>
 					{/* --- Sider (Tablet + Desktop) --- */}
-					{!isMobile && (
+					{isAuthenticated && !isMobile && (
 						<Sider
 							width={240}
 							collapsed={isTablet}
@@ -323,14 +323,22 @@ const RootLayout = () => {
 							}}
 						>
 							<div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-								{(isMobile || isTablet) && (
-									<Button
-										type="text"
-										icon={<UnorderedListOutlined />}
-										onClick={() => setDrawerVisible(true)}
-									/>
+								{isAuthenticated ? (
+									<div
+										style={{ display: 'flex', alignItems: 'center', gap: 16 }}
+									>
+										{(isMobile || isTablet) && (
+											<Button
+												type="text"
+												icon={<UnorderedListOutlined />}
+												onClick={() => setDrawerVisible(true)}
+											/>
+										)}
+										<StorySearch width={350} />
+									</div>
+								) : (
+									<></>
 								)}
-								<StorySearch width={350} />
 							</div>
 
 							<div
