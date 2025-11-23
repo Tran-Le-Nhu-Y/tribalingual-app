@@ -21,9 +21,14 @@ async function getPayloadFromToken(token: string) {
 
 interface AuthzProviderProps extends PropsWithChildren {
 	freePaths?: string[];
+	fallbackRoute?: string;
 }
 
-const AuthzProvider = ({ children, freePaths }: AuthzProviderProps) => {
+const AuthzProvider = ({
+	children,
+	freePaths,
+	fallbackRoute,
+}: AuthzProviderProps) => {
 	const {
 		user,
 		isAuthenticated,
@@ -44,7 +49,15 @@ const AuthzProvider = ({ children, freePaths }: AuthzProviderProps) => {
 			try {
 				if (!isAuthenticated) {
 					const isFreePath = freePaths?.includes(window.location.pathname);
-					if (!isFreePath) await loginWithRedirect();
+					if (!isFreePath) {
+						if (fallbackRoute) {
+							window.location.replace(
+								`${window.location.origin}${fallbackRoute}`,
+							);
+							return;
+						}
+						await loginWithRedirect();
+					}
 					return;
 				}
 				const token = await getAccessTokenSilently();
@@ -55,7 +68,7 @@ const AuthzProvider = ({ children, freePaths }: AuthzProviderProps) => {
 				const permissions = (payload['permissions'] as string[])
 					.map((value) => {
 						const entry = Object.entries(PermissionEnum).find(
-							([, v]) => v === value
+							([, v]) => v === value,
 						);
 						if (entry === undefined) return null;
 						return entry[0] as PermissionKey;
@@ -80,6 +93,7 @@ const AuthzProvider = ({ children, freePaths }: AuthzProviderProps) => {
 		};
 		init();
 	}, [
+		fallbackRoute,
 		freePaths,
 		getAccessTokenSilently,
 		isAuthenticated,

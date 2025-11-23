@@ -128,7 +128,7 @@ export function createAxiosInstance(config?: CreateAxiosDefaults) {
 
 	instance.interceptors.request.use(
 		async function (config) {
-			const accessToken = tokenHolder.getAccessToken();
+			const accessToken = await tokenHolder.getAccessToken();
 			if (accessToken === undefined)
 				throw new AxiosError('No access token is found.');
 			return {

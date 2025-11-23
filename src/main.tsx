@@ -58,8 +58,8 @@ const router = createBrowserRouter(
 			/>
 			<Route path={RoutePaths.GENRE} element={<GenreManagementPage />} />
 			<Route path={RoutePaths.LANDING} element={<LandingPage />} />
-		</Route>
-	)
+		</Route>,
+	),
 );
 
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
@@ -70,11 +70,14 @@ createRoot(document.getElementById('root')!).render(
 		domain={domain}
 		clientId={clientId}
 		authorizationParams={{
-			redirect_uri: window.location.origin,
+			redirect_uri: `${window.location.origin}${RoutePaths.HOME}`,
 			audience: `${import.meta.env.VITE_API_GATEWAY}/api`,
 		}}
 	>
-		<AuthzProvider freePaths={[RoutePaths.LANDING]}>
+		<AuthzProvider
+			freePaths={[RoutePaths.LANDING]}
+			fallbackRoute={RoutePaths.LANDING}
+		>
 			<Provider store={store}>
 				<MantineProvider>
 					<AntdApp>
@@ -83,5 +86,5 @@ createRoot(document.getElementById('root')!).render(
 				</MantineProvider>
 			</Provider>
 		</AuthzProvider>
-	</Auth0Provider>
+	</Auth0Provider>,
 );

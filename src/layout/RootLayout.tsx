@@ -94,12 +94,6 @@ const RootLayout = () => {
 				label: t('genre'),
 				requiredPermissions: ['CREATE_GENRE'],
 			},
-			{
-				key: RoutePaths.LANDING,
-				icon: <SnippetsOutlined />,
-				label: t('genre'),
-				requiredPermissions: ['CREATE_GENRE'],
-			},
 		],
 		[t],
 	);

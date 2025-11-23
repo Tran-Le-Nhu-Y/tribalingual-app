@@ -95,7 +95,11 @@ export class TokenHolder {
 	}
 
 	getAccessToken() {
-		return this.accessToken;
+		return new Promise<string | undefined>((resolve) => {
+			if (this.accessToken === undefined)
+				setTimeout(() => resolve(this.accessToken), 5000);
+			else resolve(this.accessToken);
+		});
 	}
 
 	setAccessToken(token: string) {
